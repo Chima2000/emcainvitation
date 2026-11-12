@@ -1,0 +1,808 @@
+html[data-admin-theme="emca"] {
+    --bs-primary: #940000;
+    --bs-primary-rgb: 148, 0, 0;
+    --bs-secondary: #000000;
+    --bs-secondary-rgb: 0, 0, 0;
+    --bs-success: #000000;
+    --bs-success-rgb: 0, 0, 0;
+    --bs-info: #940000;
+    --bs-info-rgb: 148, 0, 0;
+    --bs-warning: #000000;
+    --bs-warning-rgb: 0, 0, 0;
+    --bs-danger: #940000;
+    --bs-danger-rgb: 148, 0, 0;
+    --bs-light: #ffffff;
+    --bs-light-rgb: 255, 255, 255;
+    --bs-dark: #000000;
+    --bs-dark-rgb: 0, 0, 0;
+    --bs-body-color: #000000;
+    --bs-body-color-rgb: 0, 0, 0;
+    --bs-body-bg: #ffffff;
+    --bs-body-bg-rgb: 255, 255, 255;
+    --bs-emphasis-color: #000000;
+    --bs-heading-color: #000000;
+    --bs-secondary-color: rgba(0, 0, 0, 0.62);
+    --bs-tertiary-color: rgba(0, 0, 0, 0.45);
+    --bs-border-color: #e6e6e6;
+    --bs-link-color: #940000;
+    --bs-link-color-rgb: 148, 0, 0;
+    --bs-link-hover-color: #000000;
+    --bs-link-hover-color-rgb: 0, 0, 0;
+    --bs-primary-text-emphasis: #940000;
+    --bs-primary-bg-subtle: #f7e8e8;
+    --bs-primary-border-subtle: #e7c4c4;
+    --bs-secondary-bg-subtle: #f4f4f4;
+    --bs-secondary-border-subtle: #d9d9d9;
+    --bs-btn-primary-hover: #6e0000;
+    --bs-btn-primary-border-hover: #6e0000;
+    --bs-btn-primary-active: #000000;
+    --custom-body-bg: #ffffff;
+    --app-sidebar-bg: #ffffff;
+    --app-header-bg: #ffffff;
+    color-scheme: light;
+}
+
+@media (min-width: 1481px) {
+    html[data-admin-theme="emca"] {
+        --app-sidebar-panel: 340px;
+    }
+
+    html[data-admin-theme="emca"] .app-sidebar-panel {
+        right: 0;
+        width: 340px;
+    }
+}
+
+html[data-admin-theme="emca"] .app-navbar-brand {
+    padding: 8px 22px;
+}
+
+html[data-admin-theme="emca"] .emca-brand {
+    display: inline-flex;
+    align-items: center;
+    height: 52px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease, padding 0.2s ease;
+}
+
+html[data-admin-theme="emca"] .emca-brand img {
+    display: block;
+    width: auto;
+    height: 52px;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+html[data-admin-theme="emca"][data-app-sidebar="mini"] .app-navbar-brand {
+    justify-content: center;
+    padding: 10px;
+}
+
+html[data-admin-theme="emca"][data-app-sidebar="mini"] .emca-brand {
+    width: 42px;
+    overflow: hidden;
+}
+
+html[data-admin-theme="emca"][data-app-sidebar="mini"] .emca-brand img {
+    width: 42px;
+    height: 46px;
+    max-width: none;
+    object-fit: cover;
+    object-position: left center;
+}
+
+html[data-admin-theme="emca"] .min-w-0 {
+    min-width: 0;
+}
+
+/* The theme stretches every card to its column's height; stacked cards would then overflow onto the next row. */
+html[data-admin-theme="emca"] .row > [class*="col"] > .card:not(:only-child) {
+    --bs-card-height: auto;
+}
+
+html[data-admin-theme="emca"] .emca-stat-tile .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+html[data-admin-theme="emca"] .emca-stat-tile .emca-stat-trend {
+    margin-top: auto;
+    line-height: 1.45;
+}
+
+html[data-admin-theme="emca"] .card.emca-stat-tile {
+    --emca-tile: 148, 0, 0;
+    background-color: rgba(var(--emca-tile), 0.05);
+}
+
+html[data-admin-theme="emca"] .card.emca-stat-tile-dark {
+    --emca-tile: 31, 31, 31;
+    background-color: rgba(var(--emca-tile), 0.04);
+}
+
+html[data-admin-theme="emca"] .card.emca-stat-tile-soft {
+    --emca-tile: 212, 106, 106;
+    background-color: rgba(var(--emca-tile), 0.08);
+}
+
+html[data-admin-theme="emca"] .card.emca-stat-tile-grey {
+    --emca-tile: 140, 140, 140;
+    background-color: rgba(var(--emca-tile), 0.08);
+}
+
+html[data-admin-theme="emca"] .card.emca-stat-tile-deep {
+    --emca-tile: 92, 0, 0;
+    background-color: rgba(var(--emca-tile), 0.06);
+}
+
+html[data-admin-theme="emca"] .emca-stat-tile-icon {
+    background-color: rgb(var(--emca-tile));
+    box-shadow: 0 6px 14px rgba(var(--emca-tile), 0.35);
+}
+
+html[data-admin-theme="emca"] .emca-gauge {
+    max-height: 170px;
+    overflow: hidden;
+}
+
+html[data-admin-theme="emca"] .btn-primary {
+    --bs-btn-color: #ffffff;
+    --bs-btn-bg: #940000;
+    --bs-btn-border-color: #940000;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-hover-bg: #6e0000;
+    --bs-btn-hover-border-color: #6e0000;
+    --bs-btn-focus-shadow-rgb: 148, 0, 0;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-active-bg: #000000;
+    --bs-btn-active-border-color: #000000;
+    --bs-btn-disabled-color: #ffffff;
+    --bs-btn-disabled-bg: #940000;
+    --bs-btn-disabled-border-color: #940000;
+}
+
+html[data-admin-theme="emca"] .btn-secondary,
+html[data-admin-theme="emca"] .btn-dark {
+    --bs-btn-color: #ffffff;
+    --bs-btn-bg: #000000;
+    --bs-btn-border-color: #000000;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-hover-bg: #940000;
+    --bs-btn-hover-border-color: #940000;
+    --bs-btn-focus-shadow-rgb: 0, 0, 0;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-active-bg: #6e0000;
+    --bs-btn-active-border-color: #6e0000;
+}
+
+html[data-admin-theme="emca"] .btn-light,
+html[data-admin-theme="emca"] .btn-outline-primary {
+    --bs-btn-color: #000000;
+    --bs-btn-bg: #ffffff;
+    --bs-btn-border-color: #000000;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-hover-bg: #940000;
+    --bs-btn-hover-border-color: #940000;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-active-bg: #000000;
+    --bs-btn-active-border-color: #000000;
+}
+
+html[data-admin-theme="emca"] .form-control:focus,
+html[data-admin-theme="emca"] .form-select:focus {
+    border-color: #940000;
+    box-shadow: 0 0 0 0.2rem rgba(148, 0, 0, 0.16);
+}
+
+html[data-admin-theme="emca"] .card,
+html[data-admin-theme="emca"] .dropdown-menu,
+html[data-admin-theme="emca"] .list-group-item {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+html[data-admin-theme="emca"] .app-navbar .menubar > li.menu-item > .menu-link.active,
+html[data-admin-theme="emca"] .app-navbar .menubar > li.menu-item > .menu-link:hover {
+    color: #ffffff;
+    background-color: #940000;
+}
+
+html[data-admin-theme="emca"] .app-navbar .menubar > li.menu-item > .menu-link.active > i,
+html[data-admin-theme="emca"] .app-navbar .menubar > li.menu-item > .menu-link:hover > i {
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-stat {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #ececec;
+}
+
+html[data-admin-theme="emca"] .emca-stat-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-stat-mark-primary {
+    background: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-stat-mark-black {
+    background: #000000;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] {
+    --bs-body-bg: #000000;
+    --bs-body-color: #ffffff;
+    --bs-body-color-rgb: 255, 255, 255;
+    --bs-emphasis-color: #ffffff;
+    --bs-heading-color: #ffffff;
+    --bs-secondary-color: rgba(255, 255, 255, 0.72);
+    --bs-tertiary-color: rgba(255, 255, 255, 0.5);
+    --bs-border-color: #2a2a2a;
+    --bs-link-hover-color: #ffffff;
+    --custom-body-bg: #000000;
+    --app-sidebar-bg: #000000;
+    --app-header-bg: #000000;
+    color-scheme: dark;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .app-navbar .menu-item .menu-link,
+html[data-admin-theme="emca"][data-bs-theme="dark"] .app-navbar .menu-item .menu-link > i {
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .card,
+html[data-admin-theme="emca"][data-bs-theme="dark"] .dropdown-menu,
+html[data-admin-theme="emca"][data-bs-theme="dark"] .list-group-item,
+html[data-admin-theme="emca"][data-bs-theme="dark"] .emca-stat {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #2a2a2a;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .emca-brand {
+    padding: 0 8px;
+    background-color: #ffffff;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .emca-brand img {
+    height: 44px;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"][data-app-sidebar="mini"] .emca-brand {
+    padding: 0;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .card.emca-stat-tile {
+    background-color: rgba(var(--emca-tile), 0.16);
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .card.emca-stat-tile-dark {
+    --emca-tile: 90, 90, 90;
+}
+
+/* Modals: keep header and footer visible and scroll the body, even when a form wraps body + footer. */
+.modal-dialog-scrollable .modal-content > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.modal-dialog-scrollable .modal-content > form > .modal-body {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.modal-dialog-scrollable .modal-content > form > .modal-header,
+.modal-dialog-scrollable .modal-content > form > .modal-footer {
+    flex-shrink: 0;
+}
+
+@media (max-width: 575.98px) {
+    .modal-dialog-scrollable {
+        height: calc(100% - 1rem);
+    }
+
+    .modal .modal-footer {
+        flex-wrap: wrap;
+    }
+
+    .modal .modal-footer > .btn,
+    .modal .modal-footer > form {
+        flex: 1 1 auto;
+    }
+}
+
+/* Super admin shell. */
+html[data-admin-theme="emca"] .emca-admin-container {
+    max-width: 1680px;
+}
+
+html[data-admin-theme="emca"] .emca-header-badge {
+    font-size: 0.62rem;
+    padding: 0.25em 0.45em;
+}
+
+html[data-admin-theme="emca"] .emca-dropdown-scroll {
+    max-height: 320px;
+}
+
+html[data-admin-theme="emca"] .emca-dropdown-row:hover {
+    background-color: rgba(148, 0, 0, 0.05);
+}
+
+.emca-menubar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 8;
+    background: rgba(0, 0, 0, 0.42);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.emca-menubar-backdrop.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Shared admin building blocks. */
+html[data-admin-theme="emca"] .emca-kpi {
+    position: relative;
+    overflow: hidden;
+}
+
+html[data-admin-theme="emca"] .emca-kpi .emca-kpi-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: #ffffff;
+    background: #940000;
+    box-shadow: 0 8px 16px rgba(148, 0, 0, 0.22);
+}
+
+html[data-admin-theme="emca"] .emca-kpi .emca-kpi-icon.is-dark {
+    background: #1f1f1f;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+html[data-admin-theme="emca"] .emca-kpi .emca-kpi-icon.is-soft {
+    color: #940000;
+    background: #f7e8e8;
+    box-shadow: none;
+}
+
+html[data-admin-theme="emca"] .emca-hero-card {
+    color: #ffffff;
+    border: 0;
+    background: radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.16), transparent 42%), linear-gradient(135deg, #940000 0%, #5c0000 100%);
+}
+
+html[data-admin-theme="emca"] .emca-hero-card h2,
+html[data-admin-theme="emca"] .emca-hero-card h6,
+html[data-admin-theme="emca"] .emca-hero-card p,
+html[data-admin-theme="emca"] .emca-hero-card span,
+html[data-admin-theme="emca"] .emca-hero-card strong,
+html[data-admin-theme="emca"] .emca-hero-card small,
+html[data-admin-theme="emca"] .emca-hero-card .text-white-50,
+html[data-admin-theme="emca"] .emca-wallet-card .text-white-50 {
+    color: #ffffff !important;
+}
+
+html[data-admin-theme="emca"] .emca-hero-card .emca-card-label,
+html[data-admin-theme="emca"] .emca-wallet-card .emca-card-label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+html[data-admin-theme="emca"] .emca-hero-card .emca-card-note,
+html[data-admin-theme="emca"] .emca-wallet-card .emca-card-note {
+    display: block;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+html[data-admin-theme="emca"] .emca-hero-card .btn-white {
+    color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills > a,
+html[data-admin-theme="emca"] .emca-filter-pills .nav-link {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    color: var(--bs-body-color);
+    border: 1px solid var(--bs-border-color);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills > a:hover,
+html[data-admin-theme="emca"] .emca-filter-pills .nav-link:hover {
+    color: #940000;
+    border-color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills > a.active,
+html[data-admin-theme="emca"] .emca-filter-pills .nav-link.active {
+    color: #ffffff;
+    background-color: #940000;
+    border-color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills > a.is-muted:not(.active) {
+    border-style: dashed;
+    color: var(--bs-secondary-color);
+}
+
+html[data-admin-theme="emca"] .emca-pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    margin-left: 0.4rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background-color: rgba(148, 0, 0, 0.08);
+    color: #940000;
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+html[data-admin-theme="emca"] .emca-filter-pills > a.active .emca-pill-count {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-category-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    background-color: rgba(148, 0, 0, 0.08);
+    color: #940000;
+    font-size: 1.05rem;
+}
+
+html[data-admin-theme="emca"] .emca-category-thumb {
+    width: 4.5rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+    gap: 0.5rem;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.6rem;
+    color: var(--bs-body-color);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker label:hover {
+    border-color: #940000;
+    color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker input:checked + label {
+    background-color: #940000;
+    border-color: #940000;
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-icon-picker input:focus-visible + label {
+    outline: 2px solid #940000;
+    outline-offset: 2px;
+}
+
+html[data-admin-theme="emca"] .emca-money-in {
+    color: #0f7a3b;
+}
+
+html[data-admin-theme="emca"] .emca-money-out {
+    color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-swatch-dot {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+html[data-admin-theme="emca"] .emca-package-card {
+    height: 100%;
+    border: 1px solid var(--bs-border-color);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-package-card.is-featured {
+    border-color: #940000;
+    box-shadow: 0 12px 28px rgba(148, 0, 0, 0.12);
+}
+
+html[data-admin-theme="emca"] .emca-package-card .emca-package-price {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+html[data-admin-theme="emca"] .emca-check-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+html[data-admin-theme="emca"] .emca-check-list li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 6px;
+}
+
+html[data-admin-theme="emca"] .emca-check-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 14px;
+    height: 8px;
+    border-left: 2px solid #940000;
+    border-bottom: 2px solid #940000;
+    transform: rotate(-45deg);
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card {
+    color: #ffffff;
+    border: 0;
+    background: radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.18), transparent 40%), linear-gradient(135deg, #1f1f1f 0%, #940000 100%);
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card * {
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .btn-white,
+html[data-admin-theme="emca"] .emca-wallet-card .btn-white * {
+    color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .btn-white {
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .btn-white:hover,
+html[data-admin-theme="emca"] .emca-wallet-card .btn-white:focus-visible {
+    background-color: #f7e8e8;
+    border-color: #f7e8e8;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .btn-outline-white {
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: transparent;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .btn-outline-white:hover,
+html[data-admin-theme="emca"] .emca-wallet-card .btn-outline-white:focus-visible {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .emca-wallet-figure {
+    font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .emca-wallet-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.625rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+html[data-admin-theme="emca"] .emca-wallet-card .emca-wallet-meta small {
+    display: block;
+    font-weight: 500;
+}
+
+html[data-admin-theme="emca"] .emca-template-card {
+    border: 1px solid var(--bs-border-color);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-template-card:hover {
+    border-color: #940000;
+    box-shadow: 0 12px 28px rgba(148, 0, 0, 0.1);
+}
+
+html[data-admin-theme="emca"] .emca-template-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 170px;
+    padding: 1.5rem 1rem;
+    border: 1px solid;
+    border-radius: 0.625rem;
+    text-align: center;
+}
+
+html[data-admin-theme="emca"] .emca-template-kicker {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+html[data-admin-theme="emca"] .emca-template-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+html[data-admin-theme="emca"] .emca-scroll-card {
+    max-height: 360px;
+}
+
+html[data-admin-theme="emca"] .table td,
+html[data-admin-theme="emca"] .table th {
+    vertical-align: middle;
+}
+
+html[data-admin-theme="emca"] .emca-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+html[data-admin-theme="emca"] .emca-empty i {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    color: #940000;
+    opacity: 0.6;
+}
+
+html[data-admin-theme="emca"][data-bs-theme="dark"] .emca-kpi .emca-kpi-icon.is-soft {
+    background: rgba(148, 0, 0, 0.25);
+    color: #ffffff;
+}
+
+html[data-admin-theme="emca"] .emca-method-option {
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-method-option:hover,
+html[data-admin-theme="emca"] .emca-method-option:has(input:checked) {
+    border-color: #940000 !important;
+    background: rgba(148, 0, 0, 0.04);
+}
+
+html[data-admin-theme="emca"] .emca-wallet-chip {
+    border-radius: 999px;
+}
+
+.emca-method-logo {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 44px;
+    padding: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.emca-method-logo img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.emca-method-logo-sm {
+    width: 34px;
+    height: 22px;
+    padding: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    background: #ffffff;
+    object-fit: contain;
+}
+
+html[data-admin-theme="emca"] .emca-plan-option {
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-plan-option:hover,
+html[data-admin-theme="emca"] .emca-plan-option:has(input:checked) {
+    border-color: #940000 !important;
+    background: rgba(148, 0, 0, 0.04);
+    box-shadow: 0 0 0 3px rgba(148, 0, 0, 0.1);
+}
+
+html[data-admin-theme="emca"] .emca-plan-price {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #940000;
+}
+
+html[data-admin-theme="emca"] .emca-design-choice {
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+html[data-admin-theme="emca"] .emca-design-choice:has(input:checked) {
+    border-color: #940000 !important;
+    box-shadow: 0 0 0 3px rgba(148, 0, 0, 0.12);
+}
+
+html[data-admin-theme="emca"] .emca-design-preview {
+    position: sticky;
+    top: 90px;
+}
+
+@media (max-width: 575.98px) {
+    html[data-admin-theme="emca"] .emca-wallet-chip span {
+        display: none;
+    }
+}

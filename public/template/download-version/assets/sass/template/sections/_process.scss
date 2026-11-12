@@ -1,0 +1,100 @@
+/* Process Card ---------------------------------- */
+.process-bg-shape1-1, 
+.process-bg-shape1-2,
+.process-bg-shape1-3 {
+    @include xxl {
+        display: none;
+    }
+}
+.process-card-wrap1 {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    gap: 32px;
+    padding-top: 40px;
+    @include ml {
+        margin-top: -40px;
+        gap: 40px 24px;
+    }
+    .process-bg-line1-1 {
+        position: absolute;
+        left: -224px;
+        right: -174px;
+        top: -100px;
+        @include xl {
+            display: none;
+        }
+    }
+}
+.process-card {
+    align-self: self-start;
+    position: relative;
+    width: 100%;
+    max-width: 268px;
+    text-align: center;
+    margin: 0 12px;
+    .box-img {
+        display: inline-flex;
+        margin: 48px 0 92px;
+        border: 6px solid $theme-color;
+        border-radius: 50%;
+        position: relative;
+        @include md {
+            margin: 48px 0 72px;
+        }
+        &:after {
+            content: '';
+            position: absolute;
+            background: $smoke-color2;
+            z-index: -1;
+            inset: -41.5px;
+            border-radius: 100px;
+            transform: rotate(30deg);
+            transition: 0.4s;
+        }
+        .thumb {
+            overflow: hidden;
+            max-width: 187px;
+            border-radius: 50%;
+            filter: grayscale(9);
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        img {
+            width: 100%;
+        }
+    }
+    &:nth-child(odd) {
+        margin-top: 188px;
+        @include ml {
+            margin-top: 0;
+        }
+    }
+    .box-title {
+        font-size: 24px;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+        @include xxl {
+            font-size: 20px;
+        }
+    }
+    .box-text {
+        line-height: 1.625em;
+        letter-spacing: -0.02em;
+    }   
+    &:hover {
+        .box-img {
+            &:after {
+                background: $smoke-color;
+            }
+        }
+    } 
+}
+/* Process Card 2---------------------------------- */
+.process-card.style2 {
+    .box-img:after {
+        background: $white-color;
+    }
+}

@@ -1,0 +1,229 @@
+/*** 
+
+====================================================================
+    FAQ's Section
+====================================================================
+
+***/
+
+.faq-section {
+  position: relative;
+  .shape-1 {
+    position: absolute;
+    top: -60px;
+    left: 100px;
+    z-index: 3;
+    @include media-breakpoint-down(xl){
+      display: none;
+    }
+  }
+  .outer-box {
+    position: relative;
+    max-width: 1880px;
+    margin: 0 auto;
+    border-radius: 30px;
+    background-color: var(--theme-color-white);
+  }
+  .content-column {
+    .inner-column {
+      position: relative;
+      max-width: 501px;
+      padding-right: 60px;
+      @include media-breakpoint-down(xl){
+        padding-right: 20px;
+        max-width: 100%;
+      }
+      @include media-breakpoint-down(lg){
+        margin-bottom: 40px;
+      }
+      &:before {
+        position: absolute;
+        content: "";
+        background-color: transparent;
+        background-image: url(../images/icons/line-2.png);
+        width: 1px;
+        height: 100%;
+        background-position: bottom right;
+        background-repeat: no-repeat;
+        bottom: 0;
+        right: 0;
+        @include media-breakpoint-down(lg){
+          display: none;
+        }
+      }
+      .image {
+        position: relative;
+        width: 100%;
+        max-width: 424px;
+        height: 100%;
+        max-height: 284px;
+        margin-bottom: 37px;
+        -webkit-mask-image: url(../images/resource/faq1-1.png);
+        -webkit-mask-size: contain;
+        -webkit-mask-position: center center;
+        -webkit-mask-repeat: no-repeat;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .bottom-box {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        @include media-breakpoint-down(xl){
+          flex-wrap: wrap;
+          align-items: start;
+        }
+        .title {
+          margin-bottom: 0;
+          br {
+            display: block;
+            @include media-breakpoint-down(lg){
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  .faq-column {
+    .inner-column {
+      position: relative;
+      margin-left: 18px;
+      @include media-breakpoint-down(xl){
+        margin-left: 0;
+      }
+      .accordion-box {
+        .accordion {
+          background-color: var(--body-bg);
+          .acc-btn {
+            .icon {
+              background-color: var(--theme-color-white);
+            }
+            &.active {
+              .icon {
+                background-color: var(--theme-color2);
+                color: var(--theme-color2-text-color);
+              }
+            }
+          }
+        }
+      }
+      .acc-content {
+        .content {
+          .text {
+            max-width: 609px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.faq-section-two {
+  position: relative;
+  .shape-1 {
+    position: absolute;
+    bottom: -60px;
+    right: 40px;
+    z-index: 3;
+    @include media-breakpoint-down(xl){
+      display: none;
+    }
+  }
+  .outer-box {
+    position: relative;
+    max-width: 1880px;
+    margin: 0 auto;
+    border-radius: 30px;
+    background-color: var(--theme-color-white);
+  }
+  .content-column {
+    .inner-column {
+      position: relative;
+      max-width: 501px;
+      padding-right: 60px;
+      @include media-breakpoint-down(xl){
+        padding-right: 20px;
+        max-width: 100%;
+      }
+      @include media-breakpoint-down(lg){
+        margin-bottom: 40px;
+      }
+      &:before {
+        position: absolute;
+        content: "";
+        background-color: transparent;
+        background-image: url(../images/icons/line-2.png);
+        width: 1px;
+        height: 100%;
+        background-position: bottom right;
+        background-repeat: no-repeat;
+        bottom: 0;
+        right: 0;
+        @include media-breakpoint-down(lg){
+          display: none;
+        }
+      }
+      .image {
+        position: relative;
+        width: 100%;
+        max-width: 424px;
+        height: 100%;
+        max-height: 284px;
+        margin-bottom: 37px;
+        -webkit-mask-image: url(../images/resource/faq1-1.png);
+        -webkit-mask-size: contain;
+        -webkit-mask-position: center center;
+        -webkit-mask-repeat: no-repeat;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .bottom-box {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        @include media-breakpoint-down(xl){
+          flex-wrap: wrap;
+          align-items: start;
+        }
+        .title {
+          margin-bottom: 0;
+          br {
+            display: block;
+            @include media-breakpoint-down(lg){
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  .faq-column {
+    .inner-column {
+      position: relative;
+      margin-left: 18px;
+      @include media-breakpoint-down(xl){
+        margin-left: 0;
+      }
+      .acc-content {
+        .content {
+          .text {
+            max-width: 609px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,235 @@
+/* Counter 1 ---------------------------------- */
+.counter-bg-shape1-1 {
+    @include xxl {
+        display: none;
+    }
+}
+.counter-card {
+    text-align: center;
+    .box-number {
+        font-size: 56px;
+        font-weight: 700;
+        margin-bottom: 0px;
+        margin-top: -0.15em;
+        letter-spacing: -0.02em;
+        @include xl {
+            font-size: 48px;
+        }
+        @include lg {
+            font-size: 40px;
+        }
+    }
+    .box-text {
+        font-weight: 500;
+        font-size: 24px;
+        font-family: $body-font;
+        color: $white-color;
+        margin-top: 7px;
+        margin-bottom: -0.45em;
+        @include xl {
+            font-size: 20px;
+        }
+        @include lg {
+            font-size: 16px;
+            letter-spacing: normal;
+        }
+        @include md {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        @include sm {
+            font-size: 16px;
+        }
+    }
+}
+ 
+.counter-wrap1 {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 150px;
+    @include xl {
+        gap: 100px;
+    }
+    @include lg {
+        gap: 70px;
+    }
+    @include md {
+        margin-top: 60px;
+        justify-content: space-between;
+    }
+    @include sm {
+        flex-wrap: wrap;
+        gap: 40px 0;
+        .counter-card {
+            flex: 50%;
+        }
+    }
+    @include xs {
+        .counter-card {
+            flex: 100%;
+            text-align: center;
+        }
+    }
+}
+
+/* Counter 2 ---------------------------------- */
+.counter-wrap2 {
+    display: flex;
+    position: relative;
+    justify-content: space-around;
+    gap: 21px;
+    padding: 21px;
+    z-index: 1;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0 0 50%;
+        border-radius: 24px 24px 0 0;
+        background: $theme-color;
+        z-index: -1;
+    }
+    @include md {
+        padding: 0;
+        flex-wrap: wrap;
+        gap: 24px;
+        &:after {
+            display: none;
+        }
+    }
+}
+.counter-card2 {
+    height: 304px;
+    width: 304px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: $white-color;
+    border-radius: 50%;
+    align-content: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    @include ml {
+        height: 286px;
+    }
+    @include xl {
+        height: 252px;
+    }
+    @include lg {
+        height: 207px;
+    }
+    @include md {
+        width: calc(50% - 12px);
+        height: auto;
+        padding: 30px 0;
+        border: 21px solid $smoke-color;
+        border-radius: 30px;
+    }
+    @include sm {
+        border: 15px solid $smoke-color;
+    }
+    @include vxs {
+        width: 100%;
+    }
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 1px dashed $theme-color;
+        border-radius: 50%;
+        z-index: -1;
+        transition: 0.4s;
+        opacity: 0;
+        animation: spin 10s linear infinite;
+        @include md {
+            display: none;
+        }
+    }
+    &:before {
+        content: '';
+        position: absolute;
+        inset: 50% -21px -21px;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        border: 21px solid $smoke-color;
+        border-top: 0;
+        z-index: -2;
+        @include md {
+            display: none;
+        }
+    }
+    .box-number {
+        display: block;
+        width: 100%;
+        margin-top: -0.15em;
+        margin-bottom: 10px;
+        font-size: 64px;
+        @include xxl {
+            font-size: 54px;
+        }
+        @include xl {
+            font-size: 48px;
+        }
+        @include lg {
+            font-size: 40px;
+        }
+        @include md {
+            font-size: 36px;
+        }
+        @include sm {
+            font-size: 32px;
+        }
+    }
+    .box-text {
+        margin-bottom: -0.5em;
+        max-width: 170px;
+        font-size: 18px;
+        font-weight: 500;
+        @include xl {
+            font-size: 16px;
+        }
+    }
+    &:hover {
+        &:after {
+            opacity: 1;
+        }
+    }
+}
+
+/* Counter 3 ---------------------------------- */
+.counter-wrap3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px 30px;
+    @include lg {
+        flex-wrap: wrap;
+    }
+    @include sm {
+        flex-wrap: wrap;
+        gap: 40px 0;
+        .counter-card.style3 {
+            flex: 50%;
+        }
+    }
+    @include vxs {
+        justify-content: center;
+        .counter-card.style3 {
+            flex: 100%;
+            text-align: center;
+        }
+    }
+}
+.counter-card.style3 {
+    text-align: start;
+    .box-text {
+        font-size: 18px;
+        font-weight: 500;
+        color: $body-color;
+        margin-top: 2px;
+        @include lg {
+            font-size: 16px;
+        }
+    }
+}

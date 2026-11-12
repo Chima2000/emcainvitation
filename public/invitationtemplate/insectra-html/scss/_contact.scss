@@ -1,0 +1,269 @@
+/*** 
+
+====================================================================
+   contact-section
+====================================================================
+
+***/
+
+
+
+.form-column {
+  @include media-breakpoint-down (xxxxl){
+    position: relative;
+    z-index: 99;
+  }
+  .inner-column {
+    position: relative;
+    background-color: var(--theme-color-white);
+    border-radius: 20px;
+    z-index: 2;
+    overflow: hidden;
+    margin-right: -100px;
+    margin-left: 59px;
+    @include media-breakpoint-down(xxxl){
+      margin-right: 0;
+      margin-left: 0;
+    }
+  .title {
+    margin-bottom: 26px;
+  }
+  .theme-btn {
+    border-radius: 100px;
+    padding: 18.2px 50.1px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    margin-top: -6px;
+    @include media-breakpoint-down(sm){
+      padding: 10px 20px;
+    }
+  }
+  }
+  .title-box {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 25px 50px;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--theme-color2);
+     @include media-breakpoint-down (xxl){
+        padding: 25px 44px;
+      }
+
+    @include media-breakpoint-down (lg){
+      padding: 25px 40px;
+    }
+    @include media-breakpoint-down(md){
+      padding: 25px 36px;
+    }
+    @include media-breakpoint-down(sm){
+      padding: 25px 15px;
+      flex-wrap: wrap;
+    }
+    .title {
+      position: relative;
+      margin-bottom: 0;
+      color: var(--theme-color-white);
+      br {
+        display: block;
+      }
+    }
+  }
+  .contact-form {
+    background-color: transparent;
+    box-shadow: none;
+    padding: 50px;
+     @include media-breakpoint-down (xxl){
+      padding: 44px;
+    }
+
+  @include media-breakpoint-down (lg){
+    padding: 40px;
+  }
+
+  @include media-breakpoint-down (md){
+    padding: 36px;
+  }
+
+  @include media-breakpoint-down (sm){
+    padding: 32px 15px;
+  }
+    h6 {
+     color: var(--theme-color2);
+     margin-bottom: 14.2px;
+     font-weight: 400;
+    }
+    .form-clt {
+      position: relative;
+      width: 100%;
+      margin-bottom: 16px;
+      input ,
+      textarea {
+        position: relative;
+        height: calc(1.8rem + 32px);
+        padding: 14px 20px;
+        outline: 0;
+        background-color: var(--bg-color);
+        border: 2px solid rgba(241, 238, 246, 0.5);
+        font-size: 1rem;
+        width: 100%;
+        border-radius: 6px;
+        @include transition(all 300ms ease);
+        &::placeholder {
+          color: var(--text-color);
+        }
+        &:focus {
+          border-color: var(--theme-color1);
+        }
+      }
+      textarea {
+        height: 155px;
+      }
+    }
+  }
+}
+
+/*** 
+
+====================================================================
+   contact-section
+====================================================================
+
+***/
+
+.contact-section {
+  position: relative;
+  padding: 0 15px;
+  .outer-box {
+    position: relative;
+    max-width: 1880px;
+    margin: 0 auto;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 90px 0;
+    .bg-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      z-index: 0;
+      &:before {
+        position: absolute;
+        content: "";
+        background-image: linear-gradient(180deg, #00000000 0%, #033F2DE3 73%);
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        border-radius: 20px;
+        z-index: 1;
+        pointer-events: none;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+    }
+    .content-column {
+      .inner-column {
+        position: relative;
+        margin-right: -15px;
+        @include media-breakpoint-down(xxl){
+          margin-right: 0;
+        }
+        @include media-breakpoint-down(xl){
+          margin-bottom: 40px;
+        }
+        .info-box {
+          position: relative;
+          margin-top: 60px;
+          padding-top: 50px;
+          border-top: 1px solid #FFFFFF33;
+          width: 100%;
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          justify-content: space-between;
+          z-index: 2;
+          @include media-breakpoint-down(md){
+            flex-direction: column;
+            align-items: start;
+            margin-top: 40px;
+            padding-top: 30px;
+          }
+          .info {
+            position: relative;
+            display: flex;
+            &:hover {
+              .icon {
+                transform: rotateY(-180deg);
+              }
+            }
+            .icon {
+              position: relative;
+              display: inline-block;
+              width: 100%;
+              max-width: 45px;
+              height: 45px;
+              text-align: center;
+              line-height: 47px;
+              border-radius: 50%;
+              font-size: 25px;
+              margin-right: 20px;
+              @include transition(all 300ms ease);
+              background-color: var(--theme-color1);
+              color: var(--theme-color1-text-color);
+            }
+            .content {
+              position: relative;
+              .title {
+                margin-bottom: 0;
+                color: var(--theme-color-white);
+              }
+              .text {
+                position: relative;
+                color: rgba(var(--theme-color-white-rgb), .698);
+              }
+            }
+          }
+        }
+      }
+    }
+  .form-column .contact-form .form-clt {
+    margin-bottom:16px;
+  }
+  .form-column .contact-form .form-clt textarea {
+    height: 147px;
+  }
+  .form-column .contact-form .form-clt input, 
+  .form-column .contact-form .form-clt textarea {
+    background-color: transparent;
+    border-width: 2px;
+    border-radius: 20px;
+    background-color: #F5F5F5;
+    border-color: transparent;
+    &:focus {
+      border-color: var(--theme-color1);
+    }
+  }
+  }
+}
+
+
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

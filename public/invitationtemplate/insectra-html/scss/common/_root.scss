@@ -1,0 +1,128 @@
+//Root 
+@function hexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: false;
+}
+
+//main theme colors
+$theme-color1: #c7f268;
+$theme-color2: #033f2d;
+$theme-color3: #10551f;
+$theme-color4: #000000;
+
+:root {
+  --r: 30px; /* radius */
+  --s: 50px; /* size of the inner curve*/
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%) no-repeat;
+  
+  //theme color
+  --theme-color1: #{$theme-color1};
+  --theme-color2: #{$theme-color2};
+  --theme-color3: #{$theme-color3};
+  --theme-color4: #{$theme-color4};
+
+  //rgb version of those theme colors
+  --theme-color1-rgb: #{hexToRGB($theme-color1)};
+  --theme-color2-rgb: #{hexToRGB($theme-color2)};
+  --theme-color3-rgb: #{hexToRGB($theme-color3)};
+  --theme-color4-rgb: #{hexToRGB($theme-color4)};
+
+  --theme-color1-text-color: #033f2d;
+  --theme-color2-text-color: #ffffff;
+  --theme-color3-text-color: #ffffff;
+  --theme-color4-text-color: #ffffff;
+
+
+  --theme-color-white: #ffffff;
+  --theme-color-white-rgb: 255,255,255;
+  --theme-color-lighter: #f8f5f0;
+  --theme-color-silver: #eee;
+  --review-color: #FFAA18;
+
+  --theme-color-black: #000000;
+  --theme-color-black-rgb: 0, 0, 0;
+  --theme-color-dark:  #333;
+  --theme-color-gray:  #f6f6f6;
+
+
+
+  //Gradients
+  --gradient-1: linear-gradient(90deg, #88ff2a 0%, #fff 100%);
+  --gradient-2: linear-gradient(to left, rgba(var(--theme-color1-rgb), 1) 0%, rgba(var(--theme-color1-rgb), 0.7) 100%);
+  --gradient-3: linear-gradient(180deg, var(--theme-color1) 0%, rgba(0, 0, 0, 0) 100%);
+  --gradient-4: linear-gradient(180deg, rgba(217, 244, 95, 0) 0%, rgba(217, 244, 95, 0.5) 100%);
+  --gradient-5: linear-gradient(180deg, var(--theme-color1) 0%, rgba(126, 142, 55, 0) 100%);
+  --gradient-6: linear-gradient(180deg, #0a0a0a 0%, rgba(10, 10, 10, 0.3) 45%, #0a0a0a 90%);
+  --gradient-7: linear-gradient(180deg, rgba(217, 244, 95, 0.7) 37.5%, rgba(255, 212, 212, 0) 100%);
+  
+
+    
+  //text heading color
+  --text-color:         #484c44;
+  --headings-color:     #0c2f25;
+  --link-color:         var(--theme-color1);
+  --link-hover-color:   var(--theme-color1);
+
+
+  //font family  
+  --body-font-family: "Inter", sans-serif;
+  --heading-font-family: "Inter", sans-serif;
+  
+  //body
+  --body-bg:          #f5f5f5;
+  --body-font-size:   16px;
+  --body-line-height: 1.9;
+  --body-font-weight: 400;
+
+  //heading font size + weight
+  --line-height-heading-h1: 1.2625em;
+  --line-height-heading-h2: 1.2em;
+  --line-height-heading: 1.3em;
+  --line-height-heading-small: 1.4em;
+
+  --h1-font-size: 80px;
+  --h2-font-size: 50px;
+  --h3-font-size: 30px;
+  --h4-font-size: 24px;
+  --h5-font-size: 20px;
+  --h6-font-size: 16px;
+
+  --h1-font-weight: 500;
+  --h2-font-weight: 500;
+  --h3-font-weight: 500;
+  --h4-font-weight: 500;
+  --h5-font-weight: 400;
+  --h6-font-weight: 400;
+
+  //section sub title
+  --sec-title-subtitle-color: var(--headings-color);
+  --sec-title-subtitle-font-size: 16px;
+  --sec-title-subtitle-font-family: var(--body-font-family);
+  --sec-title-subtitle-font-weight: 400;
+  --sec-title-subtitle-line-height: 1.4;  
+
+  //section title
+  --sec-title-color:                 var(--theme-color2);
+  --sec-title-font-size:             50px;
+  --sec-title-font-family:           var(--heading-font-family);
+  --sec-title-font-weight:           500;
+  --sec-title-title-line-height:     var(--line-height-heading-h2);
+
+  //news details page
+  --theme-light-background: #133241;
+  --theme-light-background-text-color: var(--headings-color);
+  --theme-black:        #000000;
+
+  //container
+  --container-width: 1350px;
+  --small-container-width: 1000px;
+  --large-container-width: 1870px;
+}
+
+.title {
+  letter-spacing: 0;
+}

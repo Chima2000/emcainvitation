@@ -1,0 +1,153 @@
+.accordion-box {
+  position: relative;
+}
+.accordion-box .block {
+  position: relative;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e1e1e1;
+  padding: 0 0 5px;
+}
+.accordion-box .block .acc-btn {
+  position: relative;
+  color: var(--headings-color);
+  font-family: var(--heading-font-family);
+  font-weight: var(--h4-font-weight);
+  font-size: 20px;
+  cursor: pointer;
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
+  border-bottom: 1px solid #fff;
+  padding: 8px 0 14px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.accordion-box .block .acc-btn .icon {
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
+}
+.accordion-box .block .acc-btn.active .icon {
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+.accordion-box .block .acc-content {
+  position: relative;
+  display: none;
+}
+.accordion-box .block .acc-content .content {
+  position: relative;
+  margin-top: -2px;
+}
+.accordion-box .block .acc-content .content .text {
+  display: block;
+  font-size: 16px;
+  line-height: 30px;
+  color: #808287;
+  margin-bottom: 11px !important;
+}
+.accordion-box .block .acc-content.current {
+  display: block;
+}
+.accordion-box.home7-style {
+  position: relative;
+}
+.accordion-box.home7-style .block {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid rgba(24, 24, 32, 0.1);
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  margin-bottom: 10px;
+}
+.accordion-box.home7-style .block .acc-btn {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--headings-color);
+  cursor: pointer;
+  font-family: var(--heading-font-family);
+  font-weight: var(--h4-font-weight);
+  font-size: 20px;
+  padding: 20px 30px;
+  padding-right: 70px;
+  position: relative;
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
+}
+.accordion-box.home7-style .block .acc-btn .icon {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: rgba(24, 24, 32, 0.1);
+  border-radius: 50%;
+  color: var(--theme-color1);
+  font-size: 10px;
+  height: 30px;
+  line-height: 30px;
+  position: absolute;
+  right: 30px;
+  text-align: center;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
+  width: 30px;
+}
+.accordion-box.home7-style .block .acc-btn.active {
+  background-color: var(--headings-color);
+  color: #fff;
+}
+.accordion-box.home7-style .block .acc-btn.active .icon {
+  background-color: var(--theme-color1);
+  color: var(--theme-color-white);
+}
+.accordion-box.home7-style .block .acc-btn.active .icon:before {
+  content: "\f063";
+}
+.accordion-box.home7-style .block .acc-content {
+  position: relative;
+  display: none;
+}
+.accordion-box.home7-style .block .acc-content .content {
+  position: relative;
+  padding: 25px 30px;
+}
+.accordion-box.home7-style .block .acc-content .content .text {
+  display: block;
+  font-size: 16px;
+  line-height: 30px;
+  color: #808287;
+  margin-bottom: 0;
+}
+.accordion-box.home7-style .block .acc-content .content .acrdn-list {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--body-font-family);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 24px;
+  text-transform: capitalize;
+}
+.accordion-box.home7-style .block .acc-content .content .acrdn-list .list {
+  margin-bottom: 15px;
+  margin-left: 15px;
+  list-style-type: disc;
+}
+.accordion-box.home7-style .block .acc-content.current {
+  display: block;
+}
+.accordion-box.home7-style .block.active-block {
+  background-color: var(--headings-color);
+}
+.accordion-box.home7-style .block.active-block .acc-content .content .text {
+  color: var(--theme-color-white);
+}

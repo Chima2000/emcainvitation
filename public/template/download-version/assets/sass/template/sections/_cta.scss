@@ -1,0 +1,498 @@
+//Call to action 1---------------------------------------
+.cta-bg-shape1-1 {
+    @include xxl {
+        display: none;
+    }
+}
+.cta-wrap1 {
+    display: flex;
+    align-items: flex-end;
+    @include md {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .cta-wrap1-2 {
+        width: 66.667%;
+        display: flex;
+        @include md {
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .cta-card {
+            border-radius: 0;
+            width: 50%;
+            @include md {
+                width: 100%;
+                border-radius: 16px;
+            }
+        }
+        .cta-thumb1-1 {
+            width: 50%;
+            border-radius: 0 16px 16px 0;
+            overflow: hidden;
+            @include md {
+                width: 100%;
+                border-radius: 16px;
+            }
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+}
+.cta-card {
+    text-align: center;
+    width: 33.333%;
+    border-radius: 16px 16px 0 16px;
+    overflow: hidden;
+    @include md {
+        width: 100%;
+        border-radius: 16px;
+    }
+    .box-content {
+        padding: 44px 66px;
+        @include xl {
+            padding: 40px 50px;
+        }
+        @include lg {
+            padding: 40px 30px;
+        }
+    }
+    .box-icon {
+        margin-bottom: 25px;
+        img {
+            transition: 0.4s;
+        }
+    }
+    .box-subtitle {
+        margin-bottom: 17px;
+    }
+    .box-title {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 54px;
+        @include xl {
+            font-size: 24px;
+        }
+        @include xs {
+            margin-bottom: 30px;
+        }
+    }
+    .box-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: $white-color;
+    }
+    .cta-msg {
+        font-size: 18px;
+        font-weight: 400;
+        font-family: $title-font;
+        letter-spacing: -0.02em;
+        padding: 17px 0;
+        position: relative;
+        text-align: center;
+        @include lg {
+            font-size: 16px;
+            letter-spacing: normal;
+        }
+        .cta-msg-thumb1-1 {
+            position: absolute;
+            left: 20px;
+            bottom: 0;
+            top: 10px;
+            @include xl {
+                display: none;
+            }
+        }
+        .cta-msg-thumb1-2 {
+            position: absolute;
+            right: 20px;
+            bottom: 0;
+            top: 10px;
+            @include xl {
+                display: none;
+            }
+        }
+    }
+    &:hover {
+        .box-icon {
+            img {
+                transform: scale(-1) rotate(180deg);
+            }
+        }
+    }
+}
+
+
+//Call to action 2---------------------------------------
+.cta-area-2 {
+    &:before {
+        mix-blend-mode: hard-light;
+    }
+}
+.cta-bg-shape2-1 {
+    display: flex;
+    align-items: flex-end;
+}
+.cta-wrap2 {
+    .sub-title {
+        font-size: 36px;
+        margin-bottom: 34px;
+        margin-top: 0;
+        @include md {
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+    }
+}
+
+//Call to action 3---------------------------------------
+.cta-bg-info3-1 {
+    position: absolute;
+    bottom: -120px;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    z-index: 1;
+    path {
+        color: $theme-color2;
+    }
+    text {
+        font-family: $title-font2;
+        font-size: 34px;
+        font-weight: 400;
+    }
+    @include hd {
+        width: 45%;
+        bottom: -30px;
+    }
+    @include xxl {
+        bottom: -150px;
+    }
+    @include xl {
+        display: none;
+    }
+}
+.cta-wrap3 {
+    .cta-counter-number {
+        font-size: 174px;
+        font-weight: 700;
+        font-family: $title-font;
+        line-height: 1;
+        color: $title-color;
+        margin-top: 75px;
+        @include xxl {
+            font-size: 160px;
+        }
+        @include ml {
+            font-size: 140px;
+        }
+        @include xl {
+            font-size: 120px;
+        }
+        @include lg {
+            font-size: 100px;
+            margin-top: 50px;
+        }
+        @include md {
+            font-size: 70px;
+        }
+        @include sm {
+            font-size: 60px;
+            margin-top: 40px;
+        }
+        @include xs {
+            font-size: 50px;
+        }
+    }
+    .cta-subtitle {
+        font-size: 28px;
+        font-weight: 700;
+        font-family: $title-font;
+        color: $title-color;
+        letter-spacing: -0.02em;
+        margin-top: 67px;
+        @include lg {
+            margin-top: 47px;
+        }
+        @include md {
+            font-size: 24px;
+        }
+        @include sm {
+            margin-top: 37px;
+        }
+        @include xs {
+            font-size: 20px;
+        }
+    }
+    .th-btn {
+        @include vxs {
+            padding: 21px 27px;
+        }
+    }
+}
+.cta-img3-1 {
+    display: flex;
+    margin: 0 -180px;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: -360px;
+    gap: 30px;
+    @include xxl {
+        margin: -250px 0 0;
+    }
+    @include ml {
+        margin: -230px 0 0;
+    }
+    @include xl {
+        margin: -200px 0 0;
+    }
+    @include lg {
+        margin: -180px 0 0;
+    }
+    @include md {
+        margin: -120px 0 0;
+    }
+    @include sm {
+        margin: 60px 0 0;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+    .img1 {
+        display: inline-block;
+        overflow: hidden;
+        border-radius: 24px 224px 24px 24px;
+        margin-bottom: 201px;
+        @include xxl {
+            margin-bottom: 60px;
+        }
+        @include sm {
+            width: calc(50% - 12px);
+            border-radius: 24px;
+            margin-bottom: 0;
+            .thumb {
+                display: block;
+                img {
+                    height: 200px;
+                    object-position: top;
+                }
+                canvas {
+                    display: none;
+                }
+            }
+        }
+        @include vxs {
+            .thumb {
+                img {
+                    height: 150px;
+                }
+            }
+        }
+    }
+    .img2 {
+        display: inline-block;
+        overflow: hidden;
+        border-radius: 24px;
+        position: relative;
+        z-index: 3;
+        @include sm {
+            width: calc(50% - 12px);
+            border-radius: 24px;
+            margin-bottom: 0;
+            .thumb {
+                display: block;
+                img {
+                    height: 200px;
+                    object-fit: cover;
+                }
+                canvas {
+                    display: none;
+                }
+            }
+        }
+        @include vxs {
+            .thumb {
+                img {
+                    height: 150px;
+                }
+            }
+        }
+    }
+    .img3 {
+        display: inline-block;
+        overflow: hidden;
+        border-radius: 24px;
+        margin-bottom: 38px;
+        @include sm {
+            width: calc(50% - 12px);
+            border-radius: 24px;
+            margin-bottom: 0;
+            .thumb {
+                display: block;
+                img {
+                    height: 200px;
+                    object-fit: cover;
+                }
+                canvas {
+                    display: none;
+                }
+            }
+        }
+        @include vxs {
+            .thumb {
+                img {
+                    height: 150px;
+                }
+            }
+        }
+    }
+    .img4 {
+        display: inline-block;
+        overflow: hidden;
+        border-radius: 224px 24px 24px 24px;
+        margin-bottom: 163px;
+        @include xxl {
+            margin-bottom: 80px;
+        }
+        @include sm {
+            width: calc(50% - 12px);
+            border-radius: 24px;
+            margin-bottom: 0;
+            .thumb {
+                display: block;
+                img {
+                    height: 200px;
+                    object-fit: cover;
+                }
+                canvas {
+                    display: none;
+                }
+            }
+        }
+        @include vxs {
+            .thumb {
+                img {
+                    height: 150px;
+                }
+            }
+        }
+    }
+}
+
+//Call to action 3---------------------------------------
+.cta-wrap4 {
+    position: relative;
+    z-index: 1;
+    .cta-thumb4-1 {
+        position: absolute;
+        left: 20px;
+        bottom: 0;
+        top: 40px;
+        img {
+            height: 100%;
+            object-fit: cover;
+        }
+        @include xxl {
+            display: none;
+        }
+    }
+    .cta-thumb4-2 {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        z-index: -1;
+        @include md {
+            display: none;
+        }
+        .cta-bg-shape4-2 {
+            position: absolute;
+            inset: 0;
+            background: $theme-color2;
+            mask-size: 98.5% 100%;
+        }
+        .thumb {
+            margin-left: 14px;
+            mask-size: 100% 102%;
+            img {
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        @include xl {
+            max-width: 700px;
+            .cta-bg-shape4-2 {
+                mask-size: 99.5% 100%;
+            }
+            .thumb {
+                mask-size: 102% 104%;
+            }   
+        }
+        @include md {
+            left: 0;
+        }
+    }
+    .cta-content-wrap {
+        display: flex;
+        gap: 37px;
+        align-items: center;
+        margin-left: 89px;
+        @include xxl {
+            margin-left: 0;
+        }
+        @include md {
+            display: block;
+        }
+        .title-area {
+            width: 590px;
+            flex: none;
+            @include lg {
+                max-width: 490px;
+            }
+            @include md {
+                width: auto;
+                max-width: none;
+            }
+        }
+        .cta-group-thumb4-1 {
+            display: flex;
+            align-items: flex-start;
+            @include md {
+                justify-content: center;
+                margin-top: 30px;
+            }
+            .img1 {
+                border: 14px solid $white-color;
+                border-radius: 110px;
+                overflow: hidden;
+                margin-top: 60px;
+                max-width: 164px;
+                filter: grayscale(9);
+            }
+            .img2 {
+                border: 14px solid $white-color;
+                border-radius: 110px;
+                overflow: hidden;
+                margin-top: 30px;
+                margin-left: -34px;
+                display: flex;
+                max-width: 164px;
+                filter: grayscale(9);
+            }
+            .img3 {
+                border: 14px solid $white-color;
+                border-radius: 110px;
+                overflow: hidden;
+                margin-left: -34px;
+                display: flex;
+                max-width: 164px;
+                filter: grayscale(9);
+            }
+        }
+    }
+}

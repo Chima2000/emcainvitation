@@ -1,0 +1,105 @@
+.accordion-box {
+    position: relative;
+    .block {
+        position: relative;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #e1e1e1;
+        padding: 0 0 5px;
+        .acc-btn {
+            position: relative;
+            color: var(--headings-color);
+            font-family: var(--heading-font-family);
+            font-weight: var(--h4-font-weight);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 500ms ease;
+            padding: 8px 0 14px;
+            display: flex;
+            justify-content: space-between;
+            i {
+                transition: all 500ms ease;
+            }
+            &.active {
+                i {
+                    transform: rotate(45deg);
+                }
+            }
+        }
+        .acc-content {
+            position: relative;
+            display: none;
+            .content {
+                position: relative;
+                margin-top: -2px;
+                .text {
+                    display: block;
+                    font-size: 16px;
+                    line-height: 30px;
+                    color: #808287;
+                    margin-bottom: 5px !important;
+                }
+            }
+
+            &.current {
+                display: block;
+            }
+        }
+    }
+}
+
+.accordion-box {
+    position: relative;
+    .accordion {
+      border-radius: 20px;
+      padding: 25px 30px 20px 30px;
+      border: none;
+      background-color: var(--theme-color-white);
+      margin-bottom: 21px;
+      @include media-breakpoint-down(lg){
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      &.active-block {
+        padding: 25px 30px 20px 30px;
+        background-color: var(--theme-color1) !important;
+        @include media-breakpoint-down(lg){
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .acc-btn {
+          padding: 0 0 22px;
+          color: var(--theme-color1-text-color);
+          &.active {
+            .icon {
+              background-color: var(--theme-color-white);
+              color: var(--theme-color2);
+            }
+          }
+        }
+        .acc-content {
+            .content {
+                .text {
+                    color: rgba(var(--theme-color-black-rgb), .8);
+                }
+            }
+        }
+      }
+      .acc-btn {
+        padding: 0;
+        .icon {
+          position: relative;
+          display: inline-block;
+          width: 100%;
+          max-width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 38px;
+          background-color: #F4F4FF;
+          color: var(--headings-color);
+          font-size: 16px;
+          font-weight: 400;
+        }
+      }
+    }
+}

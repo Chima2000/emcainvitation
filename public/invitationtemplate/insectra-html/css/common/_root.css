@@ -1,0 +1,72 @@
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: false;
+}
+:root {
+  --r: 30px; /* radius */
+  --s: 50px; /* size of the inner curve*/
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%) no-repeat;
+  --theme-color1: #F4C042;
+  --theme-color2: #0C403E;
+  --theme-color1-rgb: 244, 192, 66;
+  --theme-color2-rgb: 12, 64, 62;
+  --theme-color1-text-color: #151515;
+  --theme-color2-text-color: #ffffff;
+  --theme-color-white: #ffffff;
+  --theme-color-white-rgb: 255,255,255;
+  --theme-color-lighter: #F5EFE9;
+  --theme-color-silver: #F5F5F5;
+  --review-color: #FFAA18;
+  --theme-color-black: #000000;
+  --theme-color-black-rgb: 0, 0, 0;
+  --theme-color-dark: #151515;
+  --theme-color-gray: #f6f6f6;
+  --gradient-1: linear-gradient(181.35deg, rgba(5, 15, 19, 0) 1.15%, rgba(2, 223, 130, 0.1) 98.91%);
+  --text-color: #8D8D8D;
+  --headings-color: #0C403E;
+  --link-color: var(--theme-color1);
+  --link-hover-color: var(--theme-color1);
+  --body-font-family: "Inter", sans-serif;
+  --heading-font-family: "Inter", sans-serif;
+  --body-bg: #ffffff;
+  --body-font-size: 16px;
+  --body-line-height: 1.875;
+  --body-font-weight: 500;
+  --line-height-heading-h1: 1.2625em;
+  --line-height-heading-h2: 1.166em;
+  --line-height-heading: 1.5em;
+  --line-height-heading-small: 1.5em;
+  --h1-font-size: 100px;
+  --h2-font-size: 60px;
+  --h3-font-size: 30px;
+  --h4-font-size: 24px;
+  --h5-font-size: 20px;
+  --h6-font-size: 16px;
+  --h1-font-weight: 600;
+  --h2-font-weight: 600;
+  --h3-font-weight: 500;
+  --h4-font-weight: 500;
+  --h5-font-weight: 500;
+  --h6-font-weight: 500;
+  --sec-title-subtitle-color: var(--theme-color-white);
+  --sec-title-subtitle-font-size: 16px;
+  --sec-title-subtitle-font-family: var(--heading-font-family);
+  --sec-title-subtitle-font-weight: 500;
+  --sec-title-subtitle-line-height: 24px;
+  --sec-title-color: var(--theme-color-white);
+  --sec-title-font-size: var(--h2-font-size);
+  --sec-title-font-family: var(--heading-font-family);
+  --sec-title-font-weight: 400;
+  --sec-title-title-line-height: var(--line-height-heading-h2);
+  --theme-light-background: #133241;
+  --theme-light-background-text-color: var(--headings-color);
+  --theme-black: #000000;
+  --container-width: 1350px;
+  --small-container-width: 1000px;
+  --large-container-width: 1870px;
+}
+
+.title {
+  letter-spacing: 0;
+}

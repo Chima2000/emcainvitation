@@ -1,0 +1,73 @@
+/* Community 1 ---------------------------------- */
+.community-bg-shape1-1 {
+    @include xxl {
+        display: none;
+    }
+}
+.community-circle-info1-1 {
+    .about-tag {
+        border: 64px solid $theme-color;
+        background: transparent;
+        width: 944px;
+        height: 944px;
+        .about-experience-tag {
+            font-size: 48px;
+            font-weight: 400;
+            font-family: $title-font2;
+            color: $white-color;
+            --circle-letter-size: 950px;
+            span  {
+                --rotate-letter: 3.3deg;
+                height: 469px;
+                width: 20px;
+                left: 48%;
+                top: 2px;
+            }
+        }
+    }
+    @include xxl {
+        display: none;
+    }
+}
+.community-wrap1 {
+    .box-number {
+        font-size: 134px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        line-height: 0.97;
+        margin-bottom: 18px;
+        @include xxl {
+            font-size: 120px;
+        }
+        @include xl {
+            font-size: 100px;
+        }
+        @include lg {
+            font-size: 80px;
+        }
+        @include md {
+            font-size: 70px;
+        }
+        @include sm {
+            font-size: 60px;
+        }
+        @include xs {
+            font-size: 48px;
+        }
+    }
+    .client-group-wrap {
+        display: flex;
+        align-items: center;
+        gap: 20px 10px;
+        flex-wrap: wrap;
+        img {
+            flex: none;
+        }
+        .client-group-title {
+            font-size: 24px;
+            font-weight: 400;
+            font-family: $title-font;
+            letter-spacing: -0.02em;
+        }
+    }
+}

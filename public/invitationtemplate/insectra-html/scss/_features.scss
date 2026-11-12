@@ -1,0 +1,79 @@
+/*** 
+
+====================================================================
+    Feature Block
+====================================================================
+
+***/
+
+.features-section {
+  position: relative;
+  padding-bottom: 90px;
+  @include media-breakpoint-down(lg){
+    padding-bottom: 50px;
+  }
+  .shape-1 {
+    position: absolute;
+    top: 80px;
+    right: 50px;
+    pointer-events: none;
+    @include media-breakpoint-down(xl){
+      display: none;
+    }
+  }
+}
+
+.features-block {
+  position: relative;
+  margin-bottom: 30px !important;
+  .image-box {
+    display: flex;
+    justify-content: center;
+    .image {
+      background-color: #fff;
+      border: 3px solid var(--theme-color1);
+      border-radius: 500px;
+      max-width: 312px;
+      width: 100%;
+      height: 280px;
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      &:before {
+        background-color: var(--theme-color1);
+        content: "";
+        position: absolute;
+        top: calc(50% - 2px);
+        left: 0;
+        height: 4px;
+        width: 100%;
+        z-index: 1;
+        -webkit-transform: rotate(-40deg);
+        -moz-transform: rotate(-40deg);
+        -ms-transform: rotate(-40deg);
+        transform: rotate(-40deg);
+        transition: all 300ms ease;
+      }
+      img {
+        transition: all 300ms ease;
+      }
+    }
+  }
+  .content {
+    margin-top: 24px;
+    text-align: center;
+    .features-title {
+      margin-bottom: 5px;
+      margin-top: 0;
+    }
+  }
+  &:hover {
+    .image-box {
+      img {
+        animation: wobble 1.9s ease-in-out;
+      }
+    }
+  }
+}

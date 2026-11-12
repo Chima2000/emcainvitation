@@ -1,0 +1,39 @@
+.payment-method .accordion-box .block .acc-content .payment-info {
+  position: relative;
+  display: block;
+  background-color: #fff;
+  padding: 30px 30px 10px 30px;
+}
+.payment-method .accordion-box .block {
+  background: #fbfbfb;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  margin-bottom: 20px;
+}
+.payment-method .accordion-box .block:last-child {
+  margin-bottom: 0px;
+}
+.payment-method .accordion-box .block .acc-btn {
+  padding: 19px 30px 22px 30px;
+}
+.payment-method .accordion-box .block .acc-btn .icon-outer {
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  height: auto;
+  /* line-height: 65px; */
+  font-size: 28px;
+  color: #1e2434;
+}
+.payment-method .accordion-box .block .acc-btn.active .icon-outer {
+  color: var(--text-color-bg-theme-color2);
+}
+.payment-method .payment-method h3 {
+  margin-bottom: 32px;
+}
+.payment-method .accordion-box .block .acc-btn.active {
+  background-color: var(--theme-color1);
+  color: var(--theme-color1-text-color);
+}

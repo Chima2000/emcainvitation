@@ -1,0 +1,50 @@
+/* Gallery Area 1 -------------------------------*/
+.gallery-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0px;
+        background: $theme-dark2;
+        opacity: 0.8;
+        border-radius: 24px;
+        transition: 0.4s;
+        transform: scale(0);
+    }
+    .gallery-img {
+        img {
+            width: 100%;
+        }
+    }
+    .icon-btn {
+        --btn-size: 64px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -20%);
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid $white-color;
+        color: $white-color;
+        z-index: 1;
+        font-size: 30px;
+        opacity: 0;
+        &:hover {
+            background: $theme-color;
+            border-color: $theme-color;
+            color: $white-color;
+        }
+    }
+    &:hover {
+        &:after {
+            transform: scale(1);
+        }
+        .icon-btn {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+    }
+}
+

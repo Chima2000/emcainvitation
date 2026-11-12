@@ -1,0 +1,171 @@
+@font-face {
+    font-family: "FlaticonSetInsect";
+    src: url("../fonts/flaticon-set-insect.woff2") format("woff2"),
+url("../fonts/flaticon-set-insect.woff") format("woff"),
+url("../fonts/flaticon-set-insect.eot") format("embedded-opentype"),
+url("../fonts/flaticon-set-insect.ttf") format("truetype"),
+url("../fonts/flaticon-set-insect.svg") format("svg")
+}
+
+i[class^="flaticon-set-"]:before, i[class*=" flaticon-set-"]:before {
+    font-family: FlaticonSetInsect !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.flaticon-set-pesticide:before {
+    content: "\f101";
+}
+.flaticon-set-no-insects:before {
+    content: "\f102";
+}
+.flaticon-set-insecticide:before {
+    content: "\f103";
+}
+.flaticon-set-pest-control:before {
+    content: "\f104";
+}
+.flaticon-set-pesticide-1:before {
+    content: "\f105";
+}
+.flaticon-set-pest:before {
+    content: "\f106";
+}
+.flaticon-set-pesticide-2:before {
+    content: "\f107";
+}
+.flaticon-set-worms:before {
+    content: "\f108";
+}
+.flaticon-set-pest-control-1:before {
+    content: "\f109";
+}
+.flaticon-set-antivirus:before {
+    content: "\f10a";
+}
+.flaticon-set-pesticide-3:before {
+    content: "\f10b";
+}
+.flaticon-set-pest-control-2:before {
+    content: "\f10c";
+}
+.flaticon-set-check-list:before {
+    content: "\f10d";
+}
+.flaticon-set-spray:before {
+    content: "\f10e";
+}
+.flaticon-set-grass:before {
+    content: "\f10f";
+}
+.flaticon-set-virus-scan:before {
+    content: "\f110";
+}
+.flaticon-set-test:before {
+    content: "\f111";
+}
+.flaticon-set-pest-control-3:before {
+    content: "\f112";
+}
+.flaticon-set-pesticide-4:before {
+    content: "\f113";
+}
+.flaticon-set-bug-repellent:before {
+    content: "\f114";
+}
+.flaticon-set-house:before {
+    content: "\f115";
+}
+.flaticon-set-sanitizer:before {
+    content: "\f116";
+}
+.flaticon-set-pesticide-5:before {
+    content: "\f117";
+}
+.flaticon-set-mosquito:before {
+    content: "\f118";
+}
+.flaticon-set-insect:before {
+    content: "\f119";
+}
+.flaticon-set-pest-control-4:before {
+    content: "\f11a";
+}
+.flaticon-set-pest-control-5:before {
+    content: "\f11b";
+}
+.flaticon-set-mosquito-1:before {
+    content: "\f11c";
+}
+.flaticon-set-spray-1:before {
+    content: "\f11d";
+}
+.flaticon-set-pesticide-6:before {
+    content: "\f11e";
+}
+.flaticon-set-pest-control-6:before {
+    content: "\f11f";
+}
+.flaticon-set-truck:before {
+    content: "\f120";
+}
+.flaticon-set-mousetrap:before {
+    content: "\f121";
+}
+.flaticon-set-antivirus-1:before {
+    content: "\f122";
+}
+.flaticon-set-pest-1:before {
+    content: "\f123";
+}
+.flaticon-set-insect-1:before {
+    content: "\f124";
+}
+.flaticon-set-target:before {
+    content: "\f125";
+}
+.flaticon-set-pest-control-7:before {
+    content: "\f126";
+}
+.flaticon-set-pest-control-8:before {
+    content: "\f127";
+}
+.flaticon-set-plant:before {
+    content: "\f128";
+}
+.flaticon-set-plantation:before {
+    content: "\f129";
+}
+.flaticon-set-planet-earth:before {
+    content: "\f12a";
+}
+.flaticon-set-sustainability:before {
+    content: "\f12b";
+}
+.flaticon-set-go-green:before {
+    content: "\f12c";
+}
+.flaticon-set-flowers:before {
+    content: "\f12d";
+}
+.flaticon-set-gardening:before {
+    content: "\f12e";
+}
+.flaticon-set-gardening-tools:before {
+    content: "\f12f";
+}
+.flaticon-set-watering-can:before {
+    content: "\f130";
+}
+.flaticon-set-gardener:before {
+    content: "\f131";
+}
+.flaticon-set-gardening-1:before {
+    content: "\f132";
+}
+

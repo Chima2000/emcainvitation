@@ -1,0 +1,37 @@
+/* Instagram ---------------------------------- */
+.instagram-slider1 {
+    margin: 0 24px;
+}
+.insta-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: $theme-dark2;
+        opacity: 0;
+        transition: 0.4s;
+    }
+    img {
+        width: 100%;
+    }
+    .icon-btn {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        z-index: 1;
+        --btn-size: 40px;
+        font-size: 16px;
+    }
+    &:hover {
+        &:after {
+            opacity: 0.8;
+        }
+        .icon-btn {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+}

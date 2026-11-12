@@ -1,0 +1,61 @@
+/*
+ * shop-catalog-layouts.scss
+ * -----------------------------------------------
+*/
+table.tbl-shopping-cart .product-thumbnail, table.cart-total .product-thumbnail {
+  min-width: 64px;
+}
+table.tbl-shopping-cart img, table.cart-total img {
+  width: 64px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+table.tbl-shopping-cart th,
+table.tbl-shopping-cart td, table.cart-total th,
+table.cart-total td {
+  vertical-align: middle;
+  border-left: 1px solid #e3e3e3;
+  padding: 20px 30px;
+}
+table.tbl-shopping-cart .product-name a, table.cart-total .product-name a {
+  color: var(--headings-color);
+}
+table.tbl-shopping-cart .product-name .variation, table.cart-total .product-name .variation {
+  font-size: 0.9rem;
+  list-style: none;
+}
+table.tbl-shopping-cart .product-remove a, table.cart-total .product-remove a {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 24px;
+  -webkit-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
+  background-color: #757575;
+  color: #ffffff;
+  text-align: center;
+}
+table.tbl-shopping-cart .coupon-form .apply-button, table.cart-total .coupon-form .apply-button {
+  position: relative;
+  display: inline-block;
+  color: #1e2434;
+  background: #f4f5f4;
+  padding: 15px 29px;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transition: all 500ms ease;
+  transition: all 500ms ease;
+}
+table.tbl-shopping-cart .coupon-form .apply-button:hover, table.cart-total .coupon-form .apply-button:hover {
+  background-color: var(--theme-color2);
+}
+table.tbl-shopping-cart .coupon-form .apply-button:hover span, table.cart-total .coupon-form .apply-button:hover span {
+  color: var(--theme-color-white);
+}
+
+table.tbl-shopping-cart > thead > tr > th,
+table.tbl-shopping-cart > tbody > tr > th,
+table.tbl-shopping-cart > tfoot > tr > th {
+  color: #444;
+}

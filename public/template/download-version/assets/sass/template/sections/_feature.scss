@@ -1,0 +1,158 @@
+
+/* Feature card ---------------------------------- */
+.feature-area-1 {
+    margin-top: -157px;
+    @include hd {
+        margin-top: var(--section-space);
+    }
+    @include xxl {
+        margin-top: var(--section-space);
+    }
+    @include md {
+        margin-top: var(--section-space-mobile);
+    }
+}
+.feature-wrap1 {
+    display: flex;
+    margin-right: -195px;
+    @include xxl {
+        margin-right: 0;
+    }
+    @include md {
+        flex-wrap: wrap;
+        gap: 24px;
+    }
+    .feature-card {
+        width: 30%;
+        padding: 34px 98px 34px 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @include ml {
+            padding: 34px;
+        }
+        @include md {
+            width: calc(50% - 12px);
+            border-radius: 24px;
+        }
+        @include sm {
+            width: 100%;
+            text-align: center;
+            .btn-wrap {
+                justify-content: center;
+            }
+        }
+        .box-icon {
+            margin-bottom: 24px;
+        }
+        .box-text {
+            margin-top: -0.4em;
+            margin-bottom: 18px;
+        }
+        .box-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            text-transform: capitalize;
+            @include xl {
+                font-size: 24px;
+            }
+            @include lg {
+                font-size: 20px;
+            }
+        }
+        &:first-child {
+            border-radius: 24px 0 0 24px;
+            @include md {
+                border-radius: 24px;
+            }
+        }
+    }
+    .feature-card2 {
+        width: 40%;
+        position: relative;
+        border-radius: 0 0 24px 0;
+        overflow: hidden;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        @include hd {
+            border-radius: 0 24px 24px 0;
+        }
+        @include xxl {
+            border-radius: 0 24px 24px 0;
+        }
+        @include md {
+            border-radius: 24px;
+            width: 100%;
+        }
+        .feature-card-bg2-1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            @include lg {
+                display: none;
+            }
+        }
+        .feature-card-bg2-2 {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            @include lg {
+                display: none;
+            }
+        }
+        .box-content {
+            padding: 47px;
+            @include xs {
+                padding: 40px;
+            }
+            @include vxs {
+                padding: 40px 30px;
+                .th-btn {
+                    padding: 10px 28px;
+                }
+            }  
+            .box-title {
+                font-size: 24px;
+                font-weight: 400;
+                letter-spacing: -0.02em;
+                color: $white-color;
+                margin-bottom: 35px;
+                @include ml {
+                    font-size: 20px;
+                }
+            }
+            .box-number {
+                color: $theme-color2;
+                font-size: 64px;
+                font-weight: 700;
+                font-family: $title-font;
+                letter-spacing: -0.02em;
+                margin-bottom: 30px;
+                @include ml {
+                    font-size: 54px;
+                }
+                @include xs {
+                    font-size: 40px;
+                }
+            }
+            .box-text {
+                font-size: 18px;
+                font-weight: 400;
+                font-family: $title-font;
+                letter-spacing: -0.02em;
+                color: $white-color;
+                @include ml {
+                    font-size: 16px;
+                }
+            }
+            .btn-wrap {
+                justify-content: center;
+                margin-top: 44px;
+            }
+        }
+    }
+}

@@ -1,0 +1,400 @@
+/* Testimonial Area ---------------------------------- */
+.testi-card {
+    display: flex;
+    @include md {
+        display: block;
+    }
+    .box-thumb {
+        border-radius: 24px;
+        overflow: hidden;
+        flex: none;
+        margin-top: 14px;
+        img {
+            height: 100%;
+            object-fit: cover;
+        }
+        @include md {
+            display: inline-block;
+            margin-top: 0;
+        }
+    }
+    .box-content {
+        background: $smoke-color2;
+        border-radius: 16px;
+        padding: 0 50px 50px;
+        margin-top: 14px;
+        @include md {
+            margin-top: 30px;
+        }
+        @include xs {
+            padding: 0 30px 30px;
+        }
+        .quote-icon {
+            margin-top: -14px;
+            margin-bottom: 40px;
+            @include md {
+                margin-top: 0;
+                position: relative;
+                top: -14px;
+                margin-bottom: 26px;
+            }
+            @include xs {
+                margin-bottom: 16px;
+            }
+        }
+        .box-text {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            @include xs {
+                font-size: 16px;
+            }
+        }
+        .box-review-wrap {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid $border-color;
+            padding-bottom: 30px;
+            margin-bottom: 34px;
+            .box-review {
+                color: $yellow-color;
+            }
+        }
+        .box-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 0px;
+            @include xs {
+                font-size: 24px;
+            }
+        }
+    }
+}
+.testi-thumb-slider-area-1 {
+    .testi-thumb-slider1 {
+        margin-right: -360px;
+        @include xxl {
+            margin-right: 0;
+        }
+        .swiper-slide.swiper-slide-thumb-active {
+            .testi-slider-thumb1 {
+                &:after {
+                    opacity: 1;
+                }
+            }
+        }
+        .testi-slider-thumb1 {
+            border-radius: 24px;
+            overflow: hidden;
+            height: 240px;  
+            cursor: pointer;  
+            position: relative;
+            &:after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border: 3px solid $theme-color;
+                border-radius: 24px;
+                transition: 0.4s;
+                opacity: 0;
+            }    
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: top;
+            }
+            @include lg {
+                height: 300px;
+            }
+            @include md {
+                height: 240px;
+            }
+            @include sm{
+                height: 200px;
+            }
+        }
+    }
+    .icon-box {
+        margin-top: 68px;
+        margin-left: 132px;
+        @include lg {
+            margin-left: 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+    }    
+}
+
+/* Testimonial Area 2---------------------------------- */
+.testi-bg-shape2-1,
+.testi-bg-shape2-2 {
+    @include ml {
+        display: none;
+    }
+}
+.testi-wrap2 {
+    max-width: 1680px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 34px;
+}
+.testi-card2 {
+    .box-review-wrap {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        color: $theme-color;
+        .box-review {
+            color: $yellow-color;
+        }
+        .rating-title {
+            margin-left: 7px;
+        }
+    }
+    .box-text {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 27px;
+        color: $white-color;
+        @include xs {
+            font-size: 16px;
+        }
+    }
+    .box-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 0px;
+        color: $white-color;
+        @include xs {
+            font-size: 24px;
+        }
+    }
+    .box-desig {
+        color: $border-color2;
+    }
+}
+.testi-thumb-slider2-1 {
+    transform: rotate(24deg);
+    position: absolute;
+    right: 580px;
+    top: -90px;
+    bottom: -30px;
+    @include xxl {
+        right: 530px;
+    }
+    @include ml {
+        right: 400px;
+    }
+    @include xl {
+        right: 300px;
+    }
+    @include lg {
+        transform: none;
+        position: relative;
+        bottom: 0;
+        right: 0;
+        top: 0;
+        margin-top: 40px;
+    }
+    .swiper {
+        height: 1032px;
+        width: 240px;
+        @include lg {
+            width: 100%;
+            height: auto;
+        }
+    }
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.4s;
+        &:after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid $theme-color2;
+            border-radius: 20px;
+            transition: 0.4s;
+            opacity: 0;
+        }
+        &.swiper-slide-thumb-active {
+            &:after {
+                opacity: 1;
+            }
+        }
+        .testi-thumb2-1 {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+}
+.testi-thumb-slider2-2 {
+    transform: rotate(24deg);
+    position: absolute;
+    right: 280px;
+    top: -90px;
+    bottom: -30px;
+    @include xxl {
+        right: 230px;
+    }
+    @include ml {
+        right: 100px;
+    }
+    @include xl {
+        right: 0px;
+    }
+    @include lg {
+        display: none;
+    }
+    .swiper {
+        height: 1032px;
+        width: 240px;
+    }
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        .testi-thumb2-1 {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+}
+
+/* Testimonial Area 3---------------------------------- */
+.testi-wrap3 {
+    max-width: 1680px;
+    border-radius: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    @include xxl {
+        border-radius: 0;
+    }
+    .icon-box {
+        justify-content: center;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 60px;
+        @include md {
+            margin-top: 40px;
+        }
+        &:before,
+        &:after {
+            content: '';
+            position: relative;
+            height: 2px;
+            background: $white-color;
+            display: inline-block;
+            width: -webkit-fill-available;
+        }
+        &:before {
+            margin-right: 10px;
+        }
+        &:after {
+            margin-left: 10px;
+        }
+        .slider-arrow {
+            flex: none;
+            margin: 0;
+        }
+    }
+}
+.testi-bg-shape3-1 {
+    opacity: 0.5;
+    text-align: center;
+}
+.testi-bg-shape3-2 {
+    @include xxl {
+        display: none;
+    }
+}
+.testi-slider3 {
+    margin: 0 -180px;
+    @include xxl {
+        margin: 0;
+    }
+}
+.testi-card3 {
+    background: $white-color;
+    border-radius: 16px;
+    padding: 40px;
+    @include vxs {
+        padding: 30px;
+    }
+    .box-review-wrap {
+        display: flex;
+        align-items: center;
+        color: $theme-color;
+        margin-bottom: 22px;
+        margin-top: -0.3em;
+        @include vxs {
+            margin-bottom: 12px;
+        }
+        .box-review {
+            color: $yellow-color;
+        }
+        .rating-title {
+            margin-left: 7px;
+        }
+    }
+    .box-text {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 27px;
+        @include xs {
+            font-size: 16px;
+        }
+        @include vxs {
+            margin-bottom: 20px;
+        }
+    }
+    .box-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-bottom: -0.55em;
+    }
+    .box-title {
+        font-size: 24px;
+        font-weight: 400;
+        margin-bottom: -0.05em;
+        @include xs {
+            font-size: 20px;
+        }
+        @include vxs {
+            margin-bottom: 0;
+        }
+    }
+    .box-desig {
+        color: $theme-color;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .box-icon {
+        width: 35px;
+    }
+}

@@ -1,0 +1,264 @@
+/* Event Area 1---------------------------------- */
+.event-card  {
+	display: flex;
+	flex-direction: row-reverse;
+	gap: 14px;
+	border-radius: 24px;
+	overflow: hidden;
+	@include md {
+		display: block;
+	}
+	.box-img {
+		position: relative;
+		flex: none;
+		@include lg {
+			flex: auto;
+		}
+		.thumb {
+			height: 100%;
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				filter: grayscale(9);
+				transition: 0.4s;
+			}
+		}
+		.box-img-bg {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			img {
+				height: 100%;
+			}
+			@include md {
+				display: none;
+			}
+		}
+		.box-img-shape {
+			position: absolute;
+			left: -10px;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 1;
+			@include md {
+				display: none;
+			}
+		}
+	}
+	.box-content {
+		position: relative;
+		background: $smoke-color;
+		width: -webkit-fill-available;
+		border-radius: 24px;
+		overflow: hidden;
+		padding: 34px 110px 34px 34px;
+		display: flex;
+		@include ml {
+			padding: 34px 130px 34px 34px;
+		}
+		@include xl {
+			padding: 34px 75px 34px 34px;
+		}
+		@include md {
+			border-radius: 0 0 24px 24px;
+		}
+		@include sm {
+			display: block;
+			padding: 34px;
+		}
+		@include xs {
+			padding: 30px;
+		}
+		.event-content-bg {
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			img {
+				height: 100%;
+			}
+			@include md {
+				display: none;
+			}
+		}
+		.event-speaker-wrap {
+			border-right: 3px solid $white-color;
+			padding-right: 34px;
+			margin-right: 34px;
+			flex: none;
+			@include xl {
+				padding-right: 24px;
+				margin-right: 24px;
+			}
+			@include sm {
+				padding-right: 0;
+				margin-right: 0;
+				border-right: 0;
+				margin-bottom: 24px;
+			}
+			.box-date-wrap {
+				background: $theme-color2;
+				border-radius: 14px;
+				text-align: center;
+				padding: 42px 27px;
+				@include xl {
+					padding: 42px 20px;
+				}
+				@include sm {
+					display: inline-block;
+				}
+				.box-date {
+					margin-bottom: -0.1em;
+					font-size: 48px;
+					font-weight: 700;
+					letter-spacing: -0.02em;
+					margin-top: -0.2em;
+					@include xl {
+						font-size: 40px;
+					}
+				}
+				.box-month {
+					margin-bottom: -0.3em;
+					color: $title-color;
+				}
+			}
+			.event-speakers {
+				display: flex;
+				align-items: center;
+				flex: none;
+				margin-top: 24px;
+				.thumb {
+					position: relative;
+					z-index: 1;
+					display: flex;
+					align-items: center;
+					&:after {
+						content: "";
+						position: relative;
+						display: inline-block;
+						width: 46px;
+						height: 46px;
+						background: $theme-color;
+						border-radius: 50%;
+						border: 3px solid $white-color;
+						margin-left: -18px;
+						z-index: 1;
+					}
+				}
+				.event-speaker-text {
+					font-size: 16px;
+					font-weight: 600;
+					position: relative;
+					margin-left: -31px;
+					color: $title-color;
+					z-index: 1;
+					letter-spacing: -0.02em;
+					span {
+						color: $white-color;
+					}
+				}
+			}
+		}
+		.box-title {
+			font-size: 28px;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+			margin-bottom: 8px;
+			@include xl {
+				font-size: 24px;
+			}
+		}
+		.event-meta {
+			margin-bottom: 4px;
+			i {
+				color: $theme-color;
+				margin-right: 5px;
+			}
+		}
+		.btn-wrap {
+			margin-top: 28px;
+		}
+	}
+	&:hover {
+		.box-img {
+			.thumb {
+				img {
+					filter: none;
+				}
+			}
+		}
+	}
+}
+
+/* Event Area 2---------------------------------- */
+.event-bg-shape2-1,
+.event-bg-shape2-2 {
+	@include xxl {
+		display: none;
+	}
+}
+.event-card2 {
+	background: $smoke-color2;
+	border-radius: 24px;
+	padding: 24px;
+	transition: 0.4s;
+	.box-img {
+		position: relative;
+		margin-bottom: 24px;
+		.thumb {
+			border-radius: 16px;
+			overflow: hidden;
+			filter: grayscale(9);
+			transition: 0.4s;
+			img {
+				width: 100%;
+				transition: 0.4s;
+			}
+		}
+		.icon-btn {
+			position: absolute;
+			right: 24px;
+			top: 24px;
+			transform: scale(0);
+		}
+	}
+	.box-text {
+		color: $theme-color;
+		font-weight: 500;
+		margin-top: -0.4em;
+		margin-bottom: 10px;
+	}
+	.box-title {
+		margin-bottom: -0.3em;
+		@include vxs {
+			font-size: 20px;
+		}
+	}
+	&:hover {
+		background: $smoke-color;
+		.box-img {
+			.thumb {
+				filter: none;
+				img {
+					transform: scale(1.02);
+				}
+			}
+			.icon-btn {
+				transform: scale(1);
+			}
+		}
+	}
+}
+
+/* Event Details Area---------------------------------- */
+.event-single {
+	.page-img {
+		border-radius: 24px;
+		overflow: hidden;
+		img {
+			width: 100%;
+		}
+	}
+}

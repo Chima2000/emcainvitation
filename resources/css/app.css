@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: "Century Gothic", CenturyGothic, ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Century Gothic", CenturyGothic, ui-sans-serif, system-ui, sans-serif;
+    --color-ink: #16171a;
+    --color-forest-50: #faf7f7;
+    --color-forest-100: #f3e4e4;
+    --color-forest-700: #940000;
+    --color-forest-800: #7a0000;
+    --color-forest-950: #121315;
+    --color-cream-50: #faf7f7;
+    --color-cream-100: #f3e4e4;
+    --color-gold-500: #940000;
+    --color-gold-100: #f3e4e4;
+}

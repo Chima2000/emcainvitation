@@ -1,0 +1,413 @@
+
+/* Location Sec 1 ---------------------------------- */ 
+.location-bg-info1-1 {
+    position: absolute;
+    top: -380px;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    z-index: -1;
+    path {
+        color: $theme-color;
+    }
+    text {
+        font-family: $title-font2;
+        font-size: 34px;
+        font-weight: 400;
+        color: $white-color;
+    }
+    @include hd {
+        width: 50%;
+        left: -50px;
+    }
+    @include xxl {
+        bottom: -250px;
+    }
+    @include xl {
+        display: none;
+    }
+}
+.location-map-wrap {
+    position: relative;
+    @include sm {
+        padding-bottom: 180px;
+    }
+    .location-map-thumb {
+        position: relative;
+        z-index: 1;
+    }
+    .location-hotspot-wrap {
+        position: absolute;
+        inset: 0;
+        .hotspot-dot {
+            display: inline-block;
+            position: absolute;
+            z-index: 4;
+            cursor: pointer;
+            color: $title-color;
+            transition: 0.4s;
+            &:active,
+            &:focus,
+            &:hover {
+                color: $theme-color;
+            }
+            &.hotspot-dot1 {
+                left: 244px;
+                top: 254px;
+                @include xl {
+                    left: 184px;
+                    top: 134px;
+                }
+                @include lg {
+                    left: 124px;
+                    top: 94px;
+                }
+                @include md {
+                    left: 84px;
+                    top: 64px;
+                }
+                @include sm {
+                    left: 54px;
+                    top: 24px;
+                }
+                @include xs {
+                    left: 34px;
+                    top: 14px;
+                }
+                @include vxs {
+                    left: 24px;
+                }
+            }
+            &.hotspot-dot2 {
+                left: 206px;
+                top: 313px;
+                @include md {
+                    left: 176px;
+                    top: 213px;
+                }
+                @include sm {
+                    left: 246px;
+                    top: 163px;
+                }
+                @include xs {
+                    left: 156px;
+                    top: 3px;
+                }
+            }
+            &.hotspot-dot3 {
+                left: 552px;
+                top: 294px;
+                @include lg {
+                    left: 492px;
+                }
+                @include md {
+                    left: 362px;
+                    top: 214px;
+                }
+                @include sm {
+                    left: auto;
+                    top: 50px;
+                    right: 140px;
+                }
+                @include vxs {
+                    right: 120px;
+                }
+            }
+            &.hotspot-dot4 {
+                left: 636px;
+                top: 261px;
+                @include lg {
+                    left: 746px;
+                    top: 231px;
+                }
+                @include md {
+                    left: 210px;
+                    top: -15px;
+                }
+                @include sm {
+                    left: 220px;
+                }
+            }
+            &.hotspot-dot5 {
+                left: 675px;
+                bottom: 241px;
+                @include xl {
+                    left: 465px;
+                    bottom: 321px;
+                }
+                @include lg {
+                    left: 385px;
+                }
+                @include sm {
+                    bottom: auto;
+                    top: 0;
+                }
+                @include xs {
+                    left: 315px;
+                }
+                @include vxs {
+                    left: 95px;
+                    top: -40px;
+                }
+            }
+            &.hotspot-dot6 {
+                left: 684px;
+                top: 98px;
+                @include md {
+                    left: auto;
+                    top: auto;
+                    bottom: 70px;
+                    right: 60px;
+                }
+            }
+            &.hotspot-dot7 {
+                right: 438px;
+                top: 173px;
+                @include md {
+                    top: 93px;
+                    right: 208px;
+                }
+                @include vxs {
+                    top: 63px;
+                }
+            }
+            &.hotspot-dot8 {
+                right: 358px;
+                top: 206px;
+                @include xl {
+                    right: 318px;
+                }
+                @include lg {
+                    top: 126px;
+                }
+                @include sm {
+                    right: auto;
+                    left: 90px;
+                }
+                @include xs {
+                    left: 70px;
+                }
+            }
+        }
+    }
+    .location-hotspot-dot {
+        position: absolute;
+        z-index: 9;
+        transition: 0.4s;
+        transform: scale(0);
+        opacity: 0;
+        visibility: hidden;
+        &.show {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        &.location-hotspot-dot1 {
+            left: 230px;
+            top: 70px;
+            @include xl {
+                left: 170px;
+                top: -50px;
+            }
+            @include lg {
+                left: 110px;
+                top: -94px;
+            }
+            @include md {
+                left: 70px;
+                top: -122px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot2 {
+            left: 192px;
+            top: 130px;
+            @include md {
+                left: 162px;
+                top: 30px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot3 {
+            left: 538px;
+            top: 110px;
+            @include lg {
+                left: 478px;
+            }
+            @include md {
+                left: 348px;
+                top: 30px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot4 {
+            left: 622px;
+            top: 78px;
+            @include lg {
+                left: 532px;
+                top: 48px;
+                .location-card {
+                    &:after {
+                        right: 20px;
+                        left: auto;
+                    }
+                }
+            }
+            @include md {
+                left: -4px;
+                top: -200px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot5 {
+            left: 661px;
+            bottom: 302px;
+            @include xl {
+                left: 451px;
+                bottom: 382px;
+            }
+            @include lg {
+                left: 371px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot6 {
+            left: 670px;
+            top: -86px;
+            @include lg {
+                top: -106px;
+            }
+            @include md {
+                top: auto;
+                left: auto;
+                right: 46px;
+                bottom: 132px;
+                .location-card {
+                    &:after {
+                        right: 20px;
+                        left: auto;
+                    }
+                }
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+                right: auto;
+            }
+        }
+        &.location-hotspot-dot7 {
+            right: 225px;
+            top: -12px;
+            @include md {
+                right: -5px;
+                top: -92px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+            }
+        }
+        &.location-hotspot-dot8 {
+            right: 145px;
+            top: 21px;
+            @include xl {
+                right: 105px;
+            }
+            @include lg {
+                top: -60px;
+            }
+            @include sm {
+                left: 0;
+                bottom: 0;
+                top: auto;
+                right: auto;
+            }
+        }
+    }
+}
+
+.location-card {
+    box-shadow: 0px 4px 34px rgba(6, 39, 29, 0.1);
+    background: $white-color;
+    border-radius: 16px;
+    padding: 16px;
+    display: inline-flex;
+    gap: 16px;
+    position: relative;
+    &:after {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 15px;
+        background: transparent;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 15px solid $white-color;
+        bottom: -15px;
+        left: 20px;
+        @include sm {
+            display: none;
+        }
+    }
+    .box-img {
+        border-radius: 8px;
+        overflow: hidden;
+        img {
+            height: 100%;
+        }
+    }
+    .box-content {
+        align-self: center;
+    }
+    .box-title {
+        font-size: 18px;
+        margin-bottom: 3px;
+    }
+    .box-review-wrap {
+        font-size: 12px;
+        margin-bottom: -0.6em;
+        i {
+            font-size: 10px;
+            color: $yellow-color;
+        }
+    }
+    .box-text {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+    .btn-wrap {
+        gap: 16px;
+        .btn-card {
+            text-align: center;
+            font-size: 12px;
+            color: $body-color;
+            .icon-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+    }
+}

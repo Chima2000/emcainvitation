@@ -1,0 +1,85 @@
+/***
+
+====================================================================
+        Contact
+====================================================================
+
+***/
+.contact-details__info {
+  display: block;
+  margin-top: 41px;
+  position: relative;
+  li {
+    align-items: center;
+    display: flex;
+    position: relative;
+    @media (max-width: 375.98px){
+      align-items: start;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .icon {
+      flex-shrink: 0;
+      height: 80px;
+      width: 80px;
+      background-color: var(--theme-color1);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      @include transition(all 500ms ease);
+      span {
+        color: var(--theme-color1-text-color);
+        font-size: 25px;
+        @include transition(all 500ms ease);
+      }
+    }
+    &:hover {
+      .icon {
+        background-color: var(--theme-color2);
+        color: var(--theme-color2-text-color);
+        span {
+          color: var(--text-color-bg-theme-color2);
+        }
+      }
+      .text {
+        a {
+          color: var(--notech-base);
+          span {
+            color: var(--notech-gray);
+          }
+        }
+      }
+    }
+    .text {
+      margin-left: 30px;
+      @media (max-width: 375.98px){
+        margin-left: 0;
+      }
+      p {
+        font-size: 14px;
+        line-height: 24px;
+      }
+      a {
+        color: var(--notech-black);
+        font-size: 18px;
+        @include transition(all 500ms ease);
+      }
+      span {
+        color: var(--notech-black);
+        font-size: 20px;
+      }
+    }
+  }
+  li+li {
+    margin-top: 19px;
+  }
+}
+.map{
+  height: 550px;
+}

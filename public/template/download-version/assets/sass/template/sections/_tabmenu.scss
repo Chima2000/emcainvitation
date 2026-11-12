@@ -1,0 +1,119 @@
+/* Tab Menu 1 ------------------------------------*/
+.tab-menu1 {
+    gap: 14px;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    border: 0;
+    .tab-btn {
+        font-size: 16px;
+        padding: 14px 44px;
+        font-family: $body-font;
+        font-weight: 700;
+        background-color: $white-color;
+        border-radius: 10px;
+        border: 1px solid $border-color;
+        margin: 0;
+        &:hover,
+        &.active {
+            background-color: $theme-color;
+            color: $white-color;
+        }
+    }
+}
+/* Tab Menu 2 ------------------------------------*/
+.tab-menu2 {
+    gap: 40px;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    border: 0;
+    .tab-btn {
+        font-size: 24px;
+        padding: 0 10px 5px;
+        font-family: $title-font;
+        font-weight: 400;
+        background-color: transparent;
+        letter-spacing: -0.02em;
+        border-radius: 0;
+        border: 0;
+        margin: 0;
+        position: relative;
+        @include xs {
+            font-size: 20px;
+        }
+        &:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            transform-origin: right top;
+            transform: scale(0, 1);
+            transition: transform 0.4s cubic-bezier(0.74, 0.72, 0.27, 0.24);
+        }
+        &:hover,
+        &.active {
+            background-color: transparent;
+            color: $theme-color;
+            &:after {
+                transform-origin: left top;
+                transform: scale(1, 1);
+            }
+        }
+    }
+}
+/* Tab Menu 3 ------------------------------------*/
+.tab-menu3 {
+    gap: 14px;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    border: 0;
+    .tab-btn {
+        font-size: 16px;
+        padding: 14px 44px;
+        font-family: $body-font;
+        font-weight: 700;
+        background-color: $white-color;
+        border-radius: 40px;
+        border: 1px solid $border-color;
+        margin: 0;
+        &:hover,
+        &.active {
+            background-color: $theme-color;
+            color: $white-color;
+        }
+    }
+}
+
+/* Tab Menu 4 ------------------------------------*/
+.tab-menu4 {
+    border: 0;
+    display: block;
+    .tab-btn {
+        font-size: 16px;
+        padding: 14px 44px;
+        font-family: $body-font;
+        font-weight: 700;
+        background-color: $white-color;
+        border-radius: 40px;
+        border: 1px solid $border-color;
+        margin: 0;
+        &:hover,
+        &.active {
+            background-color: $theme-color;
+            color: $white-color;
+        }
+    }
+    .nav-item {
+        &:not(:last-child) {
+            margin-bottom: 14px;
+        }
+        .tab-btn {
+
+        }
+    }
+}

@@ -1,0 +1,43 @@
+.video-box-center {
+    position: relative;
+    .play-btn {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+/* Video Area 1 -------------------------------*/
+.video-bg-shape1-1,
+.video-bg-shape1-2 {
+    img {
+        height: 100%;
+    }
+    @include vxs {
+        display: none;
+    }
+}
+.video-thumb1-1 {
+    position: relative;
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        overflow: hidden;
+        @include md {
+            min-height: 400px;
+        }
+    }
+    .about-tag {
+        position: absolute;
+        left: 50%;
+        top: 50%;        
+        transform: translate(-50%, -50%);
+        border: 0;
+        background: transparent;
+        .play-btn {
+
+        }
+    }
+    
+}

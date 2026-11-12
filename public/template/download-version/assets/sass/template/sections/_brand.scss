@@ -1,0 +1,146 @@
+/* Brand 1 ---------------------------------- */
+.brand-wrap1 {
+    overflow: hidden;
+    .brand-wrap-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-top: -0.2em;
+        margin-bottom: 50px;
+        letter-spacing: -0.02em;
+        max-width: 570px;
+        margin-left: auto;
+        margin-right: auto;
+        span {
+            flex: none;
+        }
+    }
+    @include sm {
+        .brand-wrap-title {
+            font-size: 28px;
+        }
+    }
+    @include xs {
+        .brand-wrap-title {
+            font-size: 24px;
+        }
+    }
+}
+.brand-slider1 {
+    margin-right: -2px;
+}
+.brand-box {
+    display: grid;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    transition: 0.4s ease-in-out;
+    min-height: 50px;
+    border-right: 1px solid $border-color2;
+    img {
+        transition: 0.4s;
+        filter: grayscale(9) brightness(0);
+    }
+    &:hover {
+        img {
+            filter: none;
+            transform: scale(0.95);
+        }
+    }
+    @include lg {
+        border-right: 0;
+    }
+}
+
+/* Brand 2 ---------------------------------- */
+.brand-wrap2 {
+    overflow: hidden;
+    border-top: 1px solid rgba($color: #ffffff, $alpha: 0.15);
+    padding-top: 60px;
+}
+.brand-slider2 {
+    margin-right: -2px;
+}
+.brand-box.style2 {
+    display: grid;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    transition: 0.4s ease-in-out;
+    min-height: 50px;
+    border-right: 1px solid rgba($color: #ffffff, $alpha: 0.15);
+    img {
+        transition: 0.4s;
+        filter: grayscale(9) brightness(99);
+    }
+    &:hover {
+        img {
+            filter: none;
+        }
+    }
+    @include lg {
+        border-right: 0;
+    }
+}
+
+/* Brand 3 ---------------------------------- */
+.brand-wrap3 {
+    overflow: hidden;
+    .brand-wrap-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-top: -0.2em;
+        margin-bottom: 80px;
+        letter-spacing: -0.02em;
+        max-width: 670px;
+        margin-left: auto;
+        span {
+            flex: none;
+        }
+    }
+    @include xl {
+        .brand-wrap-title {
+            max-width: 540px;
+        }
+    }
+    @include lg {
+        .brand-wrap-title {
+            max-width: none;
+            margin-bottom: 40px;
+        }
+    }
+    @include sm {
+        .brand-wrap-title {
+            font-size: 28px;
+        }
+    }
+    @include xs {
+        .brand-wrap-title {
+            font-size: 24px;
+        }
+    }
+}
+.brand-slider3 {
+    margin-right: -2px;
+}
+.brand-box {
+    display: grid;
+    align-content: center;
+    text-align: center;
+    justify-content: center;
+    transition: 0.4s ease-in-out;
+    min-height: 50px;
+    border-right: 1px solid $border-color2;
+    img {
+        transition: 0.4s;
+        filter: grayscale(9) brightness(0);
+    }
+    &:hover {
+        img {
+            filter: none;
+            transform: scale(0.95);
+        }
+    }
+    @include lg {
+        border-right: 0;
+    }
+}

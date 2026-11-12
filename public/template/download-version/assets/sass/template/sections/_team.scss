@@ -1,0 +1,357 @@
+/* Team Card ---------------------------------- */
+.team-card {
+    text-align: center;
+    border-radius: 24px;
+    overflow: hidden;
+    .box-img {
+        position: relative;
+        display: block;
+        img {
+            width: 100%;
+            transition: 0.4s;
+        }
+    }
+    .box-content {
+        background: $smoke-color2;
+        padding: 34px; 
+        border-radius: 24px;
+        margin-top: -110px;  
+        position: relative;
+        z-index: 1;
+        transition: 0.4s;
+        border-top: 3px solid $theme-color2;
+        @include sm {
+            padding: 34px 15px;
+        }
+    }
+    .box-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 2px;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.02em;
+        a {
+            color: $title-color;
+            &:hover {
+                color: $theme-color;
+            }
+        }
+        @include sm {
+            font-size: 20px;
+        }
+    }
+    .box-text {
+        font-size: 14px;
+        font-weight: 400;
+        font-family: $body-font;
+        margin-bottom: -0.4em;
+        letter-spacing: -0.02em;
+        display: block;
+        color: $theme-color;
+    }
+    .th-social {
+        margin-top: 24px;
+        a {
+            border: 1px solid $title-color;
+            color: $title-color;
+            font-size: 14px;
+            @include sm {
+                margin-right: 10px;
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+            &:hover {
+                background: $theme-color;
+                border-color: $theme-color;
+                color: $white-color;
+            }
+        }
+    }
+    &:hover {
+        .box-content {
+            background: $smoke-color;
+            border-color: $theme-color;
+        }
+        .box-img {
+            &:after {
+                opacity: 1;
+                visibility: visible;
+            }
+            .th-social {
+                bottom: 32px;
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+}
+
+/* Team Card 2---------------------------------- */
+.team-bg-shape2-1,
+.team-bg-shape2-2 {
+    display: none;
+}
+.team-card2 {
+    position: relative;
+    padding: 20px 20px 34px;
+    transition: 0.4s;
+    border-radius: 24px;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 1px solid $theme-color2;
+        border-radius: 24px;
+        opacity: 0.5;
+        transition: 0.4s;
+        z-index: -1;
+    }
+    .box-img {
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        margin-bottom: 34px;
+        img {
+            width: 100%;
+            transition: 0.4s;
+        }
+        .th-social {
+            position: absolute;
+            right: 0;
+            top: 20px;
+            display: block;
+            z-index: 1;
+            transition: 0.4s;
+            opacity: 0;
+            a {
+                display: flex;
+                margin-right: 0;
+                background: $white-color;
+                border: 0;
+                color: $title-color;
+                font-size: 12px;
+                &:hover {
+                    background: $theme-color;
+                    color: $white-color;
+                }
+                &:not(:last-child) {
+                    margin-bottom: 14px;
+                }
+            }
+        }
+    }
+    .box-title {
+        margin-bottom: 2px;
+        a {
+            color: $white-color;
+        }
+    }
+    .box-text {
+        color: $theme-color2;
+        transition: 0.4s;
+    }
+    &:hover {
+        background: $white-color;
+        &:after {
+            opacity: 0;
+        }
+        .box-img {
+            img {
+                transform: scale(1.1);
+            }
+            .th-social {
+                right: 20px;
+                opacity: 1;
+            }
+        }
+        .box-title {
+            a {
+                color: $title-color;
+                &:hover {
+                    color: $theme-color;
+                }
+            }
+        }
+        .box-text {
+            color: $theme-color;
+        }
+    }
+}
+
+/* Team Card 3---------------------------------- */
+.team-bg-shape3-1,
+.team-bg-shape3-2 {
+    @include xxl {
+        display: none;
+    }
+}
+.team-card3 {
+    background: $white-color;
+    border-radius: 24px;
+    padding: 34px;
+    text-align: center;
+    .box-content {
+        text-align: start;
+        position: relative;
+        margin-bottom: 32px;
+        padding-right: 45px;
+        .icon-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+    }
+    .box-img {
+        border-radius: 50%;
+        overflow: hidden;
+        display: inline-block;
+        img {
+            transition: 0.4s;
+        }
+    }
+    .box-title {
+        margin-bottom: 2px;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+        @include lg {
+            font-size: 20px;
+        }
+    }
+    .box-text {
+        font-size: 14px;
+    }
+    .th-social {
+        margin-top: 27px;
+        a {
+            --icon-size: 40px;
+            border: 1px solid $border-color;
+            color: $title-color;
+            font-size: 14px;
+            @include lg {
+                --icon-size: 32px;
+                font-size: 12px;
+            }
+            &:hover {
+                border-color: $theme-color;
+                color: $white-color;
+            }
+        }
+    }
+    &:hover {
+        .box-img {
+            img {
+                transform: scale(1.03) rotate(3deg);
+            }
+        }
+    }
+}
+
+/* Team Details Area---------------------------------- */
+.team-page-single {
+    .page-img {
+        border-radius: 24px;
+        overflow: hidden;
+        img {
+            width: 100%;
+        }
+        @include lg {
+            display: inline-block;
+        }
+    }
+    .team-page-content {
+        margin-left: 55px;
+        @include xl {
+            margin-left: 0;
+        }
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+            @include xl {
+                font-size: 40px;
+            }
+            @include lg {
+                font-size: 36px;
+            }
+            @include xs {
+                font-size: 32px;
+            }
+        }
+        .page-desig {
+            letter-spacing: -0.02em;
+            color: $theme-color;
+            margin-bottom: 24px;
+        }
+        .page-text {
+            margin-bottom: 30px;
+        }
+        .team-details-info {
+            display: flex;
+            gap: 16px;
+            &:not(:last-child) {
+                margin-bottom: 24px;
+            }
+            .box-icon {
+                width: 64px;
+                height: 64px;
+                border-radius: 16px;
+                background: $smoke-color;
+                color: $theme-color;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .about-info {
+                align-self: center;
+            }
+            .box-text {
+                letter-spacing: -0.02em;
+            }
+            .box-title {
+                font-size: 18px;
+                font-weight: 400;
+                letter-spacing: -0.02em;
+                margin-bottom: -0.2em;
+                margin-top: 13px;
+            }
+        }
+        .th-social {
+            margin-top: 16px;
+        }
+    }
+}
+
+
+.team-join-form-wrap1 {
+    background: $smoke-color2;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row-reverse;
+    @include lg {
+        display: block;
+    }
+    .team-join-thumb1 {
+        flex: none;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        @include xl {
+            flex: 0 0 500px;
+        }
+    }
+    .team-join-form {
+        padding: 60px;
+        @include sm {
+            padding: 40px;
+        }
+        @include vxs {
+            padding: 30px;
+        }
+    }
+}

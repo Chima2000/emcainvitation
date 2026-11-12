@@ -1,0 +1,498 @@
+/* Donation v1 ---------------------------------- */
+.donation-card {
+    background: transparent;
+    border-radius: 24px;
+    box-shadow: 0px 6px 20px rgba(28, 39, 36, 0.08);
+    padding: 24px;
+    .box-img {
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        a {
+            display: block;
+        }
+        img {
+            width: 100%;
+            transition: 0.4s;
+        }
+    }
+    .box-title {
+        font-weight: 400;
+        letter-spacing: -0.02em;
+        margin-bottom: 7px;
+        @include md {
+            font-size: 20px;
+        }
+    }
+    .box-text {
+        @include md {
+            font-size: 14px;
+        }
+    }
+    .box-content {
+        border-radius: 14px;
+        background: $smoke-color2;
+        padding: 24px;
+        margin-top: 24px;
+        transition: 0.4s;
+        .box-info-wrap {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -0.3em;
+            .box-info-title {
+                color: $theme-color;
+            }
+        }
+        .progress {
+            border-radius: 10px;
+            border: 2px solid $white-color;
+            background: $white-color;
+            height: 12px;
+            overflow: inherit;
+            margin-bottom: 14px;
+            margin-top: 7px;
+            .progress-bar {
+                background: $border-color2;
+                position: relative;
+                overflow: inherit;
+                border-radius: 10px;
+                &:after {
+                    content: '';
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: $theme-color2;
+                    right: -2px;
+                    border: 2px solid $theme-color;
+                }
+            }
+        }
+        .btn-wrap {
+            margin-top: 15px;
+        }
+    }
+    &:hover {
+        .box-img {
+            img {
+                transform: scale(1.1) rotate(4deg);
+            }
+        }
+        .box-content {
+            background: $smoke-color;
+        }
+        .th-btn {
+            color: $white-color;
+            background: $title-color;
+            &:after {
+                background: $theme-color;
+            }
+        }
+    }
+}
+.donation-btn-wrap {
+    background: $smoke-color2;
+    border-radius: 24px;
+    padding: 18px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+    .thumb {
+        width: 56px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid $white-color;
+        overflow: hidden;
+    }
+    .title {
+        font-size: 20px;
+        font-weight: 400;
+        margin-bottom: 0;
+        letter-spacing: -0.02em;
+    }
+    .th-btn {
+        margin-left: auto;
+    }
+    @include lg {
+        justify-content: center;
+        gap: 5px;
+        text-align: center;
+        .th-btn {
+            margin-right: auto;
+        }
+    }
+    @include md {
+        gap: 10px;
+        .th-btn {
+            margin-top: 10px;
+        }
+    }
+}
+
+
+/* Donation Form v1 ---------------------------------- */
+.donation-form-thumb1-1 {
+    position: relative;
+    z-index: 2;
+    margin-left: -38px;
+    margin-right: -18px;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: -50px 142px 0 38px;
+        background: $border-color2;
+        border-radius: 280px 24px 24px 24px;
+        z-index: -1;
+    }
+    @include lg {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 50px;
+        display: inline-block;
+    }
+}
+.donation-form-wrap1 {
+    margin-left: 54px;
+    @include lg {
+        margin-left: 0;
+    }
+}
+.donation-form {
+    position: relative;
+    z-index: 1;
+    padding: 60px 60px 60px 0;
+    @include lg {
+        padding: 60px;
+    }
+    @include xs {
+        padding: 40px 30px;
+    }
+    &:before {
+        content: '';
+        position: absolute;
+        inset: 0 0 0 -266px;
+        border-radius: 24px;
+        background: $white-color;
+        z-index: -1;
+        @include lg {
+            inset: 0;
+        }
+    }
+    .form-text {
+        margin-top: -0.25em;
+        margin-bottom: 25px;
+    }
+    .form-title {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        @include sm {
+            font-size: 24px;
+        }
+    }
+    .donate-input {
+        position: relative;
+        margin-bottom: 20px;
+        .icon {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            right: auto;
+            width: 50px;
+            height: 50px;
+            background: $theme-color;
+            border-radius: 10px;
+            text-align: center;
+            color: $white-color;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        input {
+            background: $white-color;
+            height: 60px;
+            padding: 0 20px 0 65px;
+            font-size: 22px;
+            font-weight: 700;
+            color: $title-color;
+            border-radius: 10px;
+            border: 1px solid $border-color;
+        }
+    }
+    .donate-amount-button-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 43px;
+        li {
+            border: 1px solid $border-color;
+            font-size: 16px;
+            font-weight: 600;
+            color: $title-color;
+            border-radius: 10px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 118px;
+            padding: 0 34px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.4s;
+            &.active, 
+            &:hover {
+                background: $theme-color;
+                color: $white-color;
+            }
+            @include xs {
+                padding: 10px 30px;
+                min-width: auto;
+                height: auto;
+            }
+        }
+    }
+}
+/* Donation Form v2 ---------------------------------- */
+.donation-form-wrap2 {
+    max-width: 1680px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 34px;
+    @include lg {
+        border-radius: 0;
+    }
+}
+.donation-form.style2 {
+    background: $white-color;
+    border-radius: 24px;
+    padding: 60px;
+    @include xs {
+        padding: 40px 30px;
+    }
+    &:before {
+        display: none;
+    }
+    .donate-amount-button-list li {
+        min-width: 94px;
+        padding: 8px 20px;
+        @include ml {
+            min-width: 87px;
+        }
+        @include xl {
+            min-width: 132px;
+        }
+        @include lg {
+            min-width: 100px;
+        }
+    }
+}
+
+/* Donation Form v3 ---------------------------------- */
+.donation-form-wrap3 {
+    .donation-form-wrap2 {
+        margin-bottom: -170px;
+        .donation-form.style2 {
+            box-shadow: 0px 15px 50px rgba(62, 143, 117, 0.1);
+        }
+    }
+    @include lg {
+        margin-bottom: 170px;
+    }
+}
+.donation-form-bg-shape3-1 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+/* Donation Form v4 ---------------------------------- */
+.donation-form-wrap4 {
+    padding: 60px;
+    border-radius: 24px;
+    @include xl {
+        padding: 40px;
+    }
+    @include lg {
+        padding: 30px;
+    }
+    .donation-form {
+        padding: 0;
+        &:before {
+            display: none;
+        }
+        .donate-amount-button-list li {
+            background: $white-color;
+            min-width: 112px;
+            padding: 0 25px;
+            @include xs {
+                min-width: 104px;
+                padding: 9px 25px;
+            }
+            @include vxs {
+                min-width: none;
+                width: calc(50% - 7px);
+            }
+            &.active, 
+            &:hover {
+                background: $theme-color;
+            }
+        }
+    }
+    .form-text {
+        font-size: 18px;
+        font-weight: 500;
+    }
+}
+/* Donation Form v5 ---------------------------------- */
+.donation-form-wrap5 {
+    padding: 60px;
+    border-radius: 24px;
+    box-shadow: 0px 10px 50px rgba(11, 32, 28, 0.08);
+    @include xl {
+        padding: 40px;
+    }
+    @include lg {
+        padding: 30px;
+    }
+    .donation-form {
+        padding: 0;
+        &:before {
+            display: none;
+        }
+        .donate-amount-button-list li {
+            background: $white-color;
+            min-width: 112px;
+            padding: 0 25px;
+            @include xs {
+                min-width: 104px;
+                padding: 9px 25px;
+            }
+            @include vxs {
+                min-width: none;
+                width: calc(50% - 7px);
+            }
+            &.active, 
+            &:hover {
+                background: $theme-color;
+            }
+        }
+        .donate-payment-method {
+            display: flex;
+            gap: 10px 34px;
+            flex-wrap: wrap;
+        }
+    }
+    .form-text {
+        font-size: 18px;
+        font-weight: 500;
+    }
+}
+/* Donation Details ---------------------------------- */
+.donation-single {
+    background: $white-color;
+    box-shadow: 0px 6px 50px rgba(28, 39, 36, 0.08);
+    border-radius: 24px;
+    padding: 24px;
+    .page-img {
+        border-radius: 16px;
+        overflow: hidden;
+        img {
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+    .page-content {
+        padding: 0 16px 16px;
+        @include lg {
+            padding: 0;
+        }
+    }
+    .box-progress-content {
+        background: $smoke-color;
+        border-radius: 16px;
+        padding: 34px;
+        @include xs {
+            padding: 24px;
+        }
+        .box-progress-info-wrap {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -0.3em;
+            .box-info-title {
+                color: $theme-color;
+            }
+            .donation-card_goal {
+                color: $theme-color;
+            }
+        }
+        .progress {
+            border-radius: 10px;
+            border: 2px solid $white-color;
+            background: $white-color;
+            height: 12px;
+            overflow: inherit;
+            margin-bottom: 14px;
+            margin-top: 7px;
+            .progress-bar {
+                background: $border-color2;
+                position: relative;
+                overflow: inherit;
+                border-radius: 10px;
+                &:after {
+                    content: '';
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: $theme-color2;
+                    right: -2px;
+                    border: 2px solid $theme-color;
+                }
+            }
+        }
+    }
+    .box-info-wrap {
+        background: $smoke-color;
+        border-radius: 16px;
+        padding: 34px;
+        .box-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+        @include xs {
+            padding: 24px;
+            .box-title {
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+/* Donate now page ---------------------------------- */
+.donate-now-page {
+    .page-img {
+        border-radius: 16px;
+        overflow: hidden;
+        margin: 0 -120px;
+        img {
+            width: 100%;
+            object-fit: cover;
+        }
+        @include xxl {
+            margin: 0 0 40px;
+        }
+    }
+    .donation-form-wrap5 {
+        margin-top: -90px;
+        position: relative;
+        z-index: 1;
+        @include xxl {
+            margin-top: 0;
+        }
+    }
+}

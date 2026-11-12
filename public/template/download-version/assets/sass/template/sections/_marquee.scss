@@ -1,0 +1,83 @@
+/* Marquee Area ---------------------------------- */
+.marquee-slider1 {
+    margin: 0 -50px;
+    .swiper-wrapper {
+        transition-timing-function: linear;
+    }
+    .swiper-slide {
+        width: auto;
+        margin-bottom: -1px;
+    }
+}
+.marquee-card{
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+    a {
+        font-size: 84px;
+        font-weight: 700;
+        font-family: $title-font;
+        letter-spacing: -0.02em;
+        display: inline-block;
+        line-height: 1.21em;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        margin-top: -0.1em;
+        span {
+            transition: 0.4s;
+            &.text-stroke {
+                -webkit-text-stroke: 1.5px $theme-color2;
+                color: transparent;
+            }
+        }
+    }
+    .marquee-card-icon {
+        display: inline-block;
+    }
+    @include ml {
+        a {
+            font-size: 70px;
+            line-height: 1.25em;
+        }
+    }
+    @include lg {
+        a {
+            font-size: 60px;
+        }
+    }
+    @include md {
+        a {
+            font-size: 50px;
+        }
+    }
+    @include sm {
+        a {
+            font-size: 48px;
+            letter-spacing: normal;
+        }
+    }
+    @include xs {
+        a {
+            font-size: 36px;
+        }
+    }
+}
+
+/* Marquee Area 2---------------------------------- */
+.marquee-card.style2{
+    a {
+        span {
+            &.text-stroke {
+                -webkit-text-stroke: 1.5px $theme-color;
+            }
+        }
+        &:hover {
+            span {
+                &.text-stroke {
+                    -webkit-text-stroke: 1.5px $title-color;
+                }
+            }
+        }
+    }
+}

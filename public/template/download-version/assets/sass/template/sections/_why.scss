@@ -1,0 +1,335 @@
+/* Why Choose Us Area ---------------------------------- */
+.why-bg-shape1-1 {
+    @include xxl {
+        display: none;
+    }
+}
+.why-bg-info1-1 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    z-index: -1;
+    path {
+        color: $theme-color2;
+    }
+    text {
+        font-family: $title-font2;
+        font-size: 34px;
+        font-weight: 400;
+    }
+    @include hd {
+        width: 50%;
+    }
+    @include xxl {
+        bottom: -250px;
+    }
+    @include xl {
+        display: none;
+    }
+}
+.why-img-box1 {
+    position: relative;
+    margin: 0 -300px 0 80px;
+    height: -webkit-fill-available;
+    .img1 {
+        height: 100%;
+        width: 100%;
+        .why-img-bg-shape1-1 {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+    .about-tag {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        .play-btn {
+            background: transparent;
+            color: $theme-color2;
+            &:after,
+            &:before {
+                display: none;
+            }
+            &:hover {
+                color: $theme-color;
+            }
+        }
+    }
+    
+    @include xxl {
+        margin: 0;
+    }
+    @include ml {
+        margin: 0 0 0 4px;
+    }
+    @include xl {
+        margin: 0 0 0 28px;
+    }
+    @include lg {
+        margin: 0;
+        .about-tag {
+            left: 50%;
+        }
+    }
+    @include xs {
+        .img1 {
+            img {
+                min-height: 500px;
+            }
+        }
+    }
+}
+.why-card {
+    &:not(:last-child) {
+        margin-bottom: 24px;
+    }
+    .why-card-title-wrap {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        .box-title {
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-bottom: 0;
+            margin-top: -0.18em;
+        }
+        .box-value {
+            color: $theme-color;
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            margin-top: -0.18em;
+            margin-bottom: 0;
+            display: block;
+        }
+    }
+    .progress {
+        border-radius: 10px;
+        border: 2px solid $smoke-color;
+        background: $smoke-color;
+        height: 12px;
+        overflow: inherit;
+        margin-bottom: 14px;
+        margin-top: 7px;
+        .progress-bar {
+            background: $border-color2;
+            position: relative;
+            overflow: inherit;
+            border-radius: 10px;
+            &:after {
+                content: '';
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: $theme-color2;
+                right: -2px;
+                border: 2px solid $theme-color;
+            }
+        }
+    }
+}
+.why-info-wrap {
+    margin-left: 448px;
+    margin-right: -448px;
+    margin-top: 24px;
+    @include xl {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 40px;
+    }
+}
+.why-info-card {
+    border-radius: 24px;
+    padding: 64px 46px;
+    @include xl {
+        padding: 50px 40px;
+    }
+    @include md {
+        padding: 40px 30px;
+    }
+    .box-icon {
+        margin-bottom: 34px;
+        img {
+            transition: 0.4s;
+        }
+    }
+    .box-title {
+        margin-bottom: 20px;
+    }
+    &:hover {
+        .box-icon {
+            img {
+                transform: scale(-1) rotate(180deg);
+            }
+        }
+    }
+}
+
+
+/* Why Choose Us Area 2---------------------------------- */
+.why-img-box2 {
+    position: relative;
+    display: inline-block;
+    .img1 {
+        border-radius: 24px;
+        overflow: hidden;
+        display: inline-block;
+    }
+    .img2 {
+        position: absolute;
+        right: 0;
+        bottom: 122px;
+        border-radius: 16px 0 0 16px;
+        display: inline-block;
+        @include xs {
+            position: relative;
+            animation: none !important;
+            bottom: 0;
+        }
+    }
+}
+
+/* Why Choose Us Area 3---------------------------------- */
+.why-bg-shape3-1 {
+    @include xxl {
+        display: none;
+    }
+}
+.why-img-box3 {
+    display: inline-block;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    .why-thumb-shape3-1 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        img {
+            width: 100%;
+        }
+    }
+}
+.why-info-wrap3 {
+    display: flex;
+    gap: 24px;
+    margin-top: 70px;
+    margin-left: -56px;
+    flex-wrap: wrap;
+    @include ml {
+        margin-left: -46px;
+        margin-top: 44px;
+    }
+    @include xl {
+        margin-left: 0;
+    }
+    .why-info-card3 {
+        width: calc(50% - 12px);
+        border-radius: 24px;
+        background: $smoke-color;
+        padding: 34px;
+        @include ml {
+            padding: 34px 30px;
+        }
+        @include sm {
+            width: 100%;
+        }
+        .box-title {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: -0.2em;
+            &:before {
+                content: '';
+                position: relative;
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: $theme-color;
+            }
+        }
+    }
+}
+
+/* Why Choose Us Area 4---------------------------------- */
+.why-bg-shape4-1,
+.why-bg-shape4-2 {
+    @include xxl {
+        display: none;
+    }
+}
+/* Why Choose Us Area 5---------------------------------- */
+.why-bg-shape5-1,
+.why-bg-shape5-2,
+.why-bg-shape5-3 {
+    @include xxl {
+        display: none;
+    }
+}
+.why-img-box5 {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    align-items: start;
+    .img1,
+    .img2,
+    .img3 {
+        border-radius: 16px;
+        overflow: hidden;
+        .thumb {
+            width: 100%;
+        }
+        img {
+            width: 100%;
+        }
+    }
+    .img3 {
+        margin-top: 168px;
+    }
+    .btn-wrap {
+        position: absolute;
+        left: 0;
+        bottom: 175px;
+    }
+    @include lg {
+        .img3 {
+            margin-top: 140px;
+        }
+        .btn-wrap {
+            left: 40%;
+            bottom: 0;
+        }
+    }
+    @include sm {
+        flex-wrap: wrap;
+        .img1 {
+            display: block;
+            width: 100%;
+        }
+        .img3 {
+            margin-top: 0;
+        }
+        .btn-wrap {
+            position: relative;
+            left: auto;
+            bottom: auto;
+            align-self: self-end;
+        }
+    }
+}
