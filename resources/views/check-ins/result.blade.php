@@ -9,8 +9,9 @@
 @section('content')
     <div class="row">
         <div class="col-xl-6">
-            <div class="card">
+            <div class="card" data-door-card data-door-checking="{{ __('Checking the card…') }}">
                 <div class="card-body">
+                    <div @class(['alert', 'alert-success' => $checkedIn, 'alert-danger' => ! $checkedIn]) role="alert" data-door-result="{{ $checkedIn ? 'verified' : 'denied' }}" data-door-message="{{ $doorMessage }}">{{ $doorMessage }}</div>
                     <h2 class="mb-2">{{ $guest->name }}</h2>
                     <p class="font-monospace mb-3">{{ $guest->serial }}</p>
                     <p class="text-body mb-2">
@@ -24,7 +25,7 @@
                             .
                         @endif
                     </p>
-                    <p class="text-body mb-0">{{ __('Party size :count', ['count' => $guest->party_size]) }}, {{ $guest->rsvp_status->label() }}</p>
+                    <p class="text-body mb-0">{{ __('Party size :count', ['count' => $guest->party_size]) }}@if ($guest->table_name), {{ __('Table') }} {{ $guest->table_name }}@endif, {{ $guest->rsvp_status->label() }}</p>
                 </div>
             </div>
         </div>

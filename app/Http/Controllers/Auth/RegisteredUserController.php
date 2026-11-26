@@ -6,9 +6,11 @@ use App\Actions\RegisterHost;
 use App\Actions\SendVerificationCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Support\ChosenInvitationTemplate;
 use App\Support\SystemSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,8 +18,10 @@ class RegisteredUserController extends Controller
 {
     public const string PendingRegistration = 'pending_registration';
 
-    public function create(): View
+    public function create(Request $request, ChosenInvitationTemplate $chosenInvitationTemplate): View
     {
+        $chosenInvitationTemplate->rememberFromRequest($request);
+
         return view('auth.register');
     }
 

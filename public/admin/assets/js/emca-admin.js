@@ -61,6 +61,56 @@
                 window.bootstrap.Modal.getOrCreateInstance(modal).show();
             });
         }
+
+        highlightEventSection();
+        dismissSuccessMessages();
+    };
+
+    const dismissSuccessMessages = () => {
+        if (!document.body.dataset.emcaLayout?.startsWith('dashboard')) {
+            return;
+        }
+
+        document.querySelectorAll('.alert-success:not([data-door-result]):not([data-emca-persist])').forEach((message) => {
+            if (message.dataset.emcaDismissReady === '1') {
+                return;
+            }
+
+            message.dataset.emcaDismissReady = '1';
+            window.setTimeout(() => {
+                message.style.transition = 'opacity 0.2s ease';
+                message.style.setProperty('opacity', '0', 'important');
+                window.setTimeout(() => message.remove(), 200);
+            }, 3000);
+        });
+    };
+
+    const highlightEventSection = () => {
+        document.querySelectorAll('.menubar > li.menu-arrow > a.menu-link').forEach((link) => {
+            link.classList.remove('active');
+        });
+
+        const links = [...document.querySelectorAll('a[data-emca-section]')];
+        const visible = links.filter((link) => document.getElementById(link.dataset.emcaSection));
+
+        if (visible.length === 0) {
+            return;
+        }
+
+        const line = 96;
+        let current = visible[0];
+
+        visible.forEach((link) => {
+            const section = document.getElementById(link.dataset.emcaSection);
+
+            if (section.getBoundingClientRect().top <= line) {
+                current = link;
+            }
+        });
+
+        document.querySelectorAll('a[data-emca-event-link]').forEach((link) => {
+            link.classList.toggle('active', link === current);
+        });
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -77,6 +127,24 @@
         }
 
         initPage();
+
+        if (!window.emcaSectionSpy) {
+            window.emcaSectionSpy = true;
+            let frame = 0;
+
+            document.addEventListener('scroll', () => {
+                if (frame) {
+                    return;
+                }
+
+                frame = window.requestAnimationFrame(() => {
+                    frame = 0;
+                    highlightEventSection();
+                });
+            }, { passive: true, capture: true });
+
+            window.addEventListener('hashchange', highlightEventSection);
+        }
     });
 
     document.addEventListener('emca:page-load', initPage);
@@ -109,7 +177,8 @@
             return;
         }
 
-        const form = target.querySelector('form');
+        const form = target.querySelector('form[data-emca-main]') || target.querySelector('form');
+        const fieldRoot = form || target;
 
         if (form && trigger.dataset.emcaAction) {
             form.action = trigger.dataset.emcaAction;
@@ -119,7 +188,7 @@
         }
 
         Object.entries(values).forEach(([name, value]) => {
-            target.querySelectorAll(`[name="${name}"]`).forEach((field) => {
+            fieldRoot.querySelectorAll(`[name="${name}"]`).forEach((field) => {
                 if (field.type === 'hidden' && typeof value === 'boolean') {
                     return;
                 }

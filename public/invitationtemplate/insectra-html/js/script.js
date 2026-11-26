@@ -583,12 +583,13 @@ if ($('.banner-two-slider-up').length) {
     ================================ */
 
    if ($('.brand-slider').length > 0) {
+    const isMobileBrandSlider = window.matchMedia("(max-width: 575px)").matches;
     const brandSlider = new Swiper(".brand-slider", {
         spaceBetween: 0,
-        speed: 1200,
+        speed: isMobileBrandSlider ? 0 : 450,
         loop: true,
         autoplay: {
-            delay: 1000,
+            delay: isMobileBrandSlider ? 5000 : 2600,
             disableOnInteraction: false,
         },
         navigation: {

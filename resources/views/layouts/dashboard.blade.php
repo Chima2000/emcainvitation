@@ -11,6 +11,7 @@
         @stack('styles')
     </head>
     <body @class(['profile-edit-page' => request()->routeIs('profile.edit')]) data-emca-layout="dashboard{{ View::hasSection('sidebar-panel') ? '-panel' : '' }}" data-emca-swap="all">
+        @include('layouts.partials.back-to-top')
         <div class="page-layout">
             <header class="app-header">
                 <div class="app-header-inner">
@@ -74,10 +75,17 @@
                         </div>
                         @unless (auth()->user()->isSuperAdmin())
                             <div class="px-lg-2 px-1 d-flex align-items-center" data-emca-sync="wallet-chip">
-                                <a href="{{ route('wallet.index') }}" class="btn btn-sm btn-outline-light btn-shadow d-inline-flex align-items-center gap-2 emca-wallet-chip" aria-label="{{ __('Wallet balance') }}">
-                                    <i class="fi fi-rr-wallet text-primary"></i>
-                                    <span class="fw-semibold text-dark text-nowrap">TZS {{ number_format(auth()->user()->wallet_balance) }}</span>
-                                </a>
+                                @if (auth()->user()->isLead())
+                                    <span class="btn btn-sm btn-outline-light btn-shadow d-inline-flex align-items-center gap-2 emca-wallet-chip" aria-label="{{ __('Wallet balance') }}">
+                                        <i class="fi fi-rr-wallet text-primary"></i>
+                                        <span class="fw-semibold text-dark text-nowrap">TZS {{ number_format(auth()->user()->wallet_balance) }}</span>
+                                    </span>
+                                @else
+                                    <a href="{{ route('wallet.index') }}" class="btn btn-sm btn-outline-light btn-shadow d-inline-flex align-items-center gap-2 emca-wallet-chip" aria-label="{{ __('Wallet balance') }}">
+                                        <i class="fi fi-rr-wallet text-primary"></i>
+                                        <span class="fw-semibold text-dark text-nowrap">TZS {{ number_format(auth()->user()->wallet_balance) }}</span>
+                                    </a>
+                                @endif
                             </div>
                         @endunless
                         <div class="vr my-3"></div>
@@ -207,7 +215,7 @@
 
             <footer class="footer-wrapper bg-body">
                 <div class="container-fluid emca-admin-container">
-                    <p class="mb-0 text-center text-md-start">© <span class="currentYear">{{ now()->year }}</span> {{ config('app.name') }}.</p>
+                    <p class="mb-0 text-center text-md-start">© <span class="currentYear">{{ now()->year }}</span> {{ config('app.name') }}. {{ __('Invite better. Manage better. Spend less.') }}</p>
                 </div>
             </footer>
         </div>
@@ -222,6 +230,7 @@
         </div>
         @include('layouts.partials.admin-scripts')
         <script src="{{ asset('admin/assets/js/emca-admin.js') }}?v={{ filemtime(public_path('admin/assets/js/emca-admin.js')) }}"></script>
+        <script src="{{ asset('admin/assets/js/emca-back-to-top.js') }}?v={{ filemtime(public_path('admin/assets/js/emca-back-to-top.js')) }}"></script>
         @include('layouts.partials.ajax-script')
         <div data-emca-region="scripts">
             @stack('scripts')

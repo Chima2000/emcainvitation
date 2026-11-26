@@ -16,8 +16,11 @@
         'font' => $template->font->value,
         'layout' => $template->layout->value,
         'background_url' => $template->backgroundUrl(),
-        'headline' => $template->default_headline,
-        'message' => $template->default_message,
+        'portrait_url' => $template->portraitUrl(),
+        'portrait_slot' => $template->portraitSlot(),
+        'scene' => $template->scene(),
+        'headline' => $template->shownHeadline(),
+        'message' => $template->shownMessage(),
     ]])->put('', [
         'kicker' => $event->type->label(),
         'paper' => $defaultDesign['paper'],
@@ -26,11 +29,28 @@
         'font' => $defaultDesign['font']->value,
         'layout' => $defaultDesign['layout']->value,
         'background_url' => null,
+        'portrait_url' => null,
+        'portrait_slot' => null,
+        'scene' => null,
         'headline' => null,
         'message' => null,
     ]);
-    $ownBackgroundUrl = ! empty($custom['background_path']) ? \Illuminate\Support\Facades\Storage::disk('public')->url($custom['background_path']) : null;
+    $ownBackgroundUrl = ! empty($custom['background_path']) ? '/storage/'.ltrim(str_replace('\\', '/', $custom['background_path']), '/') : null;
+    $ownPortraitUrl = ! empty($custom['portrait_path']) ? '/storage/'.ltrim(str_replace('\\', '/', $custom['portrait_path']), '/') : null;
     $selectedTemplateId = (string) old('invitation_template_id', $event->invitation_template_id ?? '');
+    $templatePreviewLimit = 6;
+    $orderedTemplates = $templates->values();
+    $selectedTemplate = $orderedTemplates->first(fn ($template): bool => (string) $template->id === $selectedTemplateId);
+
+    if ($selectedTemplate) {
+        $orderedTemplates = $orderedTemplates
+            ->reject(fn ($template): bool => $template->is($selectedTemplate))
+            ->prepend($selectedTemplate)
+            ->values();
+    }
+
+    $shownTemplates = $orderedTemplates->take($templatePreviewLimit);
+    $moreTemplates = $orderedTemplates->slice($templatePreviewLimit)->values();
 @endphp
 
 @section('content')
@@ -45,6 +65,8 @@
                         <small class="text-body">{{ __('Templates are made by the Jumuika Pass team. Pick one, then change anything you like below.') }}</small>
                     </div>
                     <div class="card-body">
+                        <label class="form-label" for="template-search">{{ __('Search templates') }}</label>
+                        <input type="search" id="template-search" class="form-control mb-3" placeholder="{{ __('Search templates') }}" data-template-search>
                         <div class="row g-2">
                             <div class="col-6 col-md-4">
                                 <label class="d-block border rounded-3 p-2 h-100 emca-design-choice">
@@ -53,26 +75,39 @@
                                     <span class="d-block small fw-semibold mt-2">{{ __('No template') }}</span>
                                 </label>
                             </div>
-                            @foreach ($templates as $template)
-                                <div class="col-6 col-md-4">
-                                    <label class="d-block border rounded-3 p-2 h-100 emca-design-choice">
-                                        <input type="radio" class="visually-hidden" name="invitation_template_id" value="{{ $template->id }}" @checked($selectedTemplateId === (string) $template->id)>
-                                        <span class="d-flex flex-column align-items-center justify-content-center rounded-2 border text-center px-2" style="min-height: 92px; background-color: {{ $template->paper }}; color: {{ $template->ink }}; border-color: {{ $template->accent }} !important; @if ($template->backgroundUrl()) background-image: linear-gradient(color-mix(in srgb, {{ $template->paper }} 80%, transparent), color-mix(in srgb, {{ $template->paper }} 80%, transparent)), url('{{ $template->backgroundUrl() }}'); background-size: cover; @endif font-family: {{ $template->font->family() }};">
-                                            <small class="text-uppercase" style="color: {{ $template->accent }}; font-size: .6rem; letter-spacing: .15em;">{{ $template->category->label() }}</small>
-                                            <span class="fw-semibold">{{ $template->name }}</span>
-                                        </span>
-                                        <span class="d-flex justify-content-between gap-1 small mt-2">
-                                            <span class="fw-semibold text-truncate">{{ $template->name }}</span>
-                                            <span class="text-body text-nowrap">{{ $template->price > 0 ? 'TZS '.number_format($template->price) : __('Free') }}</span>
-                                        </span>
-                                    </label>
-                                </div>
+                            @foreach ($shownTemplates as $template)
+                                @include('events.partials.design-template-choice', ['template' => $template, 'selectedTemplateId' => $selectedTemplateId])
                             @endforeach
                         </div>
+                        @if ($moreTemplates->isNotEmpty())
+                            @include('partials.view-more', ['id' => 'design-template-more', 'open' => false])
+                            <div class="row g-2 mt-1" id="design-template-more" hidden>
+                                @foreach ($moreTemplates as $template)
+                                    @include('events.partials.design-template-choice', ['template' => $template, 'selectedTemplateId' => $selectedTemplateId])
+                                @endforeach
+                            </div>
+                        @endif
                         @error('invitation_template_id')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title h6 mb-1">{{ __('Design in Canva') }}</h2>
+                        <small class="text-body">{{ __('You will be able to design this card in Canva and bring it back here. That connection is not open yet.') }}</small>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-light" disabled>{{ __('Open Canva') }}</button>
+                    </div>
+                </div>
+
+                @if (auth()->user()->isLead())
+                    <div class="alert alert-warning" role="status">
+                        <strong class="d-block">{{ __('This stays locked during a trial') }}</strong>
+                        {{ __('Custom colours, fonts and your own picture open after you become a host.') }}
+                        <a href="{{ route('become-host.create') }}">{{ __('Become a host') }}</a>
+                    </div>
+                @else
                 <div class="card">
                     <div class="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
                         <div>
@@ -146,6 +181,27 @@
 
                 <div class="card">
                     <div class="card-header">
+                        <h2 class="card-title h6 mb-1">{{ __('Your photo') }}</h2>
+                        <small class="text-body">{{ __('On a card with a photo frame, this picture replaces the sample and stays in that same place. JPG, PNG or WEBP up to 4 MB.') }}</small>
+                    </div>
+                    <div class="card-body">
+                        @if ($ownPortraitUrl)
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <img src="{{ $ownPortraitUrl }}" alt="" class="rounded-2 border" style="width: 72px; height: 72px; object-fit: cover;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="design-remove-portrait" name="remove_portrait" value="1" data-designer-remove-portrait>
+                                    <label class="form-check-label" for="design-remove-portrait">{{ __('Use the sample photo') }}</label>
+                                </div>
+                            </div>
+                        @endif
+                        <input type="file" class="form-control @error('portrait') is-invalid @enderror" name="portrait" accept="image/jpeg,image/png,image/webp" data-designer-portrait>
+                        @error('portrait')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                @endif
+
+                <div class="card">
+                    <div class="card-header">
                         <h2 class="card-title h6 mb-1">{{ __('4. Words on the card') }}</h2>
                         <small class="text-body">{{ __('Leave a field empty to use the template wording.') }}</small>
                     </div>
@@ -183,6 +239,7 @@
                         :message="$event->cardMessage()"
                         :dress-code="$event->dress_code"
                         :dress-code-colors="$event->dress_code_colors ?? []"
+                        :lines="$event->weddingCardLines()"
                         serial="JP-0001"
                     />
                 </div>
@@ -203,10 +260,12 @@
 
             const templates = @json($templateData);
             const ownBackground = @json($ownBackgroundUrl);
+            const ownPortrait = @json($ownPortraitUrl);
             const fallbackHeadline = @json(__('You are invited'));
             const dressPrefix = @json(__('Dress: :code', ['code' => '__CODE__']));
             const layouts = @json(collect($layouts)->map->value->values());
             let uploadedBackground = null;
+            let uploadedPortrait = null;
 
             const field = (name) => form.querySelector(`[name="${name}"]`);
             const checked = (name) => form.querySelector(`[name="${name}"]:checked`);
@@ -231,17 +290,75 @@
                 return currentTemplate().background_url;
             };
 
+            const portraitUrl = () => {
+                if (uploadedPortrait) {
+                    return uploadedPortrait;
+                }
+
+                if (form.querySelector('[data-designer-remove-portrait]')?.checked) {
+                    return currentTemplate().portrait_url;
+                }
+
+                return ownPortrait || currentTemplate().portrait_url;
+            };
+
+            const applyPortrait = (template) => {
+                const photo = preview.querySelector('[data-card-photo]');
+                const background = backgroundUrl();
+                const usingTemplateArt = background === template.background_url;
+                const slot = usingTemplateArt ? template.portrait_slot : null;
+                const url = slot ? portraitUrl() : null;
+                const show = Boolean(slot && url);
+
+                preview.classList.toggle('jp-card--has-photo', show);
+                [...preview.classList].filter((name) => name === 'jp-card--scene' || name.startsWith('jp-card--scene-')).forEach((name) => preview.classList.remove(name));
+
+                if (usingTemplateArt && template.scene) {
+                    preview.classList.add('jp-card--scene', `jp-card--scene-${template.scene}`);
+                }
+
+                if (!photo) {
+                    return;
+                }
+
+                photo.hidden = !show;
+                photo.classList.remove('jp-card__photo--arch', 'jp-card__photo--circle', 'jp-card__photo--frame');
+                photo.classList.add(`jp-card__photo--${slot?.shape || 'frame'}`);
+                ['top', 'left', 'width', 'height', 'radius', 'clip'].forEach((key) => {
+                    const value = slot?.box?.[key];
+
+                    if (value) {
+                        photo.style.setProperty(`--photo-${key}`, value);
+                    } else {
+                        photo.style.removeProperty(`--photo-${key}`);
+                    }
+                });
+
+                if (slot?.box?.copy) {
+                    preview.style.setProperty('--photo-copy', slot.box.copy);
+                } else {
+                    preview.style.removeProperty('--photo-copy');
+                }
+
+                if (show) {
+                    photo.src = url;
+                }
+            };
+
             const render = () => {
                 const template = currentTemplate();
-                const font = field('font').selectedOptions[0];
-                const layout = checked('layout')?.value ?? 'classic';
+                const font = field('font')?.selectedOptions[0];
+                const layout = checked('layout')?.value ?? template.layout ?? 'classic';
                 const background = backgroundUrl();
 
-                preview.style.setProperty('--jp-paper', field('paper').value);
-                preview.style.setProperty('--jp-ink', field('ink').value);
-                preview.style.setProperty('--jp-accent', field('accent').value);
-                preview.style.setProperty('--jp-font', font?.dataset.family ?? '');
+                if (field('paper')) {
+                    preview.style.setProperty('--jp-paper', field('paper').value);
+                    preview.style.setProperty('--jp-ink', field('ink').value);
+                    preview.style.setProperty('--jp-accent', field('accent').value);
+                    preview.style.setProperty('--jp-font', font?.dataset.family ?? '');
+                }
                 preview.style.setProperty('--jp-bg', background ? `url("${background}")` : 'none');
+                applyPortrait(template);
 
                 layouts.forEach((name) => preview.classList.toggle(`jp-card--${name}`, name === layout));
 
@@ -260,10 +377,12 @@
             const applyTemplateLook = () => {
                 const template = currentTemplate();
 
-                field('paper').value = template.paper;
-                field('ink').value = template.ink;
-                field('accent').value = template.accent;
-                field('font').value = template.font;
+                if (field('paper')) {
+                    field('paper').value = template.paper;
+                    field('ink').value = template.ink;
+                    field('accent').value = template.accent;
+                    field('font').value = template.font;
+                }
                 form.querySelectorAll('[name="layout"]').forEach((radio) => {
                     radio.checked = radio.value === template.layout;
                 });
@@ -277,6 +396,22 @@
 
             form.querySelector('[data-designer-reset]')?.addEventListener('click', applyTemplateLook);
 
+            form.querySelector('[data-template-search]')?.addEventListener('input', (event) => {
+                const term = event.target.value.trim().toLowerCase();
+                const more = document.getElementById('design-template-more');
+                const moreButton = form.querySelector('[aria-controls="design-template-more"]');
+
+                if (more && moreButton) {
+                    moreButton.hidden = term !== '';
+                    more.hidden = term === '' && moreButton.getAttribute('aria-expanded') !== 'true';
+                }
+
+                form.querySelectorAll('[data-template-choice]').forEach((choice) => {
+                    const name = choice.dataset.templateName ?? '';
+                    choice.hidden = term !== '' && !name.includes(term);
+                });
+            });
+
             form.querySelector('[data-designer-background]')?.addEventListener('change', (event) => {
                 const file = event.target.files?.[0];
 
@@ -285,6 +420,17 @@
                 }
 
                 uploadedBackground = file ? URL.createObjectURL(file) : null;
+                render();
+            });
+
+            form.querySelector('[data-designer-portrait]')?.addEventListener('change', (event) => {
+                const file = event.target.files?.[0];
+
+                if (uploadedPortrait) {
+                    URL.revokeObjectURL(uploadedPortrait);
+                }
+
+                uploadedPortrait = file ? URL.createObjectURL(file) : null;
                 render();
             });
 

@@ -1,11 +1,11 @@
 @php
     $useCardUrl = auth()->check()
         ? route('events.index', ['new' => 1, 'template' => $template->id])
-        : route('register');
+        : route('register', ['template' => $template->id]);
 @endphp
 <div class="blog-block wow fadeInUp" data-wow-delay="{{ $delay ?? 200 }}ms">
     <div class="thumb">
-        <div class="emca-swatch" style="background: {{ $template->paper }}; color: {{ $template->ink }}; --swatch-accent: {{ $template->accent }};">
+        <div class="emca-swatch" style="background-color: {{ $template->paper }}; @if ($template->backgroundUrl()) background-image: url('{{ $template->backgroundUrl() }}'); background-size: cover; background-position: center; @endif color: {{ $template->ink }}; --swatch-accent: {{ $template->accent }};">
             <span class="emca-swatch-kicker" style="color: {{ $template->accent }};">{{ $template->category?->label() }}</span>
             <span class="emca-swatch-title">{{ $template->name }}</span>
             <span class="emca-swatch-kicker">{{ __('You are invited') }}</span>

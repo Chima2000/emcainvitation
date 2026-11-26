@@ -1,5 +1,6 @@
 <?php
 
+use App\EventCategoryGroup;
 use App\EventStatus;
 use App\Models\Event;
 use App\Models\EventCategory;
@@ -33,6 +34,11 @@ test('the template pills come from the configured categories', function () {
         ->get(route('admin.templates.index'))
         ->assertOk()
         ->assertSee(route('admin.templates.index', ['category' => 'graduation']), false)
+        ->assertSee('emca-filter-pills', false)
+        ->assertSee('id="template-categories"', false)
+        ->assertSee('fa-solid', false)
+        ->assertSee(__('Weddings and milestones'), false)
+        ->assertDontSee('emca-category-choice', false)
         ->assertSee('Graduation')
         ->assertSee(route('admin.event-categories.index'), false)
         ->assertViewHas('templateCounts', fn ($counts): bool => $counts->get('graduation') === 2);
@@ -56,6 +62,7 @@ test('a super admin creates a category with a fixed slug and a Swahili name', fu
         ->post(route('admin.event-categories.store'), [
             'name' => 'Graduation Party',
             'name_sw' => 'Mahafali',
+            'menu_group' => 'festivals',
             'icon' => 'fa-graduation-cap',
             'photo' => 'celebration.jpg',
             'sort_order' => 120,
@@ -68,12 +75,25 @@ test('a super admin creates a category with a fixed slug and a Swahili name', fu
 
     expect($category->slug)->toBe('graduation_party')
         ->and($category->icon)->toBe('fa-graduation-cap')
+        ->and($category->menu_group)->toBe(EventCategoryGroup::Festivals)
         ->and($category->is_active)->toBeTrue();
+
+    $this->actingAs($admin)
+        ->get(route('admin.event-categories.index'))
+        ->assertOk()
+        ->assertSee(__('Group'), false)
+        ->assertSee(__('Festivals'), false);
+
+    $this->actingAs($admin)
+        ->get(route('admin.templates.index'))
+        ->assertOk()
+        ->assertSeeInOrder([__('Festivals'), 'Mahafali', __('Gatherings')], false);
 
     $this->actingAs($admin)
         ->put(route('admin.event-categories.update', $category), [
             'name' => 'Graduations',
             'name_sw' => 'Mahafali',
+            'menu_group' => 'work',
             'icon' => 'fa-award',
             'photo' => 'birthday.jpg',
             'sort_order' => 5,
@@ -84,6 +104,7 @@ test('a super admin creates a category with a fixed slug and a Swahili name', fu
     expect($category->refresh())
         ->slug->toBe('graduation_party')
         ->name->toBe('Graduations')
+        ->menu_group->toBe(EventCategoryGroup::Work)
         ->photo->toBe('birthday.jpg');
 
     app()->setLocale('sw');
@@ -93,6 +114,26 @@ test('a super admin creates a category with a fixed slug and a Swahili name', fu
     expect($category->label())->toBe('Graduations');
 });
 
+test('other stays at the bottom when a new category has a higher order', function () {
+    $admin = User::factory()->superAdmin()->create();
+
+    $this->actingAs($admin)
+        ->post(route('admin.event-categories.store'), [
+            'name' => 'Graduation',
+            'menu_group' => 'gatherings',
+            'photo' => 'celebration.jpg',
+            'sort_order' => 120,
+            'is_active' => '1',
+        ])
+        ->assertSessionHasNoErrors();
+
+    $this->actingAs($admin)
+        ->get(route('admin.event-categories.index'))
+        ->assertOk()
+        ->assertSeeInOrder(['Corporate', 'Graduation', 'Other'])
+        ->assertViewHas('categories', fn ($categories): bool => $categories->last()?->slug === 'other');
+});
+
 test('a second category with a similar name gets its own slug', function () {
     $admin = User::factory()->superAdmin()->create();
     EventCategory::factory()->create(['slug' => 'graduation', 'name' => 'Graduation']);
@@ -100,6 +141,7 @@ test('a second category with a similar name gets its own slug', function () {
     $this->actingAs($admin)
         ->post(route('admin.event-categories.store'), [
             'name' => 'Graduation!',
+            'menu_group' => 'gatherings',
             'photo' => 'celebration.jpg',
             'is_active' => '1',
         ])
@@ -137,6 +179,7 @@ test('a category picture can be uploaded and removed', function () {
     $this->actingAs($admin)
         ->put(route('admin.event-categories.update', $category), [
             'name' => $category->name,
+            'menu_group' => 'gatherings',
             'photo' => 'celebration.jpg',
             'photo_upload' => UploadedFile::fake()->image('graduation.jpg', 1200, 600),
             'is_active' => '1',
@@ -146,11 +189,12 @@ test('a category picture can be uploaded and removed', function () {
     $path = $category->refresh()->photo_path;
 
     Storage::disk('public')->assertExists($path);
-    expect($category->photoUrl())->toContain($path);
+    expect($category->photoUrl())->toStartWith('/storage/')->toContain($path);
 
     $this->actingAs($admin)
         ->put(route('admin.event-categories.update', $category), [
             'name' => $category->name,
+            'menu_group' => 'gatherings',
             'photo' => 'celebration.jpg',
             'remove_photo' => '1',
             'is_active' => '1',
@@ -211,7 +255,14 @@ test('the event creation modal shows a live card preview and readonly host profi
         ->assertSee('value="Neema Mushi" readonly', false)
         ->assertSee('data-organization-host-toggle', false)
         ->assertSee('data-add-dress-code-color', false)
+        ->assertSee('emca-dress-code-color', false)
+        ->assertSee('data-template-select-search', false)
+        ->assertSee('data-template-menu-toggle', false)
+        ->assertSee('data-template-results', false)
+        ->assertSee('data-template-results hidden', false)
+        ->assertSee('emca-template-results', false)
         ->assertSee(__('Dress code colors'))
+        ->assertSee(__('Search templates'))
         ->assertSee(__('Live invitation preview'));
 
     $response = $this->get(route('dashboard'));
@@ -353,4 +404,55 @@ test('a host cannot manage event categories', function () {
 
     expect(EventCategory::query()->where('name', 'Sneaky')->exists())->toBeFalse()
         ->and($category->refresh()->exists)->toBeTrue();
+});
+
+test('a host cannot schedule an event before today', function () {
+    $host = User::factory()->create();
+
+    $this->actingAs($host)
+        ->from(route('events.index'))
+        ->post(route('events.store'), eventPayload([
+            'event_date' => now()->subDay()->format('Y-m-d H:i'),
+        ]))
+        ->assertRedirect(route('events.index', ['new' => 1]))
+        ->assertSessionHasErrors('event_date', errorBag: 'createEvent');
+
+    $this->assertDatabaseCount('events', 0);
+});
+
+test('the event date calendar starts at the beginning of today', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+
+    $this->actingAs($host)
+        ->get(route('events.edit', $event))
+        ->assertOk()
+        ->assertSee('min="'.now()->timezone(config('app.timezone'))->format('Y-m-d\T00:00').'"', false);
+});
+
+test('updating an event rejects a new date before today but keeps a date that is already past', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create([
+        'event_date' => now()->subDays(3),
+    ]);
+    $storedDate = $event->event_date->timezone(config('app.timezone'))->format('Y-m-d H:i');
+
+    $this->actingAs($host)
+        ->from(route('events.edit', $event))
+        ->put(route('events.update', $event), eventPayload([
+            'status' => $event->status->value,
+            'event_date' => now()->subDay()->format('Y-m-d H:i'),
+        ]))
+        ->assertRedirect(route('events.edit', $event))
+        ->assertSessionHasErrors([
+            'event_date' => __('Choose today or a later date.'),
+        ]);
+
+    $this->put(route('events.update', $event), eventPayload([
+        'title' => 'Mahafali iliyopita',
+        'status' => $event->status->value,
+        'event_date' => $storedDate,
+    ]))->assertRedirect(route('events.show', $event));
+
+    expect($event->fresh()->title)->toBe('Mahafali iliyopita');
 });

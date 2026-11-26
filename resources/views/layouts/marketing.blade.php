@@ -21,17 +21,11 @@
         <link rel="stylesheet" href="{{ asset('admin/assets/css/emca-ajax.css') }}?v={{ filemtime(public_path('admin/assets/css/emca-ajax.css')) }}">
         @stack('head')
     </head>
-    <body data-emca-layout="marketing">
+    <body data-emca-layout="marketing" @class([trim($__env->yieldContent('body_class'))])>
         <div class="page-wrapper">
             <div class="preloader"></div>
 
-            <div class="back-to-top-wrapper">
-                <button id="back_to_top" type="button" class="back-to-top-btn" aria-label="{{ __('Back to top') }}">
-                    <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 6L6 1L1 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-            </div>
+            @include('layouts.partials.back-to-top')
 
             <header class="main-header header-style-one">
                 <div class="outer-box">
@@ -148,7 +142,7 @@
 
             <div data-emca-sync="flash">
                 @if (session('status') || session('error'))
-                    <div @class(['emca-flash', 'emca-flash-error' => session('error')]) role="status">
+                    <div @class(['emca-flash', 'emca-flash-error' => session('error')]) role="status" data-emca-dismiss>
                         <i @class(['fa-solid', 'fa-circle-exclamation' => session('error'), 'fa-circle-check' => ! session('error')])></i>
                         <span>{{ session('error') ?? session('status') }}</span>
                         <button type="button" class="emca-flash-close" aria-label="{{ __('Close') }}"><i class="fa-regular fa-xmark"></i></button>
@@ -267,7 +261,7 @@
         <script src="{{ $insectra }}/js/gsap-scroll-to-plugin.js"></script>
         <script src="{{ $insectra }}/js/SplitText.min.js"></script>
         <script src="{{ $insectra }}/js/custom-gsap.js"></script>
-        <script src="{{ $insectra }}/js/script.js"></script>
+        <script src="{{ $insectra }}/js/script.js?v={{ filemtime(public_path('invitationtemplate/insectra-html/js/script.js')) }}"></script>
         <script>
             document.addEventListener('click', function (event) {
                 document.querySelectorAll('.emca-locale[open]').forEach(function (menu) {

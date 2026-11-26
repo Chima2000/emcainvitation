@@ -18,7 +18,7 @@ class PledgeController extends Controller
     {
         $event->pledges()->create($request->validated());
 
-        return back()->with('status', __('Pledge recorded.'));
+        return $this->pledgeBack(__('Pledge recorded.'));
     }
 
     public function update(UpdatePledgeRequest $request, Event $event, Pledge $pledge): RedirectResponse
@@ -27,7 +27,7 @@ class PledgeController extends Controller
 
         $pledge->update($request->validated());
 
-        return back()->with('status', __('Pledge updated.'));
+        return $this->pledgeBack(__('Pledge updated.'));
     }
 
     public function destroy(Request $request, Event $event, Pledge $pledge): RedirectResponse
@@ -37,6 +37,13 @@ class PledgeController extends Controller
 
         $pledge->delete();
 
-        return back()->with('status', __('Pledge removed.'));
+        return $this->pledgeBack(__('Pledge removed.'));
+    }
+
+    private function pledgeBack(string $message): RedirectResponse
+    {
+        return back()
+            ->withFragment('pledges')
+            ->with('pledge_notice', $message);
     }
 }

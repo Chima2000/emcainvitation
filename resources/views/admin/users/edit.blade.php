@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', __('Edit host'))
-@section('heading', __('Edit host'))
+@section('title', $user->isLead() ? __('Edit lead') : __('Edit host'))
+@section('heading', $user->isLead() ? __('Edit lead') : __('Edit host'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">{{ __('Hosts') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route($user->isLead() ? 'admin.leads.index' : 'admin.users.index') }}">{{ $user->isLead() ? __('Leads') : __('Hosts') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('admin.users.show', $user) }}">{{ $user->name }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ __('Edit') }}</li>
 @endsection
@@ -36,7 +36,7 @@
                             @enderror
                         </div>
                         <div class="d-flex flex-wrap gap-2 mt-4">
-                            <x-button>{{ __('Save host') }}</x-button>
+                            <x-button>{{ $user->isLead() ? __('Save lead') : __('Save host') }}</x-button>
                             <a href="{{ route('admin.users.show', $user) }}" class="btn btn-light">{{ __('Cancel') }}</a>
                         </div>
                     </form>

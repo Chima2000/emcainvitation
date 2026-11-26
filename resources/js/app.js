@@ -1,3 +1,5 @@
+import jsQR from 'jsqr';
+
 const setupEventCreationForms = () => {
     document.querySelectorAll('form[data-event-form]').forEach((form) => {
         if (form.dataset.eventFormReady === '1') {
@@ -13,17 +15,32 @@ const setupEventCreationForms = () => {
         const colorTemplate = form.querySelector('[data-dress-code-color-template]');
         const colorAddButton = form.querySelector('[data-add-dress-code-color]');
         const previewCard = form.querySelector('[data-preview-card]');
-        const templatePicker = form.querySelector('[name="invitation_template_id"]');
+        const templatePicker = form.querySelector('[data-template-picker]');
+        const templateSearch = form.querySelector('[data-template-select-search]');
+        const templateMenu = form.querySelector('[data-template-results]');
+        const templateToggle = form.querySelector('[data-template-menu-toggle]');
+        const templateEmpty = form.querySelector('[data-template-select-empty]');
+        let templateMenuOpen = false;
+        let templateQuery = '';
+        const selectedTemplateId = () => form.querySelector('[name="invitation_template_id"]:checked')?.value
+            || form.querySelector('[name="invitation_template_id"]')?.value
+            || '';
         const previewTemplates = form.dataset.previewTemplates ? JSON.parse(form.dataset.previewTemplates) : {};
         const previewDefault = form.dataset.previewDefault ? JSON.parse(form.dataset.previewDefault) : {};
         let nextColorIndex = colorList?.querySelectorAll('[data-dress-code-color-row]').length || 0;
 
         const readValue = (name) => form.querySelector(`[name="${name}"]`)?.value.trim() || '';
-        const setCardText = (name, value, fallback = '') => {
+        const setCardText = (name, value, hideWhenEmpty = false) => {
             const field = previewCard?.querySelector(`[data-card-field="${name}"]`);
 
-            if (field) {
-                field.textContent = value || fallback;
+            if (!field) {
+                return;
+            }
+
+            field.textContent = value;
+
+            if (hideWhenEmpty) {
+                field.hidden = value === '';
             }
         };
         const updatePreview = () => {
@@ -33,9 +50,9 @@ const setupEventCreationForms = () => {
 
             const selectedType = form.querySelector('[name="type"]');
             const selectedTypeLabel = selectedType?.selectedOptions[0]?.textContent.trim() || '';
-            const selectedTemplateId = templatePicker?.value || '';
-            const design = selectedTemplateId
-                ? previewTemplates[selectedTemplateId]
+            const templateId = selectedTemplateId();
+            const design = templateId
+                ? previewTemplates[templateId]
                 : { ...previewDefault, kicker: selectedTypeLabel, headline: null, message: null };
 
             if (design) {
@@ -49,6 +66,40 @@ const setupEventCreationForms = () => {
                 previewCard.style.setProperty('--jp-bg', design.backgroundUrl
                     ? `url("${encodeURI(design.backgroundUrl).replaceAll('"', '%22')}")`
                     : 'none');
+
+                const photo = previewCard.querySelector('[data-card-photo]');
+                const showPhoto = Boolean(design.portraitSlot && design.portraitUrl);
+                previewCard.classList.toggle('jp-card--has-photo', showPhoto);
+                [...previewCard.classList].filter((name) => name === 'jp-card--scene' || name.startsWith('jp-card--scene-')).forEach((name) => previewCard.classList.remove(name));
+
+                if (design.scene) {
+                    previewCard.classList.add('jp-card--scene', `jp-card--scene-${design.scene}`);
+                }
+
+                if (photo) {
+                    photo.hidden = !showPhoto;
+                    photo.classList.remove('jp-card__photo--arch', 'jp-card__photo--circle', 'jp-card__photo--frame');
+                    photo.classList.add(`jp-card__photo--${design.portraitSlot?.shape || 'frame'}`);
+                    ['top', 'left', 'width', 'height', 'radius', 'clip'].forEach((key) => {
+                        const value = design.portraitSlot?.box?.[key];
+
+                        if (value) {
+                            photo.style.setProperty(`--photo-${key}`, value);
+                        } else {
+                            photo.style.removeProperty(`--photo-${key}`);
+                        }
+                    });
+
+                    if (design.portraitSlot?.box?.copy) {
+                        previewCard.style.setProperty('--photo-copy', design.portraitSlot.box.copy);
+                    } else {
+                        previewCard.style.removeProperty('--photo-copy');
+                    }
+
+                    if (showPhoto) {
+                        photo.src = design.portraitUrl;
+                    }
+                }
             }
 
             const usesOrganizationName = Boolean(organizationToggle?.checked);
@@ -65,17 +116,53 @@ const setupEventCreationForms = () => {
                     hour: 'numeric',
                     minute: '2-digit',
                 }).format(eventDate)
-                : dateValue || form.dataset.previewDateFallback;
+                : '';
             const headline = readValue('headline') || design?.headline || form.dataset.previewInviteHeadline;
             const message = readValue('message') || design?.message || '';
             const dressCode = readValue('dress_code');
+            const weddingLine = (name, pattern) => {
+                const value = readValue(name);
+
+                return value && pattern ? pattern.replace('__VALUE__', value) : '';
+            };
 
             setCardText('kicker', design?.kicker || selectedTypeLabel);
-            setCardText('title', readValue('title'), form.dataset.previewTitleFallback);
+            setCardText('title', readValue('title'), true);
             setCardText('hosts', `${host}${partner ? ` & ${partner}` : ''}`);
             setCardText('headline', headline);
-            setCardText('when', formattedDate);
-            setCardText('venue', readValue('venue'), form.dataset.previewVenueFallback);
+            setCardText('when', formattedDate, true);
+            setCardText('venue', readValue('venue'), true);
+
+            const linesHost = previewCard.querySelector('[data-card-lines]');
+
+            if (linesHost) {
+                const type = form.querySelector('[name="type"]')?.value;
+                const lines = [];
+
+                if (type === 'wedding') {
+                    const couple = [readValue('bride_name'), readValue('groom_name')].filter(Boolean).join(' & ');
+
+                    if (couple) {
+                        lines.push(couple);
+                    }
+
+                    [
+                        weddingLine('bride_family', form.dataset.previewBrideFamily),
+                        weddingLine('groom_family', form.dataset.previewGroomFamily),
+                        weddingLine('ceremony_place', form.dataset.previewVows),
+                        weddingLine('reception_venue', form.dataset.previewReception),
+                        weddingLine('reception_time', form.dataset.previewReceptionTime),
+                        weddingLine('arrive_by', form.dataset.previewArrive),
+                    ].filter(Boolean).forEach((line) => lines.push(line));
+                }
+
+                linesHost.replaceChildren(...lines.map((text) => {
+                    const line = document.createElement('p');
+                    line.textContent = text;
+
+                    return line;
+                }));
+            }
 
             const messageField = previewCard.querySelector('[data-card-field="message"]');
             if (messageField) {
@@ -153,14 +240,306 @@ const setupEventCreationForms = () => {
             updatePreview();
         });
 
+        const renderTemplateMenu = () => {
+            let visibleCount = 0;
+
+            form.querySelectorAll('[data-template-choice]').forEach((choice) => {
+                const haystack = choice.dataset.templateName ?? '';
+                const matches = templateQuery === '' || haystack.includes(templateQuery);
+
+                choice.hidden = !matches;
+
+                if (matches) {
+                    visibleCount += 1;
+                }
+            });
+
+            const noneChoice = form.querySelector('[data-template-none]');
+
+            if (noneChoice) {
+                noneChoice.hidden = templateQuery !== '';
+            }
+
+            if (templateMenu) {
+                templateMenu.hidden = !templateMenuOpen;
+            }
+
+            templateSearch?.setAttribute('aria-expanded', templateMenuOpen ? 'true' : 'false');
+            templateToggle?.setAttribute('aria-expanded', templateMenuOpen ? 'true' : 'false');
+
+            if (templateEmpty) {
+                templateEmpty.hidden = !templateMenuOpen || templateQuery === '' || visibleCount > 0;
+            }
+        };
+        const openTemplateMenu = (query) => {
+            templateQuery = query;
+            templateMenuOpen = true;
+            renderTemplateMenu();
+        };
+        const closeTemplateMenu = () => {
+            templateQuery = '';
+            templateMenuOpen = false;
+            renderTemplateMenu();
+        };
+
         organizationToggle?.addEventListener('change', syncOrganizationName);
+        templateToggle?.addEventListener('click', () => {
+            if (templateMenuOpen) {
+                closeTemplateMenu();
+
+                return;
+            }
+
+            openTemplateMenu('');
+            templateSearch?.focus();
+            templateSearch?.select();
+        });
+        templateSearch?.addEventListener('focus', () => {
+            templateSearch.select();
+        });
+        templateSearch?.addEventListener('input', () => {
+            const query = templateSearch.value.trim().toLowerCase();
+
+            if (query === '') {
+                const none = form.querySelector('[data-template-none] input');
+
+                if (none) {
+                    none.checked = true;
+                }
+
+                closeTemplateMenu();
+                updatePreview();
+
+                return;
+            }
+
+            openTemplateMenu(query);
+        });
+        templateMenu?.addEventListener('change', (event) => {
+            const choice = event.target.closest('[data-template-choice], [data-template-none]');
+            const label = choice?.querySelector('span')?.textContent.trim() ?? '';
+
+            if (templateSearch) {
+                templateSearch.value = event.target.value === '' ? '' : label;
+            }
+
+            closeTemplateMenu();
+            updatePreview();
+        });
+        document.addEventListener('click', (event) => {
+            if (!templateMenuOpen || templatePicker?.contains(event.target)) {
+                return;
+            }
+
+            closeTemplateMenu();
+        });
         form.addEventListener('input', updatePreview);
         form.addEventListener('change', updatePreview);
         syncOrganizationName();
+        closeTemplateMenu();
+    });
+};
+
+const isMobileDevice = () => {
+    if (typeof navigator.userAgentData?.mobile === 'boolean') {
+        return navigator.userAgentData.mobile;
+    }
+
+    const shortestSide = Math.min(window.screen.width, window.screen.height);
+
+    return window.matchMedia('(pointer: coarse)').matches && shortestSide <= 900;
+};
+
+const doorWaitMs = 3000;
+const doorMessageMs = 4000;
+let doorCheckStartedAt = 0;
+
+const showDoorLoading = () => {
+    const card = document.querySelector('[data-door-card]');
+    const body = card?.querySelector('.card-body');
+
+    if (!body || body.querySelector('[data-door-loading]')) {
+        return;
+    }
+
+    const loading = document.createElement('div');
+    loading.dataset.doorLoading = '1';
+    loading.setAttribute('role', 'status');
+    loading.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span></span>';
+    loading.lastElementChild.textContent = card.dataset.doorChecking || 'Checking the card…';
+    body.prepend(loading);
+};
+
+const setDoorBusy = (busy) => {
+    document.querySelectorAll('[data-door-card] button, [data-door-card] input').forEach((control) => {
+        control.disabled = busy;
+    });
+};
+
+const revealDoorResult = (result) => {
+    document.querySelector('[data-door-loading]')?.remove();
+    result.dataset.doorReady = '1';
+    setDoorBusy(false);
+    doorCheckStartedAt = 0;
+
+    if (result.dataset.doorResult === 'denied' && isMobileDevice() && typeof navigator.vibrate === 'function') {
+        navigator.vibrate([280, 120, 280, 120, 360]);
+    }
+
+    window.setTimeout(() => {
+        result.style.transition = 'opacity 0.2s ease';
+        result.style.opacity = '0';
+        window.setTimeout(() => result.remove(), 200);
+    }, doorMessageMs);
+    showScannerVerdict(result.dataset.doorResult);
+};
+
+const showScannerVerdict = (kind) => {
+    const stage = document.querySelector('[data-scanner-stage]');
+    const verdict = document.querySelector('[data-scanner-verdict]');
+    const icon = verdict?.querySelector('[data-scanner-icon]');
+
+    if (!stage || !verdict || !icon || (kind !== 'verified' && kind !== 'denied')) {
+        return;
+    }
+
+    const line = document.querySelector('[data-scanner-line]');
+
+    if (line) {
+        line.hidden = true;
+    }
+    const video = stage.querySelector('[data-scanner]');
+
+    if (video) {
+        video.hidden = true;
+    }
+
+    icon.className = kind === 'verified' ? 'fi fi-rr-check' : 'fi fi-rr-cross';
+    verdict.dataset.scannerVerdict = kind;
+    verdict.hidden = false;
+    stage.hidden = false;
+
+    window.setTimeout(() => {
+        verdict.hidden = true;
+        stage.hidden = true;
+    }, 3000);
+};
+
+const settleDoorResult = () => {
+    const result = document.querySelector('[data-door-result]:not([data-door-holding])');
+
+    if (!result) {
+        if (doorCheckStartedAt) {
+            document.querySelector('[data-door-loading]')?.remove();
+            setDoorBusy(false);
+            doorCheckStartedAt = 0;
+        }
+
+        return;
+    }
+
+    result.dataset.doorHolding = '1';
+    showDoorLoading();
+    setDoorBusy(true);
+
+    const started = doorCheckStartedAt || Date.now();
+    const wait = Math.max(0, doorWaitMs - (Date.now() - started));
+
+    window.setTimeout(() => revealDoorResult(result), wait);
+};
+
+const setupDoorArrivals = () => {
+    document.querySelectorAll('[data-door-arrival-list]').forEach((list) => {
+        if (list.dataset.doorArrivalReady === '1') {
+            return;
+        }
+
+        list.dataset.doorArrivalReady = '1';
+
+        const items = [...list.querySelectorAll('[data-door-arrival]')];
+        const pager = list.parentElement?.querySelector('[data-door-arrival-pager]');
+        const previous = pager?.querySelector('[data-door-arrival-prev]');
+        const next = pager?.querySelector('[data-door-arrival-next]');
+        const pageSize = 5;
+        let page = 0;
+        const lastPage = Math.max(0, Math.ceil(items.length / pageSize) - 1);
+
+        const showPage = () => {
+            items.forEach((item, index) => {
+                item.hidden = index < page * pageSize || index >= (page + 1) * pageSize;
+            });
+
+            if (previous) {
+                previous.hidden = page === 0;
+            }
+
+            if (next) {
+                next.hidden = page >= lastPage;
+            }
+        };
+
+        previous?.addEventListener('click', () => {
+            page = Math.max(0, page - 1);
+            showPage();
+        });
+
+        next?.addEventListener('click', () => {
+            page = Math.min(lastPage, page + 1);
+            showPage();
+        });
+
+        showPage();
+    });
+};
+
+const setupGuestRows = () => {
+    document.querySelectorAll('[data-guest-row-list]').forEach((list) => {
+        if (list.dataset.guestRowReady === '1') {
+            return;
+        }
+
+        list.dataset.guestRowReady = '1';
+
+        const items = [...list.querySelectorAll('[data-guest-row]')];
+        const pager = list.closest('[data-guest-list]')?.querySelector('[data-guest-row-pager]');
+        const previous = pager?.querySelector('[data-guest-row-prev]');
+        const next = pager?.querySelector('[data-guest-row-next]');
+        const pageSize = 5;
+        let page = 0;
+        const lastPage = Math.max(0, Math.ceil(items.length / pageSize) - 1);
+
+        const showPage = () => {
+            items.forEach((item, index) => {
+                item.hidden = index < page * pageSize || index >= (page + 1) * pageSize;
+            });
+
+            if (previous) {
+                previous.hidden = page === 0;
+            }
+
+            if (next) {
+                next.hidden = page >= lastPage;
+            }
+        };
+
+        previous?.addEventListener('click', () => {
+            page = Math.max(0, page - 1);
+            showPage();
+        });
+
+        next?.addEventListener('click', () => {
+            page = Math.min(lastPage, page + 1);
+            showPage();
+        });
+
+        showPage();
     });
 };
 
 const initPage = () => {
+    settleDoorResult();
+    setupDoorArrivals();
+    setupGuestRows();
     setupEventCreationForms();
 
     document.querySelectorAll('[data-qr]').forEach((node) => {
@@ -427,46 +806,253 @@ const initPage = () => {
 
     const start = document.querySelector('[data-scanner-start]');
     const video = document.querySelector('[data-scanner]');
+    const stage = document.querySelector('[data-scanner-stage]');
+    const line = document.querySelector('[data-scanner-line]');
     const input = document.querySelector('[data-check-in-code]');
+    const status = document.querySelector('[data-scanner-status]');
+    const startLabel = start?.querySelector('[data-scanner-label]');
 
     if (!start || !video || !input || start.dataset.scannerReady === '1') {
         return;
     }
 
     start.dataset.scannerReady = '1';
-    start.addEventListener('click', async () => {
-        if (!('BarcodeDetector' in window)) {
-            window.alert(start.dataset.scannerUnsupported || 'This browser cannot scan codes. Type the card number instead.');
+
+    const setStartLabel = (label) => {
+        if (startLabel) {
+            startLabel.textContent = label;
 
             return;
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' },
+        start.textContent = label;
+    };
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    let stream = null;
+    let timer = 0;
+    let detector = null;
+    let submitted = false;
+
+    input.form?.addEventListener('submit', () => {
+        window.setTimeout(() => {
+            input.form?.querySelectorAll('button[type="submit"]').forEach((button) => {
+                button.disabled = true;
+            });
+        }, 0);
+    });
+
+    const setStatus = (message) => {
+        if (!status) {
+            return;
+        }
+
+        status.hidden = message === '';
+        status.textContent = message;
+    };
+    const stopScanner = () => {
+        window.clearInterval(timer);
+        timer = 0;
+        stream?.getTracks().forEach((track) => track.stop());
+        stream = null;
+        video.pause();
+        video.srcObject = null;
+        video.hidden = true;
+
+        if (line) {
+            line.hidden = true;
+        }
+
+        if (stage && stage.querySelector('[data-scanner-verdict]')?.hidden !== false) {
+            stage.hidden = true;
+        }
+
+        start.dataset.scannerActive = 'false';
+        start.setAttribute('aria-pressed', 'false');
+        setStartLabel(start.dataset.scannerStartLabel || start.textContent);
+        setStatus('');
+    };
+    const finishScan = (value) => {
+        if (submitted) {
+            return;
+        }
+
+        submitted = true;
+        const code = String(value ?? '').trim();
+
+        if (code === '') {
+            submitted = false;
+
+            return;
+        }
+
+        stopScanner();
+        input.value = code;
+        input.form?.requestSubmit();
+    };
+    const readFrame = async () => {
+        if (submitted || !stream || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+            return;
+        }
+
+        if (detector) {
+            try {
+                const codes = await detector.detect(video);
+
+                if (codes.length > 0) {
+                    finishScan(codes[0].rawValue);
+
+                    return;
+                }
+            } catch {
+                detector = null;
+            }
+        }
+
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+        if (!width || !height || !context) {
+            return;
+        }
+
+        const scale = Math.min(1, 480 / width);
+        canvas.width = Math.floor(width * scale);
+        canvas.height = Math.floor(height * scale);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const image = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(image.data, image.width, image.height, { inversionAttempts: 'dontInvert' });
+
+        if (code?.data) {
+            finishScan(code.data);
+        }
+    };
+
+    start.addEventListener('click', async () => {
+        if (stream) {
+            stopScanner();
+
+            return;
+        }
+
+        submitted = false;
+
+        if (stage) {
+            stage.hidden = false;
+        }
+
+        setStatus('');
+
+        if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+            setStatus(start.dataset.scannerInsecure || 'Open this site with https to use the camera, or type the card number.');
+
+            return;
+        }
+
+        const openCamera = async (videoConstraints) => navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: videoConstraints,
         });
 
-        video.srcObject = stream;
-        video.classList.remove('hidden', 'd-none');
-        await video.play();
+        try {
+            stream = await openCamera({ facingMode: { ideal: 'environment' } });
+        } catch {
+            try {
+                stream = await openCamera(true);
+            } catch {
+                setStatus(start.dataset.scannerDenied || 'Allow the camera, or type the card number.');
 
-        const detector = new window.BarcodeDetector({ formats: ['qr_code'] });
-        const timer = window.setInterval(async () => {
-            const codes = await detector.detect(video);
-
-            if (codes.length === 0) {
                 return;
             }
+        }
 
-            window.clearInterval(timer);
-            stream.getTracks().forEach((track) => track.stop());
-            input.value = codes[0].rawValue;
-            input.form?.requestSubmit();
-        }, 700);
+        if ('BarcodeDetector' in window) {
+            try {
+                const formats = typeof window.BarcodeDetector.getSupportedFormats === 'function'
+                    ? await window.BarcodeDetector.getSupportedFormats()
+                    : ['qr_code'];
+
+                if (formats.includes('qr_code')) {
+                    detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+                }
+            } catch {
+                detector = null;
+            }
+        }
+
+        if (!start.dataset.scannerStartLabel) {
+            start.dataset.scannerStartLabel = start.textContent.trim();
+        }
+
+        video.srcObject = stream;
+        video.hidden = false;
+
+        if (stage) {
+            stage.hidden = false;
+        }
+
+        if (line) {
+            line.hidden = false;
+        }
+
+        const verdict = stage?.querySelector('[data-scanner-verdict]');
+
+        if (verdict) {
+            verdict.hidden = true;
+        }
+
+        try {
+            await video.play();
+        } catch {
+            stopScanner();
+
+            if (stage) {
+                stage.hidden = false;
+            }
+
+            setStatus(start.dataset.scannerDenied || 'Allow the camera, or type the card number.');
+
+            return;
+        }
+
+        start.dataset.scannerActive = 'true';
+        start.setAttribute('aria-pressed', 'true');
+        setStartLabel(start.dataset.scannerStopLabel || 'Stop scanning');
+        setStatus(start.dataset.scannerLooking || 'Point the camera at the invitation code.');
+        timer = window.setInterval(() => {
+            readFrame();
+        }, 300);
     });
 };
 
+document.addEventListener('submit', (event) => {
+    const form = event.target;
+
+    if (!(form instanceof HTMLFormElement) || !form.querySelector('[data-check-in-code]')) {
+        return;
+    }
+
+    doorCheckStartedAt = Date.now();
+    showDoorLoading();
+    window.setTimeout(() => {
+        if (doorCheckStartedAt && !document.querySelector('[data-door-result]')) {
+            document.querySelector('[data-door-loading]')?.remove();
+            setDoorBusy(false);
+            doorCheckStartedAt = 0;
+        }
+    }, 8000);
+}, true);
+
 document.addEventListener('DOMContentLoaded', initPage);
 document.addEventListener('emca:page-load', initPage);
+
+document.addEventListener('click', (event) => {
+    if (!event.target.closest('[data-door-refresh]')) {
+        return;
+    }
+
+    window.location.reload();
+});
 
 document.addEventListener('click', async (event) => {
     const button = event.target.closest('[data-copy]');

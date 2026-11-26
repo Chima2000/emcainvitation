@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Event;
 use App\Models\User;
 use App\UserRole;
 use Database\Seeders\SuperAdminSeeder;
@@ -119,6 +120,30 @@ test('sign-in rejects the international number', function () {
     $this->assertGuest();
 });
 
+test('sign-in rejects a password that misses a required part', function (string $password, string $message) {
+    User::factory()->create([
+        'phone' => '+255712345678',
+        'password' => 'Secret@12',
+    ]);
+
+    $this->from(route('login'))
+        ->post(route('login'), [
+            'phone' => '0712345678',
+            'password' => $password,
+        ])
+        ->assertRedirect(route('login'))
+        ->assertSessionHasErrors([
+            'password' => $message,
+        ]);
+
+    $this->assertGuest();
+})->with([
+    'eight characters' => ['Short@12', 'Sehemu ya nenosiri iwe na herufi angalau 9.'],
+    'no uppercase letter' => ['longsecret1!', 'Nenosiri liwe na angalau herufi kubwa moja.'],
+    'no number' => ['Longsecret!!', 'Sehemu ya nenosiri iwe na angalau nambari moja.'],
+    'no symbol' => ['Longsecret12', 'Sehemu ya nenosiri iwe na angalau alama moja.'],
+]);
+
 test('sign-in rejects a wrong password', function () {
     User::factory()->create([
         'phone' => '+255712345678',
@@ -128,7 +153,7 @@ test('sign-in rejects a wrong password', function () {
     $this->from(route('login'))
         ->post(route('login'), [
             'phone' => '0712345678',
-            'password' => 'Wrong@12',
+            'password' => 'Wrong@123',
         ])
         ->assertRedirect(route('login'))
         ->assertSessionHasErrors([
@@ -136,6 +161,25 @@ test('sign-in rejects a wrong password', function () {
         ]);
 
     $this->assertGuest();
+});
+
+test('a host signs in on the overview even after opening another page', function () {
+    $host = User::factory()->create([
+        'phone' => '+255712345678',
+        'password' => 'Secret@12',
+    ]);
+    $event = Event::factory()->for($host)->create();
+
+    $this->get(route('events.show', $event))->assertRedirect(route('login'));
+
+    $this->post(route('login'), [
+        'phone' => '0712345678',
+        'password' => 'Secret@12',
+    ])->assertRedirect(route('dashboard'));
+
+    $this->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee(__('Overview'), false);
 });
 
 test('the seeded super admin signs in with 0692586046 and opens the admin dashboard', function () {

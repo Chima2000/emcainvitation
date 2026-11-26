@@ -17,7 +17,7 @@ test('a host resets the password with the code sent to the registered number', f
     $user = User::factory()->create([
         'first_name' => 'Rehema',
         'phone' => '+255712345678',
-        'password' => 'Old@1234',
+        'password' => 'Old@12345',
         'remember_token' => 'remember-me',
     ]);
 
@@ -41,7 +41,7 @@ test('a host resets the password with the code sent to the registered number', f
 
     expect($user->fresh()->remember_token)->toBeNull();
 
-    $this->post(route('login'), ['phone' => '0712345678', 'password' => 'Old@1234'])
+    $this->post(route('login'), ['phone' => '0712345678', 'password' => 'Old@12345'])
         ->assertSessionHasErrors('phone');
     $this->assertGuest();
 
@@ -51,7 +51,7 @@ test('a host resets the password with the code sent to the registered number', f
 
 test('a wrong reset code leaves the password unchanged', function () {
     fakeSmsGateway();
-    $user = User::factory()->create(['phone' => '+255712345678', 'password' => 'Old@1234']);
+    $user = User::factory()->create(['phone' => '+255712345678', 'password' => 'Old@12345']);
 
     $this->post(route('password.sms'), ['reset_phone' => '0712345678']);
     $wrongCode = lastSentSmsCode() === '000000' ? '111111' : '000000';
@@ -65,7 +65,7 @@ test('a wrong reset code leaves the password unchanged', function () {
         ->assertRedirect(route('password.reset'))
         ->assertSessionHasErrors('code');
 
-    $this->post(route('login'), ['phone' => '0712345678', 'password' => 'Old@1234']);
+    $this->post(route('login'), ['phone' => '0712345678', 'password' => 'Old@12345']);
     $this->assertAuthenticatedAs($user);
 });
 

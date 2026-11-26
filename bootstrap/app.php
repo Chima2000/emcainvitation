@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureProfileIsComplete;
 use App\Http\Middleware\EnsureSubscriptionIsActive;
+use App\Http\Middleware\EnsureUserIsFullHost;
 use App\Http\Middleware\EnsureUserIsHost;
 use App\Http\Middleware\EnsureUserIsSuperAdmin;
 use App\Http\Middleware\KeepFlashAcrossLayouts;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'super-admin' => EnsureUserIsSuperAdmin::class,
             'host' => EnsureUserIsHost::class,
+            'full-host' => EnsureUserIsFullHost::class,
             'profile-complete' => EnsureProfileIsComplete::class,
             'subscribed' => EnsureSubscriptionIsActive::class,
         ]);

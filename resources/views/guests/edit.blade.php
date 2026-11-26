@@ -40,6 +40,11 @@
                         </x-field>
                         <div class="row">
                             <div class="col-md-6">
+                                <x-field name="table_name" label="{{ __('Table name') }}">
+                                    <x-input name="table_name" value="{{ old('table_name', $guest->table_name) }}" maxlength="40" />
+                                </x-field>
+                            </div>
+                            <div class="col-md-6">
                                 <x-field name="party_size" label="{{ __('Party size') }}">
                                     <x-input name="party_size" type="number" min="1" max="30" value="{{ old('party_size', $guest->party_size) }}" required />
                                 </x-field>

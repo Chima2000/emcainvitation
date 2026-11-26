@@ -28,7 +28,7 @@ class TemplateController extends Controller
             'templates' => InvitationTemplate::query()
                 ->withCount('events')
                 ->when($category, fn ($query) => $query->where('category', $category->slug))
-                ->orderBy('name')
+                ->orderedForGallery()
                 ->paginate(24)
                 ->withQueryString(),
             'filterCategories' => EventCategory::catalog()

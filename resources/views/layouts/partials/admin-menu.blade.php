@@ -1,37 +1,37 @@
 @php
-    $menuEvent = request()->route('event');
-
-    if (! $menuEvent instanceof \App\Models\Event && isset($event) && $event instanceof \App\Models\Event) {
-        $menuEvent = $event;
-    }
-
-    if (! $menuEvent instanceof \App\Models\Event) {
-        $menuEvent = null;
-    }
-
-    $eventSections = [
-        'guests' => __('Guests'),
-        'check-in' => __('Door'),
-        'messages' => __('Messages'),
-        'pledges' => __('Pledges'),
-        'budget' => __('Budget'),
-        'tasks' => __('Tasks'),
-        'vendors' => __('Vendors'),
-    ];
-
     $eventsOpen = request()->routeIs('events.*', 'events.guests.*', 'check-ins.*');
+    $menuEvent = request()->route('event');
+    $menuEvent = $menuEvent instanceof \App\Models\Event ? $menuEvent : null;
+    $eventSections = $menuEvent ? [
+        ['label' => __('Design the card'), 'href' => route('events.design.edit', $menuEvent), 'link' => 'design', 'active' => request()->routeIs('events.design.*')],
+        ['label' => __('Edit event'), 'href' => route('events.edit', $menuEvent), 'link' => 'edit', 'active' => request()->routeIs('events.edit')],
+        ['label' => __('Door'), 'href' => route('events.show', $menuEvent).'#check-in', 'link' => 'check-in', 'section' => 'check-in'],
+        ['label' => __('Guests'), 'href' => route('events.show', $menuEvent).'#guests', 'link' => 'guests', 'section' => 'guests', 'active' => request()->routeIs('events.guests.*')],
+        ['label' => __('Records'), 'href' => route('events.show', $menuEvent).'#records', 'link' => 'records', 'section' => 'records'],
+        ['label' => __('Committees'), 'href' => route('events.show', $menuEvent).'#committees', 'link' => 'committees', 'section' => 'committees'],
+        ['label' => __('Package and wallet'), 'href' => route('events.show', $menuEvent).'#billing', 'link' => 'billing', 'section' => 'billing'],
+        ['label' => __('Messages'), 'href' => route('events.show', $menuEvent).'#messages', 'link' => 'messages', 'section' => 'messages'],
+        ['label' => __('Pledges'), 'href' => route('events.show', $menuEvent).'#pledges', 'link' => 'pledges', 'section' => 'pledges'],
+        ['label' => __('Budget'), 'href' => route('events.show', $menuEvent).'#budget', 'link' => 'budget', 'section' => 'budget'],
+        ['label' => __('Tasks'), 'href' => route('events.show', $menuEvent).'#tasks', 'link' => 'tasks', 'section' => 'tasks'],
+        ['label' => __('Vendors'), 'href' => route('events.show', $menuEvent).'#vendors', 'link' => 'vendors', 'section' => 'vendors'],
+    ] : [];
 @endphp
 
 <ul class="menubar" data-emca-sync="menu">
     @if (auth()->user()->isSuperAdmin())
         @php
+            $managedAccount = request()->route('user');
+            $managedAccountIsLead = $managedAccount instanceof \App\Models\User && $managedAccount->isLead();
+            $onAccountPage = request()->routeIs('admin.users.show', 'admin.users.edit');
             $adminMenu = [
                 __('Administration') => [
                     ['label' => __('Overview'), 'icon' => 'fi-rr-apps', 'route' => 'admin.dashboard', 'active' => 'admin.dashboard'],
                     ['label' => __('Search'), 'icon' => 'fi-rr-search', 'route' => 'admin.search', 'active' => 'admin.search'],
                 ],
                 __('Customers') => [
-                    ['label' => __('Hosts'), 'icon' => 'fi-rr-users', 'route' => 'admin.users.index', 'active' => ['admin.users.index', 'admin.users.show', 'admin.users.edit']],
+                    ['label' => __('Hosts'), 'icon' => 'fi-rr-users', 'route' => 'admin.users.index', 'active' => 'admin.users.index', 'current' => $onAccountPage && ! $managedAccountIsLead],
+                    ['label' => __('Leads'), 'icon' => 'fi-rr-user', 'route' => 'admin.leads.index', 'active' => 'admin.leads.index', 'current' => $onAccountPage && $managedAccountIsLead],
                     ['label' => __('Onboard a host'), 'icon' => 'fi-rr-user-add', 'modal' => '#onboardHostModal'],
                     ['label' => __('Demo requests'), 'icon' => 'fi-rr-comment', 'route' => 'demos.index', 'active' => 'demos.index', 'badge' => $adminNewDemos ?? 0],
                 ],
@@ -85,7 +85,7 @@
                     return true;
                 }
 
-                return isset($item['active']) && request()->routeIs(...(array) $item['active']);
+                return ($item['current'] ?? false) || (isset($item['active']) && request()->routeIs(...(array) $item['active']));
             };
         @endphp
 
@@ -113,7 +113,7 @@
                     </li>
                 @elseif (isset($item['modal']))
                     <li class="menu-item">
-                        <button class="menu-link w-100 border-0 text-start bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="{{ $item['modal'] }}">
+                        <button class="menu-link w-100 border-0 text-start" type="button" data-bs-toggle="modal" data-bs-target="{{ $item['modal'] }}">
                             <i class="fi {{ $item['icon'] }}"></i>
                             <span class="menu-label">{{ $item['label'] }}</span>
                         </button>
@@ -142,7 +142,7 @@
             </a>
         </li>
         <li @class(['menu-item', 'menu-arrow', 'open' => $eventsOpen])>
-            <a @class(['menu-link', 'active open' => $eventsOpen]) href="javascript:void(0);" role="button">
+            <a @class(['menu-link', 'open' => $eventsOpen]) href="javascript:void(0);" role="button">
                 <i class="fi fi-rr-calendar"></i>
                 <span class="menu-label">{{ __('Events') }}</span>
             </a>
@@ -157,31 +157,20 @@
                         <span class="menu-label">{{ __('New event') }}</span>
                     </x-new-event>
                 </li>
-                @if ($menuEvent)
+                @foreach ($eventSections as $section)
                     <li class="menu-item">
-                        <a @class(['menu-link', 'active' => request()->routeIs('events.show')]) href="{{ route('events.show', $menuEvent) }}">
-                            <span class="menu-label">{{ $menuEvent->title }}</span>
+                        <a @class(['menu-link', 'active' => $section['active'] ?? false]) href="{{ $section['href'] }}" data-emca-event-link="{{ $section['link'] }}" @if (! empty($section['section'])) data-emca-section="{{ $section['section'] }}" @endif>
+                            <span class="menu-label">{{ $section['label'] }}</span>
                         </a>
                     </li>
-                    @foreach ($eventSections as $id => $label)
-                        <li class="menu-item">
-                            <a class="menu-link" href="{{ route('events.show', $menuEvent) }}#{{ $id }}">
-                                <span class="menu-label">{{ $label }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                    <li class="menu-item">
-                        <a @class(['menu-link', 'active' => request()->routeIs('events.design.edit')]) href="{{ route('events.design.edit', $menuEvent) }}">
-                            <span class="menu-label">{{ __('Design the card') }}</span>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a @class(['menu-link', 'active' => request()->routeIs('events.edit')]) href="{{ route('events.edit', $menuEvent) }}">
-                            <span class="menu-label">{{ __('Edit event') }}</span>
-                        </a>
-                    </li>
-                @endif
+                @endforeach
             </ul>
+        </li>
+        <li class="menu-item">
+            <a @class(['menu-link', 'active' => request()->routeIs('contacts.*')]) href="{{ route('contacts.index') }}">
+                <i class="fi fi-rr-address-book"></i>
+                <span class="menu-label">{{ __('Contact book') }}</span>
+            </a>
         </li>
         <li class="menu-item">
             <a @class(['menu-link', 'active' => request()->routeIs('template-library.index')]) href="{{ route('template-library.index') }}">
@@ -193,30 +182,42 @@
             <span class="menu-label">{{ __('Money') }}</span>
         </li>
         @php($hostHasSubscription = auth()->user()->hasActiveSubscription())
-        <li class="menu-item">
-            <a @class(['menu-link', 'active' => request()->routeIs('subscription.*')]) href="{{ route('subscription.index') }}">
-                <i class="fi fi-rr-calendar-clock"></i>
-                <span class="menu-label">{{ __('Subscription') }}</span>
-                @if ($hostHasSubscription)
-                    <span class="badge bg-success-subtle text-success ms-auto">{{ trans_choice(':count day|:count days', auth()->user()->subscriptionDaysLeft(), ['count' => auth()->user()->subscriptionDaysLeft()]) }}</span>
-                @elseif (\App\Support\SystemSettings::subscriptionRequired())
-                    <span class="badge bg-warning-subtle text-warning ms-auto">{{ __('Inactive') }}</span>
-                @endif
-            </a>
-        </li>
-        <li class="menu-item">
-            <a @class(['menu-link', 'active' => request()->routeIs('wallet.*')]) href="{{ route('wallet.index') }}">
-                <i class="fi fi-rr-wallet"></i>
-                <span class="menu-label">{{ __('Wallet') }}</span>
-                <span class="badge bg-primary-subtle text-primary ms-auto">{{ number_format(auth()->user()->wallet_balance) }}</span>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a @class(['menu-link', 'active' => request()->routeIs('packages.*')]) href="{{ route('packages.index') }}">
-                <i class="fi fi-rr-box-open"></i>
-                <span class="menu-label">{{ __('Packages') }}</span>
-            </a>
-        </li>
+        @if (auth()->user()->isLead())
+            <li class="menu-item">
+                <a @class(['menu-link', 'active' => request()->routeIs('become-host.*')]) href="{{ route('become-host.create') }}">
+                    <i class="fi fi-rr-user-add"></i>
+                    <span class="menu-label">{{ __('Become a host') }}</span>
+                    @if ($hostHasSubscription)
+                        <span class="badge bg-success-subtle text-success ms-auto">{{ trans_choice(':count day|:count days', auth()->user()->subscriptionDaysLeft(), ['count' => auth()->user()->subscriptionDaysLeft()]) }}</span>
+                    @endif
+                </a>
+            </li>
+        @else
+            <li class="menu-item">
+                <a @class(['menu-link', 'active' => request()->routeIs('subscription.*')]) href="{{ route('subscription.index') }}">
+                    <i class="fi fi-rr-calendar-clock"></i>
+                    <span class="menu-label">{{ __('Subscription') }}</span>
+                    @if ($hostHasSubscription)
+                        <span class="badge bg-success-subtle text-success ms-auto">{{ trans_choice(':count day|:count days', auth()->user()->subscriptionDaysLeft(), ['count' => auth()->user()->subscriptionDaysLeft()]) }}</span>
+                    @elseif (\App\Support\SystemSettings::subscriptionRequired())
+                        <span class="badge bg-warning-subtle text-warning ms-auto">{{ __('Inactive') }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @class(['menu-link', 'active' => request()->routeIs('wallet.*')]) href="{{ route('wallet.index') }}">
+                    <i class="fi fi-rr-wallet"></i>
+                    <span class="menu-label">{{ __('Wallet') }}</span>
+                    <span class="badge bg-primary-subtle text-primary ms-auto">{{ number_format(auth()->user()->wallet_balance) }}</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @class(['menu-link', 'active' => request()->routeIs('packages.*')]) href="{{ route('packages.index') }}">
+                    <i class="fi fi-rr-box-open"></i>
+                    <span class="menu-label">{{ __('Packages') }}</span>
+                </a>
+            </li>
+        @endif
         <li class="menu-item">
             <a @class(['menu-link', 'active' => request()->routeIs('profile.edit')]) href="{{ route('profile.edit') }}">
                 <i class="fi fi-rr-user"></i>

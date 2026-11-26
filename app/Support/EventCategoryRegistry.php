@@ -21,8 +21,7 @@ class EventCategoryRegistry
     public function all(): Collection
     {
         return $this->categories ??= EventCategory::query()
-            ->orderBy('sort_order')
-            ->orderBy('name')
+            ->ordered()
             ->get()
             ->keyBy('slug');
     }

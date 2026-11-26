@@ -4,6 +4,10 @@
  * and brand dark (#121315), and replaces the pest-control artwork.
  */
 
+#template-cards {
+  scroll-margin-top: 6.5rem;
+}
+
 :root {
   --theme-color1: #940000;
   --theme-color1-rgb: 148, 0, 0;
@@ -971,10 +975,16 @@
   border-color: var(--theme-color1);
   box-shadow: 0 0 0 4px rgba(var(--theme-color1-rgb), 0.08);
 }
+.emca-form .form-hint,
 .emca-form .form-error {
   margin: 6px 0 0;
-  color: var(--theme-color1);
   font-size: 14px;
+}
+.emca-form .form-hint {
+  color: rgba(18, 19, 21, 0.6);
+}
+.emca-form .form-error {
+  color: var(--theme-color1);
 }
 
 /* Shared content cards */
@@ -984,6 +994,24 @@
   border-radius: 30px;
   background: #fff;
   box-shadow: 0 20px 50px rgba(18, 19, 21, 0.05);
+}
+.emca-category-choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 auto 36px;
+}
+.emca-category-choice__label {
+  margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.emca-category-choice__select {
+  width: min(100%, 28rem);
+  border-radius: 999px;
+  border-color: var(--emca-line);
 }
 .emca-filter {
   display: flex;
@@ -1121,5 +1149,929 @@
   }
   .emca-error .error-page__text {
     font-size: 16px;
+  }
+}
+
+.blog-block .content button.emca-canva-action,
+.blog-block .content a.emca-canva-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+  min-height: 48px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 40px;
+  background-color: var(--theme-color1);
+  color: var(--theme-color1-text-color);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.blog-block .content button.emca-canva-action:disabled {
+  opacity: 1;
+  background-color: var(--theme-color1);
+  color: var(--theme-color1-text-color);
+  -webkit-text-fill-color: var(--theme-color1-text-color);
+}
+
+@media (max-width: 767.98px) {
+  .emca-template-fold:has([data-guest-list-toggle][aria-expanded="false"]) .emca-template-fold-shown > :nth-child(n+4) {
+    display: none;
+  }
+
+  /* Phone chrome: a solid bar, the same idea as the signed-in header. */
+  .header-style-one {
+    position: sticky;
+    top: 0;
+    padding: env(safe-area-inset-top) 0 0;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 1px 0 rgba(18, 19, 21, 0.08);
+  }
+
+  .sticky-header {
+    display: none !important;
+  }
+
+  .header-style-one .header-lower .inner-container {
+    min-height: 46px;
+    padding: 4px 10px;
+  }
+
+  .header-style-one .header-lower .emca-logo-light {
+    filter: none;
+  }
+
+  .header-style-one .header-lower .inner-container .logo-box .logo img {
+    height: 26px;
+  }
+
+  .header-style-one .header-lower .inner-container .right-box {
+    gap: 4px;
+  }
+
+  .main-header .ui-btn.emca-account-btn {
+    width: 32px;
+    height: 32px;
+    border-color: rgba(18, 19, 21, 0.16);
+    color: #1f1f1f;
+    font-size: 13px;
+  }
+
+  .header-style-one .header-lower .inner-container .right-box .mobile-nav-toggler {
+    display: inline-flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    margin-left: 0;
+  }
+
+  .header-style-one .header-lower .inner-container .right-box .mobile-nav-toggler span,
+  .header-style-one .header-lower .inner-container .right-box .mobile-nav-toggler span:nth-child(2) {
+    width: 20px;
+    margin: 0;
+    background-color: #1f1f1f;
+  }
+
+  .mobile-menu {
+    width: min(100%, 360px);
+  }
+
+  .mobile-menu .navigation li a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .btn-style-one:hover,
+  .btn-style-one:active,
+  .btn-style-one:focus {
+    padding-right: 10px;
+    padding-left: 22px !important;
+    gap: 10px;
+  }
+
+  .btn-style-one:hover .btn-title,
+  .btn-style-one:active .btn-title,
+  .btn-style-one:focus .btn-title {
+    transform: none;
+    color: var(--theme-color1-text-color);
+  }
+
+  .btn-style-one:hover .btn-arrow-left,
+  .btn-style-one:active .btn-arrow-left,
+  .btn-style-one:focus .btn-arrow-left {
+    scale: 0;
+    left: 0;
+  }
+
+  .btn-style-one:hover .btn-arrow-right,
+  .btn-style-one:active .btn-arrow-right,
+  .btn-style-one:focus .btn-arrow-right {
+    scale: 1;
+  }
+
+  .blog-block .thumb {
+    min-height: 0;
+  }
+
+  .blog-block .thumb .emca-swatch {
+    height: 112px;
+  }
+
+  .main-footer .widgets-section {
+    padding: 28px 0 0;
+  }
+
+  .main-footer .widgets-section > .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 8px 16px;
+  }
+
+  .main-footer .footer-column {
+    width: auto;
+    max-width: none;
+    margin-bottom: 8px;
+  }
+
+  .main-footer .footer-column:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .main-footer .widget-title,
+  .footer-style-one .h4.widget-title {
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+  }
+
+  .main-footer .links-widget .user-links li a {
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    padding: 3px 0 3px 14px;
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .footer-middle-box .inner-box {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .footer-middle-box .h5,
+  .footer-middle-box .title {
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  .footer-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .emca-form .form-control,
+  .emca-form .form-select,
+  .contact-details .form-control,
+  .contact-details .form-select,
+  .emca-home .form-control,
+  .emca-home .form-select {
+    min-height: 0;
+    padding: 0.22rem 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    border-radius: 6px;
+  }
+
+  .emca-form textarea.form-control,
+  .contact-details textarea.form-control,
+  .emca-home textarea.form-control {
+    min-height: 4.2rem;
+  }
+
+  /* Landing page: one screen for the offer, then short stacked sections. */
+  .emca-home .banner-section {
+    padding: 8px 10px 0;
+  }
+
+  .emca-home .banner-section .outer-box {
+    padding: 16px 12px 12px;
+    border-radius: 12px;
+  }
+
+  .emca-home .banner-section .outer-box .outer-container .inner-container,
+  .emca-home .banner-section .outer-box .outer-container .inner-container .banner-content,
+  .emca-home .banner-section .outer-box .outer-container .inner-container .content-box {
+    align-items: stretch;
+    text-align: left;
+    gap: 12px;
+  }
+
+  .emca-home .banner-section .outer-box .outer-container .inner-container .banner-content {
+    max-width: none;
+  }
+
+  .emca-home .banner-section .banner-title {
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+    line-height: 0.95;
+    text-align: left;
+  }
+
+  .emca-home .banner-section .banner-content .text {
+    font-size: 0.6875rem;
+    line-height: 1.35;
+  }
+
+  .emca-home .banner-section .content-box {
+    max-width: none;
+  }
+
+  .emca-home .banner-section .content-box .count-box {
+    margin-bottom: 2px;
+    font-size: 1.05rem;
+  }
+
+  .emca-home .banner-section .content-box .info {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .emca-home .banner-section .content-box .info .text {
+    text-align: left;
+  }
+
+  .emca-home .banner-section .content-box .theme-btn {
+    width: 100%;
+    justify-content: center;
+    height: auto;
+    line-height: 1.2;
+  }
+
+  .emca-home .brand-section {
+    padding: 10px 12px 0;
+  }
+
+  .emca-home .brand-section .emca-ticker-item {
+    min-height: 28px;
+    color: #1f1f1f;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .emca-home .section-padding,
+  .emca-home .faq-section .outer-box,
+  .emca-home .services-section .outer-box {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .emca-home .sec-title .title,
+  .emca-home .sec-title .h2,
+  .emca-home h2.h2 {
+    font-size: 0.875rem;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .emca-home .sec-title .text,
+  .emca-home .why-choose-us-section .sec-title-box .text {
+    font-size: 0.6875rem;
+    line-height: 1.35;
+    padding-bottom: 0;
+  }
+
+  .emca-home .mb-20,
+  .emca-home .mb-30,
+  .emca-home .mb-40,
+  .emca-home .mb-50,
+  .emca-home .mb-60 {
+    margin-bottom: 14px !important;
+  }
+
+  .emca-home .about-section .image-column .inner-column {
+    margin-bottom: 16px;
+  }
+
+  .emca-home .about-section .image-box.one,
+  .emca-home .about-section .image-box.one .image,
+  .emca-home .about-section .image-box.one img {
+    height: 120px;
+    max-height: 120px;
+    border-radius: 0.4rem;
+    object-fit: cover;
+  }
+
+  .emca-home .about-section .info {
+    gap: 10px;
+  }
+
+  .emca-home .about-section .bottom-box,
+  .emca-home .about-section .call-info {
+    align-items: flex-start;
+  }
+
+  .emca-home .about-section .bottom-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .emca-home .about-section .theme-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .emca-home .services-section .service-block {
+    padding: 12px 0;
+  }
+
+  .emca-home .services-section .service-block > .auto-container > .row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 2px 12px;
+    align-items: center;
+  }
+
+  .emca-home .services-section .service-block .row > div {
+    width: auto;
+    max-width: none;
+    padding: 0;
+  }
+
+  .emca-home .services-section .service-block .row > div:nth-child(2) {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .emca-home .services-section .service-block .row > div:nth-child(1),
+  .emca-home .services-section .service-block .row > div:nth-child(3) {
+    grid-column: 2;
+  }
+
+  .emca-home .services-section .service-block .content .icon,
+  .emca-home .services-section .service-image .number {
+    display: none;
+  }
+
+  .emca-home .services-section .service-image,
+  .emca-home .services-section .service-image img {
+    height: 48px;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .services-section .service-title {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.25;
+  }
+
+  .emca-home .services-section .service-details {
+    font-size: 0.6875rem;
+    line-height: 1.35;
+  }
+
+  .emca-home .services-section .content-2 {
+    max-width: none;
+    margin: 0;
+  }
+
+  .emca-home .services-section .link-btn {
+    min-height: 32px;
+    margin-top: 4px;
+  }
+
+  .emca-home .choose-us-block1 .thumb {
+    max-width: none;
+    max-height: 110px;
+    border-radius: 18px;
+    overflow: hidden;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .emca-home .choose-us-block1 .thumb img {
+    height: 110px;
+    object-fit: cover;
+  }
+
+  .emca-home .choose-us-block-content1 {
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .choose-us-block-content1 li {
+    display: flex;
+    gap: 12px;
+    padding: 8px;
+  }
+
+  .emca-home .choose-us-block-content1 .h4,
+  .emca-home .choose-us-block-content1 .title {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+  }
+
+  .emca-home .video-section .auto-container > .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .emca-home .video-section .funfact-box {
+    width: auto;
+    max-width: none;
+    padding: 0;
+  }
+
+  .emca-home .video-section .funfact-box .inner-box {
+    gap: 10px;
+    margin: 0;
+  }
+
+  .emca-home .video-section .funfact-box .icon {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    margin-top: 0;
+    font-size: 12px;
+    line-height: 24px;
+  }
+
+  .emca-home .video-section .count-box {
+    font-size: 0.875rem;
+  }
+
+  .emca-home .features-section .row:has(.features-block),
+  .emca-home .blog-section .row:has(.blog-block) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .emca-home .features-section .row:has(.features-block)::-webkit-scrollbar,
+  .emca-home .blog-section .row:has(.blog-block)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .emca-home .features-block,
+  .emca-home .blog-section .col-xl-4 {
+    flex: none;
+    width: auto;
+    max-width: none;
+    scroll-snap-align: start;
+  }
+
+  .emca-home .features-block {
+    margin-bottom: 0 !important;
+  }
+
+  .emca-home .features-block .image-box .image {
+    height: 96px;
+    max-width: none;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .blog-block {
+    margin-top: 0;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .blog-block .content {
+    padding: 8px;
+  }
+
+  .emca-home .blog-block .content .tag,
+  .emca-home .emca-price {
+    margin-bottom: 4px;
+    font-size: 0.68rem;
+  }
+
+  .emca-home .blog-block .thumb .emca-swatch,
+  .emca-home .emca-swatch {
+    height: 112px;
+    min-height: 0;
+    padding: 8px;
+    gap: 2px;
+  }
+
+  .emca-home .emca-swatch .emca-swatch-title {
+    font-size: 0.8rem;
+  }
+
+  .emca-home .emca-swatch .emca-swatch-kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+
+  .emca-home .faq-section .image img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .faq-section .bottom-box {
+    margin-top: 8px;
+  }
+
+  .emca-home .accordion-box .acc-btn {
+    min-height: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .emca-home .working-block-style2 {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .working-section .bottom-box .inner-box {
+    padding: 8px;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .working-section .bottom-box .inner-box .theme-btn,
+  .emca-home .contact-details .theme-btn,
+  .emca-home .about-section .theme-btn,
+  .emca-home .banner-section .content-box .theme-btn {
+    width: 100%;
+    justify-content: center;
+    height: auto;
+    line-height: 1.2;
+  }
+
+  .emca-home .btn-style-one,
+  .emca-home .theme-btn.btn-style-one {
+    height: auto;
+    min-height: 26px;
+    padding: 0.24rem 0.4rem 0.24rem 0.65rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    border-radius: 6px;
+    gap: 6px;
+  }
+
+  .emca-home .btn-style-one:hover,
+  .emca-home .btn-style-one:active,
+  .emca-home .btn-style-one:focus {
+    padding: 0.24rem 0.4rem 0.24rem 0.65rem !important;
+    gap: 6px;
+  }
+
+  .emca-home .btn-style-one .btn-arrow-left,
+  .emca-home .btn-style-one .btn-arrow-right {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+
+  .emca-home .banner-section .emca-hero-avatars img,
+  .emca-home .banner-section .emca-hero-avatars span {
+    width: 24px;
+    height: 24px;
+  }
+
+  .emca-home h3,
+  .emca-home .h3 {
+    font-size: 0.8rem;
+    line-height: 1.25;
+    margin-bottom: 0.25rem;
+  }
+
+  .emca-home h4,
+  .emca-home .h4,
+  .emca-home h5,
+  .emca-home .h5 {
+    font-size: 0.75rem;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+  }
+
+  .emca-home h6,
+  .emca-home .h6,
+  .emca-home .sub-title {
+    font-size: 0.72rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .emca-home .testimonial-section .image-column .image img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 0.4rem;
+  }
+
+  .emca-home .testimonial-section .sec-title {
+    margin-bottom: 8px;
+  }
+
+  .emca-home .contact-details .auto-container {
+    padding-top: 16px !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .emca-home .contact-details__info li {
+    margin-bottom: 8px;
+  }
+
+  .emca-home .contact-details__info .icon {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .emca-home {
+    font-size: 0.6875rem;
+    line-height: 1.35;
+  }
+
+  .emca-home .banner-section .outer-box .outer-container .inner-container .banner-content .banner-title,
+  .emca-home .banner-section .outer-box .outer-container .inner-container .content-box .count-box {
+    font-size: 1.05rem;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+
+  .emca-form .form-control,
+  .emca-form .form-select,
+  .emca-home .form-control,
+  .emca-home .form-select {
+    height: auto;
+    min-height: 0 !important;
+    padding: 0.22rem 0.45rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.35;
+    border-radius: 6px;
+  }
+
+  .emca-form textarea.form-control,
+  .emca-home textarea.form-control {
+    min-height: 4.2rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  body.emca-home {
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .header-style-one .header-lower .inner-container {
+    min-height: 60px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .header-style-one .header-lower .inner-container .logo-box .logo img {
+    height: 36px;
+  }
+
+  .main-header .ui-btn.emca-account-btn,
+  .header-style-one .header-lower .inner-container .right-box .mobile-nav-toggler {
+    width: 44px;
+    height: 44px;
+  }
+
+  .main-header .ui-btn.emca-account-btn {
+    font-size: 17px;
+  }
+
+  .mobile-menu .navigation li a {
+    min-height: 48px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 1rem;
+  }
+
+  .emca-home .banner-section {
+    padding: 12px 12px 0;
+  }
+
+  .emca-home .banner-section .outer-box {
+    padding: 24px 18px 18px;
+    border-radius: 22px;
+  }
+
+  .emca-home .banner-section .banner-title {
+    margin-bottom: 12px;
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    line-height: 1.05;
+  }
+
+  .emca-home .banner-section .outer-box .outer-container .inner-container .banner-content .banner-title {
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    line-height: 1.05;
+  }
+
+  .emca-home .banner-section .banner-content .text,
+  .emca-home .sec-title .text,
+  .emca-home .why-choose-us-section .sec-title-box .text,
+  .emca-home .services-section .service-details {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .emca-home .banner-section .content-box .count-box {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .emca-home .banner-section .outer-box .outer-container .inner-container .content-box .count-box {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fff;
+    text-shadow: none;
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .emca-home .banner-section .content-box .info {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .emca-home .banner-section .emca-hero-avatars img,
+  .emca-home .banner-section .emca-hero-avatars span {
+    width: 32px;
+    height: 32px;
+  }
+
+  .emca-home .banner-section .content-box .theme-btn,
+  .emca-home .about-section .theme-btn,
+  .emca-home .working-section .bottom-box .inner-box .theme-btn,
+  .emca-home .contact-details .theme-btn {
+    min-height: 48px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 1rem;
+  }
+
+  .emca-home .brand-section {
+    padding: 12px 12px 0;
+  }
+
+  .emca-home .brand-section .emca-ticker-item {
+    min-height: 48px;
+    font-size: 0.9375rem;
+  }
+
+  .emca-home .section-padding,
+  .emca-home .faq-section .outer-box,
+  .emca-home .services-section .outer-box {
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+
+  .emca-home .sec-title .title,
+  .emca-home .sec-title .h2,
+  .emca-home h2.h2 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .emca-home .about-section .image-box.one,
+  .emca-home .about-section .image-box.one .image,
+  .emca-home .about-section .image-box.one img {
+    height: 190px;
+    max-height: 190px;
+    border-radius: 16px;
+  }
+
+  .emca-home .services-section .service-block {
+    padding: 18px 0;
+  }
+
+  .emca-home .services-section .service-block > .auto-container > .row {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 6px 14px;
+  }
+
+  .emca-home .services-section .service-image,
+  .emca-home .services-section .service-image img {
+    height: 72px;
+    border-radius: 12px;
+  }
+
+  .emca-home .services-section .service-title,
+  .emca-home h3,
+  .emca-home .h3 {
+    font-size: 1.125rem;
+    line-height: 1.3;
+  }
+
+  .emca-home .features-section .row:has(.features-block),
+  .emca-home .blog-section .row:has(.blog-block) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .emca-home .features-block,
+  .emca-home .blog-section .col-xl-4 {
+    width: 100%;
+    max-width: 520px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .emca-home .features-block .image-box .image {
+    height: 180px;
+    border-radius: 16px;
+  }
+
+  .emca-home .blog-block .thumb .emca-swatch,
+  .emca-home .emca-swatch {
+    height: 176px;
+    border-radius: 16px;
+  }
+
+  .emca-home .blog-block .content,
+  .emca-home .working-block-style2,
+  .emca-home .working-section .bottom-box .inner-box {
+    padding: 18px;
+  }
+
+  .emca-home .faq-section .image img {
+    height: 180px;
+    border-radius: 16px;
+  }
+
+  .emca-home .accordion-box .acc-btn {
+    min-height: 48px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .emca-home h4,
+  .emca-home .h4,
+  .emca-home h5,
+  .emca-home .h5 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .emca-home h6,
+  .emca-home .h6,
+  .emca-home .sub-title {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .emca-home .btn-style-one,
+  .emca-home .theme-btn.btn-style-one {
+    min-height: 48px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .emca-home .btn-style-one:hover,
+  .emca-home .btn-style-one:active,
+  .emca-home .btn-style-one:focus {
+    padding: 10px 18px !important;
+  }
+
+  .emca-form .form-control,
+  .emca-form .form-select,
+  .contact-details .form-control,
+  .contact-details .form-select,
+  .emca-home .form-control,
+  .emca-home .form-select {
+    min-height: 48px !important;
+    padding: 10px 14px !important;
+    border-radius: 12px;
+    font-size: 1rem !important;
+    line-height: 1.4;
+  }
+
+  .emca-form textarea.form-control,
+  .contact-details textarea.form-control,
+  .emca-home textarea.form-control {
+    min-height: 120px !important;
+  }
+
+  .main-footer .links-widget .user-links li a {
+    min-height: 40px;
+    font-size: 0.875rem;
   }
 }

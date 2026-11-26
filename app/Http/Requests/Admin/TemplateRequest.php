@@ -17,6 +17,13 @@ class TemplateRequest extends FormRequest
         return $this->user()?->isSuperAdmin() ?? false;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'host_only' => $this->boolean('host_only'),
+        ]);
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
@@ -28,6 +35,7 @@ class TemplateRequest extends FormRequest
             'name' => ['required', 'string', 'max:80'],
             'category' => ['required', 'string', Rule::exists('event_categories', 'slug')],
             'price' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'host_only' => ['required', 'boolean'],
             'paper' => $color,
             'ink' => $color,
             'accent' => $color,

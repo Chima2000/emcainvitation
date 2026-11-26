@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'invitation_template_id',
@@ -30,12 +29,25 @@ use Illuminate\Support\Facades\Storage;
     'venue',
     'event_date',
     'dress_code',
+    'bride_name',
+    'groom_name',
+    'bride_family',
+    'groom_family',
+    'ceremony_place',
+    'reception_venue',
+    'reception_time',
+    'arrive_by',
     'dress_code_colors',
     'card_design',
     'is_public',
+    'auto_reminder',
+    'reminder_days',
+    'auto_reminder_sent_at',
 ])]
 class Event extends Model
 {
+    public const int TrialGuestLimit = 10;
+
     /** @use HasFactory<EventFactory> */
     use HasFactory;
 
@@ -52,6 +64,9 @@ class Event extends Model
             'dress_code_colors' => 'array',
             'card_design' => 'array',
             'is_public' => 'boolean',
+            'auto_reminder' => 'boolean',
+            'reminder_days' => 'integer',
+            'auto_reminder_sent_at' => 'datetime',
             'package_guest_limit' => 'integer',
             'package_reminder_rounds' => 'integer',
             'package_includes_thanks' => 'boolean',
@@ -81,6 +96,19 @@ class Event extends Model
         return $this->package_purchased_at !== null;
     }
 
+    public function trialGuestsRemaining(): ?int
+    {
+        if (! $this->user?->isLead()) {
+            return null;
+        }
+
+        $listed = array_key_exists('guests_count', $this->getAttributes())
+            ? (int) $this->guests_count
+            : $this->guests()->count();
+
+        return max(0, self::TrialGuestLimit - $listed);
+    }
+
     /**
      * How many messages of a purpose the purchased package still covers.
      */
@@ -94,6 +122,8 @@ class Event extends Model
             MessagePurpose::Invitation => $this->package_guest_limit,
             MessagePurpose::Reminder => $this->package_guest_limit * $this->package_reminder_rounds,
             MessagePurpose::Thanks => $this->package_includes_thanks ? $this->package_guest_limit : 0,
+            MessagePurpose::Pledge => 0,
+            MessagePurpose::Trial => 0,
         };
 
         $used = $this->messages()
@@ -201,18 +231,71 @@ class Event extends Model
 
     public function cardHeadline(): string
     {
-        return $this->headline ?: ($this->template?->default_headline ?: __('You are invited'));
+        return $this->headline ?: ($this->template?->shownHeadline() ?: __('You are invited'));
     }
 
     public function cardMessage(): ?string
     {
-        return $this->message ?: $this->template?->default_message;
+        return $this->message ?: $this->template?->shownMessage();
+    }
+
+    /**
+     * Extra lines a wedding card can print in the details it already shows.
+     *
+     * @return list<string>
+     */
+    public function weddingCardLines(): array
+    {
+        if ($this->type?->slug !== 'wedding') {
+            return [];
+        }
+
+        $lines = [];
+        $couple = trim(implode(' & ', array_filter([$this->bride_name, $this->groom_name])));
+
+        if ($couple !== '') {
+            $lines[] = $couple;
+        }
+
+        if (filled($this->bride_family)) {
+            $lines[] = __('Bride’s family: :name', ['name' => $this->bride_family]);
+        }
+
+        if (filled($this->groom_family)) {
+            $lines[] = __('Groom’s family: :name', ['name' => $this->groom_family]);
+        }
+
+        if (filled($this->ceremony_place)) {
+            $lines[] = __('Vows at :place', ['place' => $this->ceremony_place]);
+        }
+
+        if (filled($this->reception_venue)) {
+            $lines[] = __('Reception at :place', ['place' => $this->reception_venue]);
+        }
+
+        if (filled($this->reception_time)) {
+            $lines[] = __('Reception time: :time', ['time' => $this->reception_time]);
+        }
+
+        if (filled($this->arrive_by)) {
+            $lines[] = __('Arrive by :time', ['time' => $this->arrive_by]);
+        }
+
+        return $lines;
+    }
+
+    /**
+     * @return HasMany<GuestGroup, $this>
+     */
+    public function guestGroups(): HasMany
+    {
+        return $this->hasMany(GuestGroup::class)->orderBy('name');
     }
 
     /**
      * The template look with the host's own changes on top.
      *
-     * @return array{paper: string, ink: string, accent: string, font: CardFont, layout: CardLayout, background_url: ?string}
+     * @return array{paper: string, ink: string, accent: string, font: CardFont, layout: CardLayout, background_url: ?string, portrait_url: ?string, portrait_slot: ?array{shape: string}}
      */
     public function cardDesign(): array
     {
@@ -229,12 +312,51 @@ class Event extends Model
         $design['layout'] = CardLayout::tryFrom((string) ($custom['layout'] ?? '')) ?? $design['layout'];
 
         if (filled($custom['background_path'] ?? null)) {
-            $design['background_url'] = Storage::disk('public')->url($custom['background_path']);
+            $design['background_url'] = '/storage/'.ltrim(str_replace('\\', '/', $custom['background_path']), '/');
         } elseif (! empty($custom['hide_background'])) {
             $design['background_url'] = null;
         }
 
+        $usingTemplateArt = ! filled($custom['background_path'] ?? null) && empty($custom['hide_background']);
+
+        if (! $usingTemplateArt) {
+            $design['portrait_url'] = null;
+            $design['portrait_slot'] = null;
+            $design['scene'] = null;
+        } elseif (filled($custom['portrait_path'] ?? null)) {
+            $design['portrait_url'] = '/storage/'.ltrim(str_replace('\\', '/', $custom['portrait_path']), '/');
+        }
+
         return $design;
+    }
+
+    /**
+     * Colours for this event's box on the events list.
+     *
+     * Host edits sit on top of the chosen template. Events with no card yet use the default palette.
+     *
+     * @return array{paper: string, ink: string, accent: string}
+     */
+    public function listCardPalette(): array
+    {
+        $design = $this->cardDesign();
+        $fallback = InvitationTemplate::defaultDesign();
+        $palette = [];
+
+        foreach (['paper', 'ink', 'accent'] as $color) {
+            $palette[$color] = self::hexColor($design[$color] ?? null) ?? $fallback[$color];
+        }
+
+        return $palette;
+    }
+
+    private static function hexColor(mixed $color): ?string
+    {
+        if (! is_string($color) || preg_match('/^#[0-9A-Fa-f]{6}$/', $color) !== 1) {
+            return null;
+        }
+
+        return $color;
     }
 
     public function cardKicker(): string
@@ -246,10 +368,48 @@ class Event extends Model
     {
         $code = trim($code);
 
-        if (preg_match('#/(?:i|check-in)/([A-Za-z0-9]+)#', $code, $matches) === 1) {
-            return $this->guests()->where('token', $matches[1])->first();
+        if ($code === '') {
+            return null;
         }
 
-        return $this->guests()->where('serial', strtoupper($code))->first();
+        $token = $this->passToken($code);
+
+        if ($token !== null) {
+            return $this->soleGuest('token', $token);
+        }
+
+        return $this->soleGuest('serial', strtoupper($code));
+    }
+
+    /**
+     * Admit only when one guest on this event owns the exact card number or code.
+     */
+    private function soleGuest(string $column, string $value): ?Guest
+    {
+        $guests = $this->guests()->where($column, $value)->limit(2)->get();
+
+        if ($guests->count() !== 1) {
+            return null;
+        }
+
+        return $guests->first();
+    }
+
+    /**
+     * The invitation or door link is the code. Anything else is a card number.
+     */
+    private function passToken(string $code): ?string
+    {
+        $path = parse_url($code, PHP_URL_PATH);
+
+        if (! is_string($path)) {
+            return null;
+        }
+
+        if (preg_match('#^/(?:i|check-in)/([A-Za-z0-9]{20,80})/?$#', $path, $matches) !== 1) {
+            return null;
+        }
+
+        return $matches[1];
     }
 }

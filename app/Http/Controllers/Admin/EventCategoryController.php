@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\EventCategoryGroup;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EventCategoryRequest;
 use App\Models\EventCategory;
@@ -17,9 +18,9 @@ class EventCategoryController extends Controller
         return view('admin.event-categories.index', [
             'categories' => EventCategory::query()
                 ->withCount(['events', 'templates'])
-                ->orderBy('sort_order')
-                ->orderBy('name')
+                ->ordered()
                 ->get(),
+            'groups' => EventCategoryGroup::cases(),
             'icons' => EventCategory::iconChoices(),
             'photos' => EventCategory::stockPhotos(),
         ]);

@@ -56,29 +56,39 @@
     const renderSpark = (element, config, ui) => {
         const prefix = config.prefix || '';
 
-        new ApexCharts(element, {
+        const chart = new ApexCharts(element, {
             series: [{ name: config.name, data: config.data }],
-            chart: { type: 'bar', height: 95, fontFamily: ui.font, sparkline: { enabled: true } },
+            chart: { type: 'bar', height: 95, fontFamily: ui.font, foreColor: ui.ink, sparkline: { enabled: true } },
             colors: ['#940000'],
             plotOptions: { bar: { columnWidth: '55%', borderRadius: 4, distributed: false } },
             states: { hover: { filter: { type: 'darken', value: 0.85 } } },
             xaxis: { categories: config.categories },
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    chart: { height: 64 },
+                    plotOptions: { bar: { columnWidth: '48%' } },
+                },
+            }],
             tooltip: {
                 theme: ui.isDark ? 'dark' : 'light',
                 x: { show: true },
                 y: { formatter: (value) => `${prefix}${formatNumber(value)}` },
             },
-        }).render();
+        });
+        chart.render();
+
+        return chart;
     };
 
     const renderBar = (element, config, ui) => {
         const values = config.series.flatMap((series) => series.data);
         const prefix = config.prefix || '';
 
-        new ApexCharts(element, {
+        const chart = new ApexCharts(element, {
             series: config.series,
             colors: colorsFor(config.series.length, ui),
-            chart: { type: 'bar', height: 320, fontFamily: ui.font, toolbar: { show: false } },
+            chart: { type: 'bar', height: 320, fontFamily: ui.font, foreColor: ui.ink, toolbar: { show: false } },
             plotOptions: { bar: { horizontal: false, columnWidth: '55%', borderRadius: 3 } },
             dataLabels: { enabled: false },
             stroke: { show: true, width: 2, colors: ['transparent'] },
@@ -86,13 +96,13 @@
                 categories: config.categories,
                 axisBorder: { color: ui.border },
                 axisTicks: { show: false },
-                labels: { style: { colors: ui.body, fontSize: '13px' } },
+                labels: { style: { colors: ui.ink, fontSize: '13px' } },
             },
             yaxis: {
                 min: 0,
                 max: niceMax(values),
                 tickAmount: 4,
-                labels: { formatter: formatCompact, style: { colors: ui.body, fontSize: '13px' } },
+                labels: { formatter: formatCompact, style: { colors: ui.ink, fontSize: '13px' } },
             },
             grid: { borderColor: ui.border, strokeDashArray: 5, xaxis: { lines: { show: false } }, yaxis: { lines: { show: true } } },
             fill: { opacity: 1 },
@@ -102,18 +112,30 @@
                 position: 'bottom',
                 horizontalAlign: 'center',
                 markers: { size: 5, shape: 'circle' },
-                labels: { colors: ui.heading },
+                labels: { colors: ui.ink },
                 fontSize: '13px',
             },
-        }).render();
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    chart: { height: 240 },
+                    xaxis: { labels: { style: { fontSize: '11px' } } },
+                    yaxis: { labels: { style: { fontSize: '11px' } } },
+                    legend: { fontSize: '11px' },
+                },
+            }],
+        });
+        chart.render();
+
+        return chart;
     };
 
     const renderArea = (element, config, ui) => {
         const prefix = config.prefix || '';
 
-        new ApexCharts(element, {
+        const chart = new ApexCharts(element, {
             series: [{ name: config.name, data: config.data }],
-            chart: { height: 280, type: 'area', fontFamily: ui.font, toolbar: { show: false } },
+            chart: { height: 280, type: 'area', fontFamily: ui.font, foreColor: ui.ink, toolbar: { show: false } },
             colors: ['#940000'],
             dataLabels: { enabled: false },
             stroke: { curve: 'smooth', width: 2 },
@@ -124,13 +146,13 @@
                 max: niceMax(config.data),
                 tickAmount: 4,
                 labels: {
-                    style: { colors: ui.body, fontSize: '12px' },
+                    style: { colors: ui.ink, fontSize: '12px' },
                     formatter: (value) => (value >= 1000 ? `${Math.round(value / 1000).toLocaleString()}k` : formatNumber(value)),
                 },
             },
             xaxis: {
                 categories: config.categories,
-                labels: { style: { colors: ui.body, fontSize: '12px' } },
+                labels: { style: { colors: ui.ink, fontSize: '12px' } },
                 axisTicks: { show: false },
                 axisBorder: { show: false },
             },
@@ -145,11 +167,14 @@
                 },
             },
             tooltip: { theme: ui.isDark ? 'dark' : 'light', y: { formatter: (value) => `${prefix}${formatNumber(value)}` } },
-        }).render();
+        });
+        chart.render();
+
+        return chart;
     };
 
     const renderGauge = (element, config, ui) => {
-        new ApexCharts(element, {
+        const chart = new ApexCharts(element, {
             series: [config.percent],
             chart: { type: 'radialBar', offsetY: -15, height: 300, fontFamily: ui.font, sparkline: { enabled: true } },
             plotOptions: {
@@ -164,14 +189,28 @@
                     },
                     dataLabels: {
                         name: { show: false },
-                        value: { show: true, offsetY: -30, fontSize: '30px', fontWeight: 800, color: ui.heading, formatter: (value) => `${Math.round(value)}%` },
+                        value: { show: true, offsetY: -30, fontSize: '30px', fontWeight: 800, color: ui.ink, formatter: (value) => `${Math.round(value)}%` },
                     },
                 },
             },
             grid: { padding: { top: 0, bottom: 0, left: 0, right: 0 } },
             fill: { colors: ['#940000'] },
             stroke: { lineCap: 'round' },
-        }).render();
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    chart: { height: 220 },
+                    plotOptions: {
+                        radialBar: {
+                            dataLabels: { value: { fontSize: '24px' } },
+                        },
+                    },
+                },
+            }],
+        });
+        chart.render();
+
+        return chart;
     };
 
     const renderDoughnut = (canvas, config, ui, style) => {
@@ -180,7 +219,7 @@
         const isEmpty = total === 0;
         const thin = style === 'thin';
 
-        new Chart(canvas.getContext('2d'), {
+        const chart = new Chart(canvas.getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: isEmpty ? [config.centerLabel] : config.labels,
@@ -218,7 +257,7 @@
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.font = `700 26px ${ui.font}`;
-                    ctx.fillStyle = ui.heading;
+                    ctx.fillStyle = ui.ink;
                     ctx.fillText(formatNumber(value), (left + right) / 2, (top + bottom) / 2 - 8);
                     ctx.font = `14px ${ui.font}`;
                     ctx.fillStyle = ui.muted;
@@ -227,14 +266,20 @@
                 },
             }],
         });
+
+        return chart;
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
+    const instances = [];
+
+    const renderCharts = () => {
         const source = document.getElementById('emca-dashboard-data');
 
         if (!source) {
             return;
         }
+
+        instances.splice(0).forEach((chart) => chart.destroy());
 
         const charts = JSON.parse(source.textContent);
         const ui = theme();
@@ -247,22 +292,44 @@
             }
 
             const kind = element.dataset.emcaKind;
+            let chart = null;
 
             if (kind === 'doughnut' && window.Chart) {
-                renderDoughnut(element, config, ui, element.dataset.emcaStyle);
+                chart = renderDoughnut(element, config, ui, element.dataset.emcaStyle);
             } else if (window.ApexCharts && kind === 'spark') {
-                renderSpark(element, config, ui);
+                chart = renderSpark(element, config, ui);
             } else if (window.ApexCharts && kind === 'bar') {
-                renderBar(element, config, ui);
+                chart = renderBar(element, config, ui);
             } else if (window.ApexCharts && kind === 'area') {
-                renderArea(element, config, ui);
+                chart = renderArea(element, config, ui);
             } else if (window.ApexCharts && kind === 'gauge') {
-                renderGauge(element, config, ui);
+                chart = renderGauge(element, config, ui);
+            }
+
+            if (chart) {
+                instances.push(chart);
             }
         });
 
         document.querySelectorAll('[data-emca-swatch]').forEach((element) => {
             element.style.color = colorAt(Number(element.dataset.emcaSwatch), ui);
         });
-    });
+    };
+
+    window.emcaRenderDashboardCharts = renderCharts;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderCharts);
+    } else {
+        renderCharts();
+    }
+
+    if (!window.emcaChartsThemeBound) {
+        window.emcaChartsThemeBound = true;
+
+        new MutationObserver(() => window.emcaRenderDashboardCharts?.()).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-bs-theme'],
+        });
+    }
 })();

@@ -16,7 +16,8 @@ test('the sign-in page shows the photo wall behind the card', function () {
         ->assertOk()
         ->assertSee('jumuika-auth-card', false)
         ->assertSee('background: #f5f5f5', false)
-        ->assertSee('logo/Jumuika-logo.png', false)
+        ->assertSee('logo/jumuika-pass.png', false)
+        ->assertSee(__('Invite better. Manage better. Spend less.'), false)
         ->assertSee('favicon.svg', false)
         ->assertSee('apple-touch-icon.png', false)
         ->assertDontSee('admin/assets/images/favicon.png', false)
@@ -42,7 +43,8 @@ test('the registration page shows the photo wall behind the card', function () {
         ->assertOk()
         ->assertSee('jumuika-auth-card', false)
         ->assertSee('background: #f5f5f5', false)
-        ->assertSee('logo/Jumuika-logo.png', false)
+        ->assertSee('logo/jumuika-pass.png', false)
+        ->assertSee(__('Invite better. Manage better. Spend less.'), false)
         ->assertSee('favicon.svg', false)
         ->assertSee('apple-touch-icon.png', false)
         ->assertDontSee('admin/assets/images/favicon.png', false)
@@ -70,8 +72,8 @@ test('a guest registers an account and must complete location details before usi
         'last_name' => 'Mwangi',
         'phone' => '+255692586046',
         'email' => 'amina@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'Secret@12',
+        'password_confirmation' => 'Secret@12',
         'role' => 'super_admin',
         'name' => '<script>alert(1)</script>',
     ]);
@@ -87,7 +89,7 @@ test('a guest registers an account and must complete location details before usi
         ->and($user->phone)->toBe('+255692586046')
         ->and($user->role)->toBe(UserRole::Host)
         ->and($user->profile_completed_at)->toBeNull()
-        ->and(Hash::check('password', $user->password))->toBeTrue();
+        ->and(Hash::check('Secret@12', $user->password))->toBeTrue();
 
     $this->assertAuthenticatedAs($user);
 
@@ -143,7 +145,7 @@ test('registration stays on the form when the repeated password does not match',
             'last_name' => 'Mwangi',
             'phone' => '+255692586046',
             'email' => 'amina@example.com',
-            'password' => 'password',
+            'password' => 'Secret@12',
             'password_confirmation' => 'different',
         ])
         ->assertRedirect(route('register'))
@@ -162,8 +164,8 @@ test('registration normalizes a valid local phone number to +255', function () {
             'last_name' => 'Mwangi',
             'phone' => '0712345678',
             'email' => 'amina@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Secret@12',
+            'password_confirmation' => 'Secret@12',
         ])
         ->assertRedirect(route('profile.edit'));
 
@@ -180,8 +182,8 @@ test('registration rejects a local phone number with an invalid length', functio
             'last_name' => 'Mwangi',
             'phone' => '071234567',
             'email' => 'amina@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Secret@12',
+            'password_confirmation' => 'Secret@12',
         ])
         ->assertRedirect(route('register'))
         ->assertSessionHasErrors([
@@ -203,8 +205,8 @@ test('registration rejects an email address that is already in use', function ()
             'last_name' => 'Mwangi',
             'phone' => '+255692586046',
             'email' => 'amina@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Secret@12',
+            'password_confirmation' => 'Secret@12',
         ])
         ->assertRedirect(route('register'))
         ->assertSessionHasErrors([
@@ -237,6 +239,8 @@ test('a host sees the admin panel shell', function () {
         ->assertSee('Harusi ya Amina')
         ->assertSee(__('All events'), false)
         ->assertSee(__('New event'), false)
+        ->assertDontSee('#guests', false)
+        ->assertDontSee('#vendors', false)
         ->assertSee(route('template-library.index'), false)
         ->assertDontSee(__('Home'), false)
         ->assertDontSee(__('Features'), false)
@@ -247,13 +251,31 @@ test('a host sees the admin panel shell', function () {
         ->assertOk()
         ->assertSee('app-page-title', false)
         ->assertSee('Harusi ya Amina')
+        ->assertSee('href="#guests"', false)
+        ->assertSee('href="#check-in"', false)
+        ->assertSee('href="#messages"', false)
+        ->assertSee('href="#pledges"', false)
+        ->assertSee('href="#budget"', false)
+        ->assertSee('href="#tasks"', false)
+        ->assertSee('href="#vendors"', false)
         ->assertSee(route('events.show', $event).'#guests', false)
-        ->assertSee(route('events.show', $event).'#check-in', false)
-        ->assertSee(route('events.show', $event).'#messages', false)
-        ->assertSee(route('events.show', $event).'#pledges', false)
-        ->assertSee(route('events.show', $event).'#budget', false)
-        ->assertSee(route('events.show', $event).'#tasks', false)
-        ->assertSee(route('events.show', $event).'#vendors', false);
+        ->assertSee(route('events.show', $event).'#committees', false)
+        ->assertSee(route('events.show', $event).'#vendors', false)
+        ->assertSeeInOrder([
+            'data-emca-event-link="design"',
+            'data-emca-event-link="edit"',
+            'data-emca-event-link="check-in"',
+            'data-emca-event-link="guests"',
+            'data-emca-event-link="committees"',
+            'data-emca-event-link="billing"',
+            'data-emca-event-link="messages"',
+            'data-emca-event-link="pledges"',
+            'data-emca-event-link="budget"',
+            'data-emca-event-link="tasks"',
+            'data-emca-event-link="vendors"',
+        ], false)
+        ->assertDontSee('menu-link active open', false)
+        ->assertDontSee('>Harusi ya Amina</span>', false);
 
     $this->actingAs($user)
         ->get(route('events.create'))
@@ -262,6 +284,7 @@ test('a host sees the admin panel shell', function () {
     $this->actingAs($user)
         ->get(route('events.index', ['new' => 1]))
         ->assertOk()
+        ->assertDontSee('#guests', false)
         ->assertSee('id="createEventModal"', false)
         ->assertSee('data-bs-target="#createEventModal"', false)
         ->assertSee('name="title"', false);

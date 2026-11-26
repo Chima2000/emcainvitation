@@ -15,6 +15,10 @@ class InvitationController extends Controller
         $guest = $this->guest($token);
         $guest->load('event.template');
 
+        if ($guest->opened_at === null) {
+            $guest->forceFill(['opened_at' => now()])->save();
+        }
+
         return view('invitations.show', [
             'guest' => $guest,
             'event' => $guest->event,

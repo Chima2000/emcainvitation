@@ -4,7 +4,7 @@
 @section('heading', $user->name)
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">{{ __('Hosts') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route($user->isLead() ? 'admin.leads.index' : 'admin.users.index') }}">{{ $user->isLead() ? __('Leads') : __('Hosts') }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ $user->name }}</li>
 @endsection
 
@@ -16,7 +16,7 @@
     @endunless
     @can('update', $user)
         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary waves-effect waves-light">
-            <i class="fi fi-rr-edit me-1"></i> {{ __('Edit host') }}
+            <i class="fi fi-rr-edit me-1"></i> {{ $user->isLead() ? __('Edit lead') : __('Edit host') }}
         </a>
     @endcan
 @endsection
@@ -30,7 +30,7 @@
                 <div class="card-body text-center">
                     <div class="avatar avatar-xl rounded-circle bg-primary text-white mx-auto mb-3 fs-3">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</div>
                     <h2 class="h5 mb-1">{{ $user->name }}</h2>
-                    <span class="badge bg-light text-dark">{{ $user->role->label() }}</span>
+                    <span @class(['badge', 'bg-info-subtle text-dark' => $user->isLead(), 'bg-light text-dark' => ! $user->isLead()])>{{ $user->role->label() }}</span>
                     <ul class="list-unstyled text-start mt-4 mb-0 d-grid gap-3">
                         <li class="d-flex gap-2"><i class="fi fi-rr-phone-call text-primary"></i><span>{{ $user->localPhone() }} <small class="text-body">({{ $user->phone }})</small></span></li>
                         <li class="d-flex gap-2"><i class="fi fi-rr-envelope text-primary"></i><span class="text-break">{{ $user->email }}</span></li>
@@ -128,7 +128,7 @@
                                     <td><span class="badge bg-light text-dark">{{ $event->status->label() }}</span></td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5"><div class="emca-empty">{{ __('This host has not created an event yet.') }}</div></td></tr>
+                                <tr><td colspan="5"><div class="emca-empty">{{ $user->isLead() ? __('This lead has not created an event yet.') : __('This host has not created an event yet.') }}</div></td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -196,7 +196,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                         </div>
                         <div class="modal-body">
-                            <p class="text-body">{{ __('Use this for refunds, goodwill credit or correcting a mistake. The host sees the reason on their statement.') }}</p>
+                            <p class="text-body">{{ $user->isLead() ? __('Use this for refunds, goodwill credit or correcting a mistake. The lead sees the reason on their statement.') : __('Use this for refunds, goodwill credit or correcting a mistake. The host sees the reason on their statement.') }}</p>
                             <div class="mb-3">
                                 <span class="form-label d-block">{{ __('Direction') }}</span>
                                 <div class="btn-group w-100" role="group">

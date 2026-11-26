@@ -69,6 +69,7 @@
                         <th>{{ __('Event') }}</th>
                         <th>{{ __('Purpose') }}</th>
                         <th>{{ __('Channel') }}</th>
+                        <th>{{ __('Status') }}</th>
                         <th class="text-end">{{ __('Cost') }}</th>
                     </tr>
                 </thead>
@@ -77,17 +78,25 @@
                         <tr>
                             <td class="text-nowrap">{{ $message->created_at->translatedFormat('d M, H:i') }}</td>
                             <td>
-                                {{ $message->guest?->name }}
-                                <small class="d-block text-body">{{ $message->guest?->phone }}</small>
+                                {{ $message->guest?->name ?? $message->recipient_name }}
+                                <small class="d-block text-body">{{ $message->guest?->phone ?? $message->recipient_address }}</small>
                             </td>
                             <td>
                                 @if ($message->event)
                                     <a href="{{ route('admin.events.show', $message->event) }}" class="text-dark">{{ $message->event->title }}</a>
                                     <small class="d-block text-body">{{ $message->event->user?->name }}</small>
+                                @else
+                                    <span class="text-body">—</span>
                                 @endif
                             </td>
                             <td>{{ $message->purpose->label() }}</td>
                             <td>{{ $message->channel->label() }}</td>
+                            <td>
+                                <span class="badge {{ $message->status->badgeClass() }}">{{ $message->status->label() }}</span>
+                                @if ($message->failure_reason)
+                                    <small class="d-block text-body mt-1">{{ __($message->failure_reason) }}</small>
+                                @endif
+                            </td>
                             <td class="text-end text-nowrap">
                                 @if ($message->covered_by_package)
                                     <span class="badge bg-primary-subtle text-primary">{{ __('Package') }}</span>
@@ -97,7 +106,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6"><div class="emca-empty">{{ __('No messages match this view.') }}</div></td></tr>
+                        <tr><td colspan="7"><div class="emca-empty">{{ __('No messages match this view.') }}</div></td></tr>
                     @endforelse
                 </tbody>
             </table>

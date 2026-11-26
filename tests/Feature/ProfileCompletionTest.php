@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\UserRole;
 
 test('a guest is sent to sign in before opening profile details', function () {
     $this->get(route('profile.edit'))
@@ -27,6 +28,37 @@ test('an incomplete host sees the profile steps and is kept out of the dashboard
     $this->actingAs($host)
         ->get(route('dashboard'))
         ->assertRedirect(route('profile.edit'));
+});
+
+test('a lead opens the dashboard before adding a location', function () {
+    $lead = User::factory()->create([
+        'role' => UserRole::Lead,
+        'profile_completed_at' => null,
+        'password' => 'Secret@12',
+        'phone' => '+255712000333',
+    ]);
+
+    $this->actingAs($lead)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertDontSee(__('Step 2 of 2'), false);
+
+    $this->actingAs($lead)
+        ->get(route('profile.edit'))
+        ->assertOk()
+        ->assertDontSee(__('Step 2 of 2'), false);
+
+    $this->actingAs($lead)
+        ->get(route('become-host.create'))
+        ->assertOk()
+        ->assertSee(__('Register as a host'), false);
+
+    $this->post(route('logout'));
+
+    $this->post(route('login'), [
+        'phone' => '0712000333',
+        'password' => 'Secret@12',
+    ])->assertRedirect(route('dashboard'));
 });
 
 test('a host saves a listed location before accessing the dashboard', function () {

@@ -15,13 +15,15 @@ class TemplateController extends Controller
 
         $templates = InvitationTemplate::query()
             ->when($category, fn ($query) => $query->where('category', $category->slug))
-            ->orderBy('name')
+            ->matchingSearch($request->string('q')->toString())
+            ->orderedForGallery()
             ->get();
 
         return view('templates.index', [
             'templates' => $templates,
             'categories' => EventCategory::options(),
             'activeCategory' => $category,
+            'search' => trim($request->string('q')->toString()),
         ]);
     }
 }

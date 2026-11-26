@@ -113,8 +113,8 @@ class DashboardController extends Controller
             'events' => $user->events()
                 ->withCount('guests')
                 ->withSum(['budgetItems as expense_total' => fn ($query) => $query->where('kind', BudgetKind::Expense)], 'amount')
-                ->latest('event_date')
-                ->take(6)
+                ->orderByDesc('id')
+                ->take(2)
                 ->get(),
             'recentGuests' => Guest::query()->whereIn('event_id', $eventIds)->with('event:id,title')->latest()->limit(6)->get(),
             'eventTypes' => $eventTypes,

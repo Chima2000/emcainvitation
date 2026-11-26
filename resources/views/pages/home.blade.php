@@ -1,6 +1,7 @@
 @extends('layouts.marketing')
 
 @section('title', config('app.name').' | '.__('Digital invitation cards'))
+@section('body_class', 'emca-home')
 
 @php
     $launch = auth()->check() ? route('events.index', ['new' => 1]) : route('register');
@@ -47,7 +48,48 @@
                         <div class="text wow fadeInUp" data-wow-delay="500ms">{{ __('Emca is for hosts who used to print cards, follow up for replies, and guess the headcount. Each guest receives a private card on WhatsApp or by SMS. The number on that card works once at the door.') }}</div>
                     </div>
                     <div class="content-box">
-                        <div class="h2 count-box wow fadeInUp" data-wow-delay="200ms"><span class="count-text" data-speed="2000" data-stop="{{ $occasionCategories->count() }}">0</span>+</div>
+                        <div class="h2 count-box wow fadeInUp" data-wow-delay="200ms" data-emca-hero-counter><span class="count-text" data-speed="2000" data-stop="{{ $occasionCategories->count() }}">0</span>+</div>
+                        <script>
+                            (function () {
+                                if (window.matchMedia && !window.matchMedia('(max-width: 767.98px)').matches) {
+                                    return;
+                                }
+
+                                var counter = document.querySelector('[data-emca-hero-counter]');
+                                var countText = counter ? counter.querySelector('.count-text') : null;
+
+                                if (!counter || !countText) {
+                                    return;
+                                }
+
+                                var target = parseInt(countText.getAttribute('data-stop'), 10);
+                                var duration = parseInt(countText.getAttribute('data-speed'), 10);
+
+                                if (isNaN(target) || isNaN(duration) || duration <= 0) {
+                                    return;
+                                }
+
+                                counter.classList.add('counted');
+
+                                var startTime = null;
+                                var animate = function (timestamp) {
+                                    if (startTime === null) {
+                                        startTime = timestamp;
+                                    }
+
+                                    var progress = Math.min((timestamp - startTime) / duration, 1);
+                                    countText.textContent = String(Math.floor(target * progress));
+
+                                    if (progress < 1) {
+                                        window.requestAnimationFrame(animate);
+                                    } else {
+                                        countText.textContent = String(target);
+                                    }
+                                };
+
+                                window.requestAnimationFrame(animate);
+                            })();
+                        </script>
                         <div class="info wow fadeInUp" data-wow-delay="400ms">
                             <div class="image emca-hero-avatars" aria-hidden="true">
                                 <img src="{{ asset('images/home/avatar-1.jpg') }}" alt="">

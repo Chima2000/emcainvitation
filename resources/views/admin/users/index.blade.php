@@ -1,23 +1,29 @@
 @extends('layouts.admin')
 
-@section('title', __('Hosts'))
-@section('heading', __('Host accounts'))
+@section('title', $forLeads ? __('Leads') : __('Hosts'))
+@section('heading', $forLeads ? __('Lead accounts') : __('Host accounts'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active" aria-current="page">{{ __('Hosts') }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ $forLeads ? __('Leads') : __('Hosts') }}</li>
 @endsection
 
 @section('actions')
-    <x-button type="button" data-bs-toggle="modal" data-bs-target="#onboardHostModal">
-        <i class="fi fi-rr-plus me-1"></i> {{ __('Onboard a host') }}
-    </x-button>
+    @if ($forLeads)
+        <a href="{{ route('demos.index') }}" class="btn btn-primary waves-effect waves-light">
+            <i class="fi fi-rr-comment me-1"></i> {{ __('Demo requests') }}
+        </a>
+    @else
+        <x-button type="button" data-bs-toggle="modal" data-bs-target="#onboardHostModal">
+            <i class="fi fi-rr-plus me-1"></i> {{ __('Onboard a host') }}
+        </x-button>
+    @endif
 @endsection
 
 @section('content')
     <div class="row">
         @foreach ([
-            ['label' => __('Hosts'), 'value' => number_format($totals['hosts']), 'icon' => 'fi-rr-users-alt', 'tone' => ''],
-            ['label' => __('Hosts with balance'), 'value' => number_format($totals['with_balance']), 'icon' => 'fi-rr-wallet', 'tone' => 'is-dark'],
+            ['label' => $forLeads ? __('Leads') : __('Hosts'), 'value' => number_format($totals['hosts']), 'icon' => 'fi-rr-users-alt', 'tone' => ''],
+            ['label' => $forLeads ? __('Leads with balance') : __('Hosts with balance'), 'value' => number_format($totals['with_balance']), 'icon' => 'fi-rr-wallet', 'tone' => 'is-dark'],
             ['label' => __('Money in wallets'), 'value' => 'TZS '.number_format($totals['wallet_float']), 'icon' => 'fi-rr-coins', 'tone' => 'is-soft'],
             ['label' => __('Profiles to finish'), 'value' => number_format($totals['pending_profiles']), 'icon' => 'fi-rr-time-past', 'tone' => 'is-soft'],
         ] as $kpi)
@@ -37,17 +43,19 @@
 
     <div class="card">
         <div class="card-header d-flex flex-wrap gap-3 align-items-center justify-content-between">
-            <div class="emca-filter-pills">
-                <a href="{{ route('admin.users.index', request()->except(['role', 'page'])) }}" @class(['active' => ! $role])>{{ __('Everyone') }}</a>
-                @foreach (\App\UserRole::cases() as $roleOption)
-                    <a href="{{ route('admin.users.index', [...request()->except('page'), 'role' => $roleOption->value]) }}" @class(['active' => $role === $roleOption])>{{ $roleOption->label() }}</a>
-                @endforeach
-            </div>
-            <form method="GET" action="{{ route('admin.users.index') }}" class="d-flex gap-2" role="search">
-                @if ($role)
+            @unless ($forLeads)
+                <div class="emca-filter-pills">
+                    <a href="{{ route('admin.users.index', request()->except(['role', 'page'])) }}" @class(['active' => ! $role])>{{ __('Everyone') }}</a>
+                    @foreach (\App\UserRole::cases() as $roleOption)
+                        <a href="{{ route('admin.users.index', [...request()->except('page'), 'role' => $roleOption->value]) }}" @class(['active' => $role === $roleOption])>{{ $roleOption->label() }}</a>
+                    @endforeach
+                </div>
+            @endunless
+            <form method="GET" action="{{ route($forLeads ? 'admin.leads.index' : 'admin.users.index') }}" class="d-flex gap-2" role="search">
+                @if (! $forLeads && $role)
                     <input type="hidden" name="role" value="{{ $role->value }}">
                 @endif
-                <input type="search" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="{{ __('Name, phone, email or region') }}" aria-label="{{ __('Search hosts') }}">
+                <input type="search" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="{{ __('Name, phone, email or region') }}" aria-label="{{ $forLeads ? __('Search leads') : __('Search hosts') }}">
                 <button class="btn btn-sm btn-primary" type="submit"><i class="fi fi-rr-search"></i></button>
             </form>
         </div>
@@ -100,7 +108,7 @@
                                     TZS {{ number_format($account->wallet_balance) }}
                                 @endif
                             </td>
-                            <td><span @class(['badge', 'bg-dark' => $account->isSuperAdmin(), 'bg-light text-dark' => ! $account->isSuperAdmin()])>{{ $account->role->label() }}</span></td>
+                            <td><span @class(['badge', 'bg-dark' => $account->isSuperAdmin(), 'bg-info-subtle text-dark' => $account->isLead(), 'bg-light text-dark' => ! $account->isSuperAdmin() && ! $account->isLead()])>{{ $account->role->label() }}</span></td>
                             <td class="text-end">
                                 <div class="d-inline-flex gap-1">
                                     <a href="{{ route('admin.users.show', $account) }}" class="btn btn-sm btn-icon btn-light" data-bs-toggle="tooltip" data-bs-title="{{ __('Open') }}" aria-label="{{ __('Open') }}"><i class="fi fi-rr-eye"></i></a>
@@ -120,7 +128,9 @@
                     @empty
                         <tr>
                             <td colspan="7">
-                                <div class="emca-empty">{{ request('q') ? __('No host matches that search.') : __('No hosts yet. Onboard the first account.') }}</div>
+                                <div class="emca-empty">{{ $forLeads
+                                    ? (request('q') ? __('No lead matches that search.') : __('No leads yet.'))
+                                    : (request('q') ? __('No host matches that search.') : __('No hosts yet. Onboard the first account.')) }}</div>
                             </td>
                         </tr>
                     @endforelse

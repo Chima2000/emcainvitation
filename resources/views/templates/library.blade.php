@@ -6,49 +6,43 @@
 
 @section('content')
     <div class="card emca-filter-card">
-        <div class="card-body py-3">
-            <nav class="emca-filter-pills" aria-label="{{ __('Templates') }}">
-                <a href="{{ route('template-library.index') }}" @class(['active' => ! $activeCategory])>{{ __('All') }}</a>
-                @foreach ($categories as $category)
-                    <a href="{{ route('template-library.index', ['category' => $category->slug]) }}" @class(['active' => $activeCategory?->slug === $category->slug])>{{ $category->label() }}</a>
-                @endforeach
-            </nav>
+        <div class="card-body py-3 d-grid gap-3">
+            <form method="GET" action="{{ route('template-library.index') }}" class="d-flex flex-wrap gap-2" role="search">
+                @if ($activeCategory)
+                    <input type="hidden" name="category" value="{{ $activeCategory->slug }}">
+                @endif
+                <input type="search" name="q" value="{{ $search }}" class="form-control" placeholder="{{ __('Search templates') }}" aria-label="{{ __('Search templates') }}">
+                <button class="btn btn-primary" type="submit">{{ __('Search') }}</button>
+            </form>
+            <x-category-choice
+                :categories="$categories"
+                :active="$activeCategory"
+                route-name="template-library.index"
+                :query="array_filter(['q' => $search])"
+            />
         </div>
     </div>
 
-    <div class="row">
+    @php
+        $showCanvaTemplate = $activeCategory === null && ($search === '' || str_contains(mb_strtolower($search), 'canva'));
+    @endphp
+    <div class="emca-template-fold" id="template-cards">
+    <div class="row" id="template-library-more">
+        @if ($showCanvaTemplate)
+            @include('templates.partials.canva-library-card')
+        @endif
         @forelse ($templates as $template)
-            <div class="col-xxl-3 col-lg-4 col-sm-6">
-                <div class="card emca-template-card">
-                    <div class="p-3 pb-0">
-                        <x-invitation-card
-                            compact
-                            :design="$template->design()"
-                            :kicker="$template->category?->label()"
-                            :title="$template->name"
-                            :hosts="__('Your names here')"
-                            :headline="$template->default_headline"
-                            :when="__('Your date and time')"
-                            :venue="__('Your venue')"
-                        />
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
-                            <span class="badge bg-primary-subtle text-primary">{{ $template->category?->label() }}</span>
-                            <strong class="text-nowrap">{{ $template->price > 0 ? 'TZS '.number_format($template->price) : __('Free') }}</strong>
-                        </div>
-                        <h2 class="h6 mb-1">{{ $template->name }}</h2>
-                        <p class="text-body text-sm mb-3">{{ \Illuminate\Support\Str::limit($template->description, 110) }}</p>
-                        <x-new-event variant="primary" class="w-100 mt-auto" :data-emca-fill="json_encode(array_filter(['invitation_template_id' => $template->id, 'type' => $template->category?->is_active ? $template->category->slug : null]))">
-                            {{ __('Use this card') }}
-                        </x-new-event>
-                    </div>
-                </div>
-            </div>
+            @include('templates.partials.library-card', ['folded' => $loop->index >= 6])
         @empty
-            <div class="col-12">
-                <div class="card"><div class="card-body"><div class="emca-empty">{{ __('No templates in this category yet.') }}</div></div></div>
-            </div>
+            @unless ($showCanvaTemplate)
+                <div class="col-12">
+                    <div class="card"><div class="card-body"><div class="emca-empty">{{ $search !== '' ? __('No templates match that search.') : __('No templates in this category yet.') }}</div></div></div>
+                </div>
+            @endunless
         @endforelse
+    </div>
+    @if ($templates->count() > 6)
+        @include('partials.view-more', ['id' => 'template-library-more', 'open' => false, 'class' => 'emca-fold-bar d-flex justify-content-center my-4'])
+    @endif
     </div>
 @endsection

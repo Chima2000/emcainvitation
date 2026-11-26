@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\ContinueHostRegistration;
+use App\Http\Controllers\Auth\SessionController;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
+use App\Support\ChosenInvitationTemplate;
 use App\Support\TanzaniaLocations;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -23,11 +26,11 @@ class ProfileController extends Controller
 
         return view('profile.edit', [
             'user' => $user,
-            'profileRequired' => ! $user->hasCompletedProfile(),
+            'profileRequired' => ! $user->isLead() && ! $user->hasCompletedProfile(),
         ]);
     }
 
-    public function update(UpdateProfileRequest $request): RedirectResponse
+    public function update(UpdateProfileRequest $request, ContinueHostRegistration $continueHostRegistration, ChosenInvitationTemplate $chosenInvitationTemplate): RedirectResponse
     {
         $user = $request->user();
 
@@ -38,8 +41,18 @@ class ProfileController extends Controller
             'profile_completed_at' => now(),
         ]);
 
+        if ($request->session()->get(ContinueHostRegistration::PendingSignIn)) {
+            return $continueHostRegistration->afterProfile($request);
+        }
+
+        $next = $chosenInvitationTemplate->eventUrl($request);
+
+        if ($next === null && $request->session()->pull(SessionController::OpenTemplatesAfterAuth)) {
+            $next = route('template-library.index');
+        }
+
         return redirect()
-            ->route('dashboard')
+            ->to($next ?? route('dashboard'))
             ->with('status', __('Your profile details have been saved.'));
     }
 }

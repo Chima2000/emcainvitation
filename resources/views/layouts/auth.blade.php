@@ -130,6 +130,7 @@
                 background: #fff;
                 color: #1c2434;
                 border: 0;
+                border-top: 4px solid #940000;
                 border-radius: 16px;
                 box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
             }
@@ -147,17 +148,26 @@
             .jumuika-auth-logo-frame {
                 display: block;
                 width: 168px;
-                height: 84px;
-                margin: 4px auto 22px;
-                overflow: hidden;
+                height: auto;
+                margin: 4px auto 8px;
+                overflow: visible;
             }
 
             .jumuika-auth-logo {
                 display: block;
-                width: 249px;
-                max-width: none;
-                height: 249px;
-                margin: -75px 0 0 -44px;
+                width: 168px;
+                max-width: 100%;
+                height: auto;
+                margin: 0;
+            }
+
+            .jumuika-auth-mark {
+                margin: 0 0 14px;
+                text-align: center;
+                color: #940000;
+                font-size: 0.78rem;
+                font-weight: 650;
+                letter-spacing: 0.01em;
             }
 
             .jumuika-auth-card h1 {
@@ -305,10 +315,17 @@
                 color: #7a0000;
             }
 
+            .jumuika-auth-card a.btn-primary,
+            .jumuika-auth-card a.btn-primary:hover,
+            .jumuika-auth-card a.btn-primary:focus {
+                color: #fff;
+            }
+
             .jumuika-auth-card--flip {
                 padding: 0;
                 overflow: visible;
                 background: transparent;
+                border-top: 0;
                 border-radius: 0;
                 box-shadow: none;
                 max-height: none;
@@ -330,6 +347,7 @@
                 grid-area: 1 / 1;
                 padding: 16px 22px 14px;
                 background: #fff;
+                border-top: 4px solid #940000;
                 border-radius: 24px;
                 box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
                 backface-visibility: hidden;
@@ -478,8 +496,281 @@
             }
 
             @media (max-width: 767.98px) {
+                html,
+                body {
+                    height: auto;
+                    min-height: 100%;
+                    overflow: auto;
+                }
+
+                .jumuika-auth {
+                    display: grid;
+                    grid-template-columns: auto minmax(0, 1fr);
+                    align-items: start;
+                    align-content: start;
+                    height: auto;
+                    min-height: 100dvh;
+                    overflow: visible;
+                    gap: 8px 8px;
+                    padding: calc(8px + env(safe-area-inset-top)) 10px calc(12px + env(safe-area-inset-bottom));
+                    place-items: stretch;
+                }
+
+                .jumuika-auth-wall,
+                .jumuika-auth-shade {
+                    grid-column: 1 / -1;
+                    grid-row: 1 / -1;
+                }
+
+                .jumuika-auth-back,
+                .jumuika-auth-tools {
+                    position: static;
+                    top: auto;
+                }
+
+                .jumuika-auth-back {
+                    grid-column: 1;
+                    grid-row: 1;
+                    justify-self: start;
+                    gap: 0;
+                    width: 32px;
+                    height: 32px;
+                    padding: 0;
+                    justify-content: center;
+                    font-size: 14px;
+                }
+
                 .jumuika-auth-back span {
                     display: none;
+                }
+
+                .jumuika-auth-tools {
+                    grid-column: 2;
+                    grid-row: 1;
+                    justify-self: end;
+                }
+
+                .jumuika-auth-card,
+                .jumuika-auth-card-wide,
+                .jumuika-flip-face {
+                    grid-column: 1 / -1;
+                    width: 100%;
+                    max-height: none;
+                    margin-top: 0;
+                    overflow: visible;
+                    padding: 8px;
+                    border-radius: 0.4rem;
+                    font-size: 0.6875rem;
+                    line-height: 1.35;
+                }
+
+                .jumuika-auth-card--flip {
+                    padding: 0;
+                    background: transparent;
+                    box-shadow: none;
+                }
+
+                .jumuika-flip-rotor {
+                    --flip-jump: -36px;
+                    --flip-side: 16px;
+                }
+
+                .jumuika-auth-logo-frame {
+                    width: 120px;
+                    height: auto;
+                    margin: 0 auto 6px;
+                }
+
+                .jumuika-auth-logo {
+                    width: 120px;
+                    height: auto;
+                    margin: 0;
+                }
+
+                .jumuika-auth-mark {
+                    margin-bottom: 8px;
+                    font-size: 0.68rem;
+                }
+
+                .jumuika-auth-card h1 {
+                    font-size: 1.05rem;
+                    margin-bottom: 2px;
+                }
+
+                .jumuika-auth-card .jumuika-auth-lead,
+                .jumuika-auth-card .form-text,
+                .jumuika-auth-card .form-check-label,
+                .jumuika-flip-toggle {
+                    font-size: 0.6875rem;
+                }
+
+                .jumuika-auth-card .form-label {
+                    margin-bottom: 0.15rem;
+                    font-size: 0.6875rem;
+                }
+
+                .jumuika-auth-card .mb-4 {
+                    margin-bottom: 0.45rem !important;
+                }
+
+                .jumuika-auth-card .mb-3 {
+                    margin-bottom: 0.4rem !important;
+                }
+
+                .jumuika-auth-card .row > .col-6 {
+                    flex: 0 0 100%;
+                    width: 100%;
+                    max-width: 100%;
+                }
+
+                .jumuika-auth-card .form-control,
+                .jumuika-auth-card .form-select {
+                    min-height: 0;
+                    padding: 0.22rem 0.45rem;
+                    font-size: 0.75rem;
+                    line-height: 1.35;
+                    border-radius: 6px;
+                }
+
+                .jumuika-phone-flag,
+                .jumuika-password-toggle {
+                    top: 50%;
+                }
+
+                .jumuika-phone-flag .emca-locale-flag {
+                    width: 16px;
+                    height: 16px;
+                }
+
+                .jumuika-auth-card .jumuika-phone-input {
+                    padding-left: 30px;
+                }
+
+                .jumuika-auth-card .btn-primary {
+                    min-height: 26px;
+                    padding: 0.24rem 0.5rem;
+                    font-size: 0.7rem;
+                    border-radius: 6px;
+                }
+            }
+
+            @media (max-width: 767.98px) {
+                .jumuika-auth-wall,
+                .jumuika-auth-shade {
+                    position: fixed;
+                    inset: 0;
+                }
+
+                .jumuika-auth-wall {
+                    overflow: hidden;
+                }
+
+                .jumuika-auth {
+                    gap: 12px 10px;
+                    padding-right: 16px;
+                    padding-left: 16px;
+                }
+
+                .jumuika-auth-shade {
+                    background: rgba(12, 10, 14, 0.62);
+                }
+
+                .jumuika-auth-back {
+                    width: 44px;
+                    height: 44px;
+                    font-size: 18px;
+                }
+
+                .jumuika-auth-tools .btn {
+                    min-height: 44px;
+                    padding: 0.55rem 0.85rem;
+                    font-size: 0.875rem;
+                }
+
+                .jumuika-auth-card:not(.jumuika-auth-card--flip),
+                .jumuika-auth-card-wide,
+                .jumuika-flip-face {
+                    padding: 18px;
+                    border-radius: 20px;
+                    font-size: 1rem;
+                    line-height: 1.5;
+                }
+
+                .jumuika-auth-card--flip {
+                    padding: 0;
+                }
+
+                .jumuika-auth-logo-frame,
+                .jumuika-auth-logo {
+                    width: 148px;
+                }
+
+                .jumuika-auth-mark {
+                    margin-bottom: 12px;
+                    font-size: 0.8125rem;
+                }
+
+                .jumuika-auth-card h1 {
+                    margin-bottom: 6px;
+                    font-size: 1.5rem;
+                    line-height: 1.25;
+                }
+
+                .jumuika-auth-card .jumuika-auth-lead,
+                .jumuika-auth-card .form-text,
+                .jumuika-auth-card .form-check-label,
+                .jumuika-flip-toggle {
+                    font-size: 0.875rem;
+                    line-height: 1.45;
+                }
+
+                .jumuika-auth-card .form-label {
+                    margin-bottom: 0.35rem;
+                    font-size: 0.875rem;
+                }
+
+                .jumuika-auth-card .mb-4 {
+                    margin-bottom: 0.8rem !important;
+                }
+
+                .jumuika-auth-card .mb-3 {
+                    margin-bottom: 0.7rem !important;
+                }
+
+                .jumuika-auth-card .form-control,
+                .jumuika-auth-card .form-select {
+                    min-height: 48px;
+                    padding: 0.65rem 0.8rem;
+                    border-radius: 12px;
+                    font-size: 1rem;
+                    line-height: 1.4;
+                }
+
+                .jumuika-auth-card .jumuika-phone-input {
+                    padding-left: 42px;
+                }
+
+                .jumuika-phone-flag,
+                .jumuika-password-toggle {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                .jumuika-phone-flag .emca-locale-flag {
+                    width: 20px;
+                    height: 20px;
+                }
+
+                .jumuika-auth-card .btn-primary {
+                    min-height: 48px;
+                    padding: 0.65rem 1rem;
+                    border-radius: 12px;
+                    font-size: 1rem;
+                }
+
+                .jumuika-flip-toggle {
+                    min-height: 44px;
+                    padding: 8px;
                 }
             }
         </style>
@@ -543,13 +834,14 @@
                 @else
                     <a href="{{ route('home') }}" aria-label="Jumuika Pass">
                         <span class="jumuika-auth-logo-frame">
-                            <img class="jumuika-auth-logo" src="{{ asset('logo/Jumuika-logo.png') }}" alt="Jumuika Pass">
+                            <img class="jumuika-auth-logo" src="{{ asset('logo/jumuika-pass.png') }}" alt="Jumuika Pass" width="757" height="389">
                         </span>
                     </a>
+                    <p class="jumuika-auth-mark">{{ __('Invite better. Manage better. Spend less.') }}</p>
                     <h1>@yield('heading')</h1>
                     <p class="jumuika-auth-lead">@yield('subheading')</p>
                     @if (session('status'))
-                        <div class="alert alert-success py-2 small" role="status">{{ session('status') }}</div>
+                        <div class="alert alert-success py-2 small" role="status" data-emca-dismiss>{{ session('status') }}</div>
                     @endif
                     @yield('content')
                 @endif

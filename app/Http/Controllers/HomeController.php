@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index(): View
     {
         return view('pages.home', [
-            'templates' => InvitationTemplate::query()->orderBy('name')->take(6)->get(),
+            'templates' => InvitationTemplate::query()->orderedForGallery()->take(6)->get(),
             'upcomingEvents' => Event::query()->upcoming()->with('template')->take(4)->get(),
         ]);
     }

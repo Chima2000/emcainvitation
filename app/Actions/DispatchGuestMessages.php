@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\Guest;
 use App\Models\ServiceRate;
 use App\Models\User;
+use App\PledgeStatus;
 use App\RsvpStatus;
 use App\ServiceItem;
 use App\Support\SystemSettings;
@@ -28,13 +29,13 @@ class DispatchGuestMessages
      *
      * @return array{prepared: int, paused: int, charged: int, covered: int, queued: int, unreachable: int}
      */
-    public function handle(Event $event, MessagePurpose $purpose, MessageChannel $channel): array
+    public function handle(Event $event, MessagePurpose $purpose, MessageChannel $channel, string $audience = 'waiting', ?int $groupId = null): array
     {
         $sendsThroughGateway = self::sendsThroughGateway($channel);
 
-        return DB::transaction(function () use ($event, $purpose, $channel, $sendsThroughGateway): array {
+        return DB::transaction(function () use ($event, $purpose, $channel, $sendsThroughGateway, $audience, $groupId): array {
             $host = User::query()->lockForUpdate()->findOrFail($event->user_id);
-            $guests = $this->recipients($event, $purpose);
+            $guests = $this->recipients($event, $purpose, $audience, $groupId);
             $unitPrice = $this->unitPrice($purpose, $channel);
             $allowance = $event->packageAllowanceLeft($purpose);
             $available = $host->wallet_balance;
@@ -127,18 +128,86 @@ class DispatchGuestMessages
         $rates = ServiceRate::table();
 
         return match ($purpose) {
-            MessagePurpose::Invitation => $rates[ServiceItem::Card->value] + $rates[ServiceItem::forChannel($channel)->value],
-            MessagePurpose::Reminder => $rates[ServiceItem::Reminder->value],
+            MessagePurpose::Invitation => $channel === MessageChannel::Email
+                ? 0
+                : $rates[ServiceItem::Card->value] + $rates[ServiceItem::forChannel($channel)->value],
+            MessagePurpose::Reminder, MessagePurpose::Pledge => $rates[ServiceItem::Reminder->value],
             MessagePurpose::Thanks => $rates[ServiceItem::ThankYou->value],
+            MessagePurpose::Trial => 0,
         };
+    }
+
+    /**
+     * What a batch would cost, without preparing a message or moving money.
+     *
+     * @return array{count: int, unreachable: int, unit: int, covered: int, charged: int, balance: int, shortfall: int, guest: ?Guest, body: ?string}
+     */
+    public function quote(Event $event, MessagePurpose $purpose, MessageChannel $channel, string $audience = 'waiting', ?int $groupId = null): array
+    {
+        $event->loadMissing('user');
+        $guests = $this->recipients($event, $purpose, $audience, $groupId);
+        $unitPrice = $this->unitPrice($purpose, $channel);
+        $allowance = $event->packageAllowanceLeft($purpose);
+        $sendsThroughGateway = self::sendsThroughGateway($channel);
+        $covered = 0;
+        $charged = 0;
+        $reachable = 0;
+        $unreachable = 0;
+        $preview = null;
+
+        foreach ($guests as $guest) {
+            if ($sendsThroughGateway && $guest->internationalPhone() === null) {
+                $unreachable++;
+
+                continue;
+            }
+
+            $reachable++;
+            $preview ??= $guest;
+
+            if ($allowance > 0) {
+                $allowance--;
+                $covered++;
+
+                continue;
+            }
+
+            $charged += $unitPrice;
+        }
+
+        $balance = (int) ($event->user?->wallet_balance ?? 0);
+
+        return [
+            'count' => $reachable,
+            'unreachable' => $unreachable,
+            'unit' => $unitPrice,
+            'covered' => $covered,
+            'charged' => $charged,
+            'balance' => $balance,
+            'shortfall' => max(0, $charged - $balance),
+            'guest' => $preview,
+            'body' => $preview instanceof Guest ? $this->body($event, $preview, $purpose) : null,
+        ];
     }
 
     /**
      * @return Collection<int, Guest>
      */
-    private function recipients(Event $event, MessagePurpose $purpose): Collection
+    private function recipients(Event $event, MessagePurpose $purpose, string $audience = 'waiting', ?int $groupId = null): Collection
     {
         $query = $event->guests()->orderBy('id');
+
+        if ($audience === 'unreplied') {
+            $query->where('rsvp_status', RsvpStatus::Pending);
+        }
+
+        if ($audience === 'group') {
+            $memberIds = $event->guestGroups()->whereKey($groupId)->first()
+                ?->guests()
+                ->pluck('guests.id')
+                ->all() ?? [];
+            $query->whereIn('id', $memberIds);
+        }
 
         return match ($purpose) {
             MessagePurpose::Invitation => $query->whereNull('sent_at')->get(),
@@ -159,6 +228,21 @@ class DispatchGuestMessages
                         ->where('status', '!=', MessageStatus::Failed);
                 })
                 ->get(),
+            MessagePurpose::Pledge => $query
+                ->whereHas('pledges', function ($pledges): void {
+                    $pledges->where('status', PledgeStatus::Pending);
+                })
+                ->whereDoesntHave('messages', function ($messages): void {
+                    $messages
+                        ->where('purpose', MessagePurpose::Pledge)
+                        ->where('status', '!=', MessageStatus::Failed)
+                        ->whereDate('created_at', today());
+                })
+                ->with(['pledges' => function ($pledges): void {
+                    $pledges->where('status', PledgeStatus::Pending);
+                }])
+                ->get(),
+            MessagePurpose::Trial => new Collection,
         };
     }
 
@@ -169,6 +253,18 @@ class DispatchGuestMessages
                 'name' => $guest->name,
                 'hosts' => $event->hostsLabel(),
                 'title' => $event->title,
+            ]);
+        }
+
+        if ($purpose === MessagePurpose::Pledge) {
+            $guest->loadMissing(['pledges' => function ($pledges): void {
+                $pledges->where('status', PledgeStatus::Pending);
+            }]);
+
+            return __('Hello :name, your open pledge for :title is TZS :amount.', [
+                'name' => $guest->name,
+                'title' => $event->title,
+                'amount' => number_format((int) $guest->pledges->sum('amount')),
             ]);
         }
 

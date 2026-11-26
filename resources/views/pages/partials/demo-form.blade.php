@@ -18,7 +18,8 @@
                             @error('email')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-sm-6">
-                            <input class="form-control" name="phone" value="{{ old('phone') }}" placeholder="{{ __('Phone') }}" required>
+                            <input class="form-control" name="phone" value="{{ old('phone') }}" placeholder="0692586046" inputmode="tel" autocomplete="tel" required>
+                            <p class="form-hint">{{ __('Enter 10 digits starting with 0 or 12 digits starting with 255, for example 0692586046 or 255692586046.') }}</p>
                             @error('phone')<p class="form-error">{{ $message }}</p>@enderror
                         </div>
                         <div class="col-sm-6">

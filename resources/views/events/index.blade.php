@@ -13,8 +13,9 @@
 @section('content')
     <div class="row">
         @forelse ($events as $event)
+            @php($palette = $event->listCardPalette())
             <div class="col-md-6 col-xl-4">
-                <a href="{{ route('events.show', $event) }}" class="card text-decoration-none h-100">
+                <a href="{{ route('events.show', $event) }}" class="card emca-event-tile text-decoration-none h-100" style="--event-paper: {{ $palette['paper'] }}; --event-ink: {{ $palette['ink'] }}; --event-accent: {{ $palette['accent'] }};">
                     <div class="card-body">
                         <p class="text-uppercase text-2xs fw-semibold text-muted mb-2">{{ $event->type->label() }}, {{ $event->status->label() }}</p>
                         <h2 class="h4 mb-1">{{ $event->title }}</h2>

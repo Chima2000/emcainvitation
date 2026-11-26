@@ -17,10 +17,10 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="row emca-admin-dashboard">
         <div class="col-xxl-8">
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
+            <div class="row emca-dashboard-stats">
+                <div class="col-lg-4 col-md-6 emca-dashboard-stat">
                     <div class="card">
                         <div class="card-header d-flex align-items-start justify-content-between border-0">
                             <div class="clearfix">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6 emca-dashboard-stat">
                     <div class="card">
                         <div class="card-header d-flex align-items-start justify-content-between border-0 mb-2">
                             <div class="clearfix">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-12">
+                <div class="col-lg-4 col-md-12 emca-dashboard-stat">
                     <div class="card">
                         <div class="card-header d-flex align-items-start justify-content-between border-0 mb-2">
                             <div class="clearfix">
@@ -269,7 +269,57 @@
                     <a href="{{ route('admin.events.index') }}" class="btn btn-sm btn-outline-light btn-shadow waves-effect">{{ __('View all') }}</a>
                 </div>
                 <div class="card-body p-2">
-                    <div class="table-responsive">
+                    <div class="emca-admin-events-mobile">
+                        @forelse ($events as $recentEvent)
+                            <article class="emca-admin-event-mobile-card">
+                                <div class="emca-admin-event-mobile-heading">
+                                    <div class="avatar avatar-sm rounded-3 bg-primary text-white flex-shrink-0">
+                                        {{ mb_strtoupper(mb_substr($recentEvent->title, 0, 1)) }}
+                                    </div>
+                                    <div class="min-w-0 flex-grow-1">
+                                        <h6 class="mb-1 emca-admin-event-mobile-title">
+                                            <a href="{{ route('admin.events.show', $recentEvent) }}" class="text-dark">{{ $recentEvent->title }}</a>
+                                        </h6>
+                                        <p class="mb-0 small text-body text-truncate">{{ $recentEvent->venue }}</p>
+                                    </div>
+                                    <span @class([
+                                        'badge',
+                                        'text-bg-primary' => $recentEvent->status === \App\EventStatus::Published,
+                                        'bg-light text-dark border' => $recentEvent->status === \App\EventStatus::Draft,
+                                        'text-bg-dark' => $recentEvent->status === \App\EventStatus::Completed,
+                                    ])>{{ $recentEvent->status->label() }}</span>
+                                </div>
+                                <dl class="emca-admin-event-mobile-details">
+                                    <div>
+                                        <dt>{{ __('Host') }}</dt>
+                                        <dd class="text-truncate">{{ $recentEvent->user?->name ?? $recentEvent->hostsLabel() }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>{{ __('When') }}</dt>
+                                        <dd>{{ $recentEvent->event_date->timezone(config('app.timezone'))->translatedFormat('j M Y') }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>{{ __('Guests') }}</dt>
+                                        <dd>{{ number_format($recentEvent->guests_count) }}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>{{ __('Package') }}</dt>
+                                        <dd class="text-truncate">{{ $recentEvent->package?->name ?? __('Pay as you go') }}</dd>
+                                    </div>
+                                </dl>
+                                <a href="{{ route('admin.events.show', $recentEvent) }}" class="btn btn-sm btn-outline-light btn-shadow emca-admin-event-mobile-action">
+                                    {{ __('View') }}
+                                    <i class="fi fi-rr-arrow-up-right" aria-hidden="true"></i>
+                                </a>
+                            </article>
+                        @empty
+                            <div class="emca-empty">
+                                <i class="fi fi-rr-calendar" aria-hidden="true"></i>
+                                {{ __('No events yet.') }}
+                            </div>
+                        @endforelse
+                    </div>
+                    <div class="table-responsive emca-admin-events-desktop">
                         <table class="table display table-row-rounded mb-0">
                             <thead class="table-light">
                                 <tr>

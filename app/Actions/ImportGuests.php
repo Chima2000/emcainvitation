@@ -3,15 +3,27 @@
 namespace App\Actions;
 
 use App\GuestGender;
+use App\Models\Contact;
 use App\Models\Event;
+use App\Support\GuestRoster;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 
 class ImportGuests
 {
+    /**
+     * Columns a host fills in. They match the guest record, not the card number or reply.
+     *
+     * @var list<string>
+     */
+    public const array Columns = ['name', 'phone', 'email', 'gender', 'party_size', 'notes', 'table_name'];
+
     public function __construct(private IssueGuestPass $issueGuestPass) {}
 
-    public function handle(Event $event, UploadedFile $file): int
+    /**
+     * @return array{imported: int, skipped: int, stopped_at_trial_limit: bool}
+     */
+    public function handle(Event $event, UploadedFile $file): array
     {
         $contents = file($file->getRealPath(), FILE_IGNORE_NEW_LINES);
 
@@ -59,7 +71,18 @@ class ImportGuests
             }
         }
 
+        $room = $event->trialGuestsRemaining();
+
+        if ($room === 0) {
+            throw ValidationException::withMessages([
+                'file' => __('A trial can list :count guests. Become a host to add more.', ['count' => Event::TrialGuestLimit]),
+            ]);
+        }
+
+        $roster = GuestRoster::forEvent($event);
         $imported = 0;
+        $skipped = 0;
+        $stoppedAtTrialLimit = false;
 
         foreach ($dataRows as $row) {
             $values = [];
@@ -79,25 +102,50 @@ class ImportGuests
             $partySize = (int) ($values['party_size'] ?? 1);
             $genderValue = $values['gender'] ?? '';
             $gender = $genderValue === '' ? null : GuestGender::tryFrom($genderValue);
+            $notes = $values['notes'] ?? '';
+            $tableName = $values['table_name'] ?? '';
+            $phone = $phone !== '' ? $phone : null;
+            $email = str_contains($email, '@') ? $email : null;
 
-            $this->issueGuestPass->handle($event, [
+            if ($roster->conflicts($name, $phone, $email) !== []) {
+                $skipped++;
+
+                continue;
+            }
+
+            if ($room !== null && $imported >= $room) {
+                $stoppedAtTrialLimit = true;
+                $skipped++;
+
+                continue;
+            }
+
+            $guest = $this->issueGuestPass->handle($event, [
                 'name' => $name,
-                'phone' => $phone !== '' ? $phone : null,
-                'email' => str_contains($email, '@') ? $email : null,
+                'phone' => $phone,
+                'email' => $email,
                 'gender' => $gender,
                 'party_size' => min(30, max(1, $partySize)),
+                'notes' => $notes !== '' ? mb_substr($notes, 0, 1000) : null,
+                'table_name' => $tableName !== '' ? mb_substr($tableName, 0, 40) : null,
             ]);
+            Contact::remember($event->user, $guest->name, $guest->phone, $guest->email, $guest->gender?->value);
+            $roster->remember($name, $phone, $email);
 
             $imported++;
         }
 
-        if ($imported === 0) {
+        if ($imported === 0 && $skipped === 0) {
             throw ValidationException::withMessages([
                 'file' => 'No guests were found in that file.',
             ]);
         }
 
-        return $imported;
+        return [
+            'imported' => $imported,
+            'skipped' => $skipped,
+            'stopped_at_trial_limit' => $stoppedAtTrialLimit,
+        ];
     }
 
     /**

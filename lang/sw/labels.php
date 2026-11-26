@@ -55,15 +55,21 @@ return [
         'invitation' => 'Mwaliko',
         'reminder' => 'Kikumbusho',
         'thanks' => 'Shukrani',
+        'pledge' => 'Taarifa ya mchango',
+        'trial' => 'Majaribio',
     ],
 
     'channels' => [
         'whatsapp' => 'WhatsApp',
         'sms' => 'SMS',
+        'email' => 'Barua pepe',
     ],
 
     'message_statuses' => [
         'sent' => 'Imeandaliwa',
+        'queued' => 'Inasubiri',
+        'delivered' => 'Imefika',
+        'failed' => 'Haijatumwa',
     ],
 
     'vendor_categories' => [

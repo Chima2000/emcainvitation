@@ -14,7 +14,7 @@ class EnsureProfileIsComplete
     {
         $user = $request->user();
 
-        if ($user instanceof User && ! $user->isSuperAdmin() && ! $user->hasCompletedProfile()) {
+        if ($user instanceof User && ! $user->isSuperAdmin() && ! $user->isLead() && ! $user->hasCompletedProfile()) {
             return redirect()->route('profile.edit');
         }
 

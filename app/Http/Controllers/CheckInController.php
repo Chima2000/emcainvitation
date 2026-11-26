@@ -20,7 +20,8 @@ class CheckInController extends Controller
             return redirect()
                 ->route('events.show', $event)
                 ->withFragment('check-in')
-                ->with('error', __('No invitation matches that code.'));
+                ->with('door_message', __('No invitation matches that code.'))
+                ->with('check_in', 'denied');
         }
 
         return $this->finish($event, $guest, $checkInGuest)
@@ -35,11 +36,21 @@ class CheckInController extends Controller
         abort_unless($request->user()?->can('update', $event) ?? false, 404);
 
         $result = $checkInGuest->handle($guest);
+        $guest = $result['guest'];
 
         return view('check-ins.result', [
             'event' => $event,
-            'guest' => $result['guest'],
+            'guest' => $guest,
             'checkedIn' => $result['checkedIn'],
+            'doorMessage' => $result['checkedIn']
+                ? __(':name is checked in. Card :serial cannot be used again.', [
+                    'name' => $guest->name,
+                    'serial' => $guest->serial,
+                ])
+                : __(':name already used this card at :time.', [
+                    'name' => $guest->name,
+                    'time' => $guest->checked_in_at->timezone(config('app.timezone'))->translatedFormat('g:i A'),
+                ]),
         ]);
     }
 
@@ -50,17 +61,19 @@ class CheckInController extends Controller
         if (! $result['checkedIn']) {
             return redirect()
                 ->route('events.show', $event)
-                ->with('error', __(':name already used this card at :time.', [
+                ->with('door_message', __(':name already used this card at :time.', [
                     'name' => $guest->name,
                     'time' => $guest->checked_in_at->timezone(config('app.timezone'))->translatedFormat('g:i A'),
-                ]));
+                ]))
+                ->with('check_in', 'denied');
         }
 
         return redirect()
             ->route('events.show', $event)
-            ->with('status', __(':name is checked in. Card :serial cannot be used again.', [
+            ->with('door_message', __(':name is checked in. Card :serial cannot be used again.', [
                 'name' => $guest->name,
                 'serial' => $guest->serial,
-            ]));
+            ]))
+            ->with('check_in', 'verified');
     }
 }

@@ -12,6 +12,7 @@
         @stack('styles')
     </head>
     <body class="emca-admin-shell" data-emca-layout="admin{{ View::hasSection('sidebar-panel') ? '-panel' : '' }}" data-emca-swap="all">
+        @include('layouts.partials.back-to-top')
         @php
             $adminUser = auth()->user();
         @endphp
@@ -230,6 +231,7 @@
         </div>
         @include('layouts.partials.admin-scripts')
         <script src="{{ asset('admin/assets/js/emca-admin.js') }}?v={{ filemtime(public_path('admin/assets/js/emca-admin.js')) }}"></script>
+        <script src="{{ asset('admin/assets/js/emca-back-to-top.js') }}?v={{ filemtime(public_path('admin/assets/js/emca-back-to-top.js')) }}"></script>
         @include('layouts.partials.ajax-script')
         <div data-emca-region="scripts">
             @stack('scripts')

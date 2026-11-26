@@ -16,6 +16,7 @@ use App\Models\InvitationTemplate;
 use App\Models\Package;
 use App\PledgeStatus;
 use App\RsvpStatus;
+use App\Support\ChosenInvitationTemplate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -25,14 +26,21 @@ class EventController extends Controller
 {
     use ManagesOwnedEvent;
 
-    public function index(Request $request): View
+    public function index(Request $request, ChosenInvitationTemplate $chosenInvitationTemplate): View
     {
+        if ($request->boolean('new')) {
+            app()->terminating(function () use ($request, $chosenInvitationTemplate): void {
+                $chosenInvitationTemplate->forget($request);
+            });
+        }
+
         return view('events.index', [
             'events' => $request->user()
                 ->events()
                 ->with('template')
                 ->withCount('guests')
-                ->latest('event_date')
+                ->oldest()
+                ->orderBy('id')
                 ->paginate(12),
         ]);
     }
@@ -52,12 +60,15 @@ class EventController extends Controller
         ]));
     }
 
-    public function store(StoreEventRequest $request): RedirectResponse
+    public function store(StoreEventRequest $request, ChosenInvitationTemplate $chosenInvitationTemplate): RedirectResponse
     {
+        $chosenInvitationTemplate->forget($request);
+        $lead = $request->user()->isLead();
+
         $event = $request->user()->events()->create([
             ...$request->safe()->except(['is_public', 'organization_name']),
-            'is_public' => $request->boolean('is_public'),
-            'status' => $request->enum('status', EventStatus::class) ?? EventStatus::Draft,
+            'is_public' => $lead ? false : $request->boolean('is_public'),
+            'status' => $lead ? EventStatus::Draft : ($request->enum('status', EventStatus::class) ?? EventStatus::Draft),
         ]);
 
         return redirect()
@@ -80,12 +91,11 @@ class EventController extends Controller
                 });
             })
             ->latest()
-            ->paginate(12)
-            ->withQueryString();
+            ->get();
 
         $event->load([
             'template',
-            'pledges' => fn ($query) => $query->latest(),
+            'pledges' => fn ($query) => $query->with('guest')->latest(),
             'budgetItems' => fn ($query) => $query->with('committee')->latest(),
             'committees.leader',
             'committees.guests',
@@ -110,12 +120,16 @@ class EventController extends Controller
             'event' => $event,
             'guests' => $guests,
             'committeeGuests' => $event->guests()->orderBy('name')->get(['id', 'name', 'phone', 'gender']),
-            'recentCheckIns' => $event->guests()->whereNotNull('checked_in_at')->latest('checked_in_at')->limit(6)->get(),
+            'recentCheckIns' => $event->guests()->whereNotNull('checked_in_at')->latest('checked_in_at')->get(['name', 'serial', 'checked_in_at']),
             'income' => (int) $event->budgetItems->where('kind', BudgetKind::Income)->sum('amount'),
             'expense' => (int) $event->budgetItems->where('kind', BudgetKind::Expense)->sum('amount'),
             'receivedPledges' => (int) $event->pledges->where('status', PledgeStatus::Received)->sum('amount'),
             'headcount' => (int) $event->guests()->where('rsvp_status', RsvpStatus::Attending)->sum('party_size'),
             'billing' => $this->billingSummary($request, $event, $dispatchGuestMessages),
+            'contacts' => $request->user()->contacts()->get(['id', 'name', 'phone', 'email', 'gender']),
+            'guestGroups' => $event->guestGroups()->with('guests:id,name')->get(),
+            'openPledgeTotal' => (int) $event->pledges->where('status', PledgeStatus::Pending)->sum('amount'),
+            'openPledgeCount' => $event->pledges->where('status', PledgeStatus::Pending)->count(),
         ]);
     }
 
@@ -152,7 +166,7 @@ class EventController extends Controller
 
         return view('events.edit', [
             'event' => $event,
-            'templates' => InvitationTemplate::query()->orderBy('name')->get(),
+            'templates' => InvitationTemplate::query()->orderedForGallery()->get(),
             'types' => EventCategory::options(),
             'statuses' => EventStatus::cases(),
         ]);
@@ -162,14 +176,43 @@ class EventController extends Controller
     {
         $this->ownedEvent($request, $event);
 
-        $event->update([
+        $attributes = [
             ...$request->safe()->except(['is_public', 'organization_name']),
             'is_public' => $request->boolean('is_public'),
-        ]);
+        ];
+
+        if ($request->user()->isLead()) {
+            $attributes['is_public'] = false;
+            $attributes['status'] = EventStatus::Draft;
+        }
+
+        $event->update($attributes);
 
         return redirect()
             ->route('events.show', $event)
             ->with('status', __('Event details saved.'));
+    }
+
+    public function reminder(Request $request, Event $event): RedirectResponse
+    {
+        $this->ownedEvent($request, $event);
+
+        $validated = $request->validate([
+            'reminder_days' => ['required', 'integer', 'min:1', 'max:14'],
+        ]);
+        $enabled = $request->boolean('auto_reminder');
+
+        $event->update([
+            'auto_reminder' => $enabled,
+            'reminder_days' => $validated['reminder_days'],
+        ]);
+
+        return redirect()
+            ->route('events.show', $event)
+            ->withFragment('messages')
+            ->with('status', $enabled
+                ? __('Guests who have not replied get one reminder :days days before the event.', ['days' => $validated['reminder_days']])
+                : __('The automatic reminder is stopped.'));
     }
 
     public function destroy(Request $request, Event $event): RedirectResponse

@@ -96,6 +96,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<Contact, $this>
+     */
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class)->orderBy('name');
+    }
+
+    /**
      * @return HasMany<WalletTransaction, $this>
      */
     public function walletTransactions(): HasMany
@@ -119,6 +127,11 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->role === UserRole::SuperAdmin;
+    }
+
+    public function isLead(): bool
+    {
+        return $this->role === UserRole::Lead;
     }
 
     public function isAdmin(): bool
