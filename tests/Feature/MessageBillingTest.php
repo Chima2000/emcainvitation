@@ -94,6 +94,22 @@ test('a package without thank-yous charges thank-you messages to the wallet', fu
         ->and($host->fresh()->wallet_balance)->toBe(200000 - 120000 - 100);
 });
 
+test('a packaged event page opens when trial messages exist', function () {
+    $host = User::factory()->create(['wallet_balance' => 300000]);
+    $event = Event::factory()->for($host)->create();
+    $package = Package::factory()->create(['price' => 120000, 'guest_limit' => 100]);
+
+    $this->actingAs($host)->post(route('events.package.store', $event), ['package_id' => $package->id]);
+
+    $this->actingAs($host)
+        ->get(route('events.show', $event))
+        ->assertOk()
+        ->assertSee(__('labels.purposes.invitation'))
+        ->assertDontSee(__('labels.purposes.trial').'</span>');
+
+    expect($event->fresh()->packageAllowanceLeft(MessagePurpose::Trial))->toBe(0);
+});
+
 test('the event page shows the price per message and the wallet balance', function () {
     $host = User::factory()->create(['wallet_balance' => 45000]);
     $event = Event::factory()->for($host)->create();
@@ -120,6 +136,8 @@ test('the event page shows only the 15 most recent messages', function () {
     $this->actingAs($host)
         ->get(route('events.show', $event))
         ->assertOk()
+        ->assertSee(__('Show messages'))
+        ->assertSee('id="message-list" hidden', false)
         ->assertDontSee('Message 0')
         ->assertSee('Message 15');
 });

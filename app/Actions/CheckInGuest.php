@@ -13,18 +13,15 @@ class CheckInGuest
      */
     public function handle(Guest $guest): array
     {
-        if ($guest->checked_in_at !== null) {
-            return [
-                'checkedIn' => false,
-                'guest' => $guest,
-            ];
-        }
+        $updated = Guest::query()
+            ->whereKey($guest->getKey())
+            ->whereNull('checked_in_at')
+            ->update(['checked_in_at' => now()]);
 
-        $guest->checked_in_at = now();
-        $guest->save();
+        $guest->refresh();
 
         return [
-            'checkedIn' => true,
+            'checkedIn' => $updated === 1,
             'guest' => $guest,
         ];
     }

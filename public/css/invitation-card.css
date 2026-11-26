@@ -6,33 +6,57 @@
     --jp-bg: none;
     position: relative;
     overflow: hidden;
-    border-radius: 1.75rem;
+    border-radius: 0.35rem;
     color: var(--jp-ink);
     background-color: var(--jp-paper);
     background-image:
-        linear-gradient(color-mix(in srgb, var(--jp-paper) 80%, transparent), color-mix(in srgb, var(--jp-paper) 88%, transparent)),
+        radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--jp-accent) 10%, transparent), transparent 46%),
+        linear-gradient(color-mix(in srgb, var(--jp-paper) 86%, white), color-mix(in srgb, var(--jp-paper) 92%, transparent)),
         var(--jp-bg);
     background-position: center;
     background-size: cover;
-    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.35);
-    font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    box-shadow: 0 28px 50px -28px rgba(40, 24, 12, 0.55);
+    font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
 .jp-card__frame {
     position: absolute;
-    inset: 0.85rem;
-    border: 1px solid var(--jp-accent);
-    border-radius: 1.35rem;
+    inset: 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--jp-accent) 75%, #c4a574);
+    border-radius: 0.15rem;
     pointer-events: none;
+    box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--jp-paper) 70%, transparent), inset 0 0 0 5px color-mix(in srgb, var(--jp-accent) 35%, transparent);
+}
+
+.jp-card__bloom {
+    position: absolute;
+    z-index: 1;
+    width: 7.5rem;
+    height: 7.5rem;
+    color: var(--jp-accent);
+    fill: color-mix(in srgb, var(--jp-accent) 72%, #8a6a32);
+    opacity: 0.92;
+    pointer-events: none;
+}
+
+.jp-card__bloom--north {
+    top: 0.15rem;
+    right: 0.1rem;
+}
+
+.jp-card__bloom--south {
+    bottom: 0.05rem;
+    left: 0.05rem;
 }
 
 .jp-card__body {
     position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    min-height: 100%;
-    padding: 2.75rem 2rem;
+    gap: 0.85rem;
+    min-height: 34rem;
+    padding: 4.2rem 2.2rem 3.4rem;
     text-align: center;
 }
 
@@ -44,59 +68,88 @@
 .jp-card__kicker {
     margin: 0;
     color: var(--jp-accent);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-}
-
-.jp-card__title {
-    margin: 0;
-    color: var(--jp-ink);
-    font-family: var(--jp-font);
-    font-size: clamp(1.9rem, 4vw, 2.6rem);
-    font-weight: 600;
-    line-height: 1.15;
-    overflow-wrap: anywhere;
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 2.15rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.1;
+    text-transform: none;
 }
 
 .jp-card__hosts {
-    margin: 0.65rem 0 0;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+    text-transform: none;
+}
+
+.jp-card__guest {
+    margin: 0.15rem auto 0;
+    max-width: 16rem;
+    color: var(--jp-ink);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.jp-card__guest::before,
+.jp-card__guest::after {
+    content: '';
+    display: block;
+    height: 0;
+    margin: 0.35rem auto;
+    border-top: 1px dotted color-mix(in srgb, var(--jp-accent) 70%, transparent);
+}
+
+.jp-card__title {
+    margin: 0.2rem 0 0;
+    color: var(--jp-ink);
+    font-family: var(--jp-font);
+    font-size: clamp(2rem, 4.4vw, 2.7rem);
+    font-weight: 500;
+    line-height: 1.12;
+    overflow-wrap: anywhere;
 }
 
 .jp-card__headline {
-    margin: 0;
+    margin: 0.2rem 0 0;
     color: var(--jp-accent);
-    font-family: var(--jp-font);
-    font-size: 1.55rem;
-    line-height: 1.3;
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.25;
 }
 
 .jp-card__details {
     display: grid;
-    gap: 0.25rem;
-    font-size: 0.9rem;
+    gap: 0.15rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
 }
 
 .jp-card__dress-code-colors {
     display: flex;
+    width: max-content;
+    max-width: 100%;
     justify-content: center;
+    justify-self: center;
     gap: 0.4rem;
-    padding: 0.3rem 0;
+    padding: 0.35rem 0 0.1rem;
 }
 
 .jp-card__color-swatch {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 0.85rem;
+    height: 0.85rem;
     border: 1px solid color-mix(in srgb, var(--jp-ink) 25%, transparent);
     border-radius: 50%;
 }
 
 .jp-card--modern .jp-card__dress-code-colors {
     justify-content: flex-start;
+    justify-self: start;
 }
 
 .jp-card__details p,
@@ -105,8 +158,10 @@
 }
 
 .jp-card__message {
-    font-size: 0.9rem;
-    line-height: 1.65;
+    font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.6;
     white-space: pre-line;
 }
 
@@ -114,79 +169,218 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.45rem;
     margin-top: auto;
 }
 
 .jp-card__qr {
-    width: 10rem;
-    height: 10rem;
-    padding: 0.5rem;
-    border-radius: 0.75rem;
+    width: 4.6rem;
+    height: 4.6rem;
+    padding: 0.3rem;
+    border-radius: 0.2rem;
     background: #ffffff;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--jp-ink) 12%, transparent);
 }
 
 .jp-card__serial {
     margin: 0;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.9rem;
-    letter-spacing: 0.2em;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+}
+
+.jp-card[style*="--jp-bg"] {
+    background-image:
+        radial-gradient(ellipse 52% 48% at 50% 42%, color-mix(in srgb, var(--jp-paper) 90%, transparent), transparent 72%),
+        var(--jp-bg);
+}
+
+.jp-card[style*="--jp-bg"] .jp-card__body {
+    padding: 7.5rem 2.4rem 5rem;
+}
+
+.jp-card--compact[style*="--jp-bg"] .jp-card__body {
+    padding: 6.6rem 1.35rem 3.4rem;
+}
+
+.jp-card[style*="--jp-bg"] .jp-card__kicker,
+.jp-card[style*="--jp-bg"] .jp-card__headline {
+    text-shadow: 0 0 10px var(--jp-paper), 0 0 3px var(--jp-paper);
+}
+
+.jp-card[style*="--jp-bg"] .jp-card__frame,
+.jp-card[style*="--jp-bg"] .jp-card__bloom {
+    display: none;
+}
+
+.jp-card--has-photo {
+    background-color: var(--jp-paper);
+}
+
+.jp-card--has-photo[style*="--jp-bg"] {
+    background-image: none;
+}
+
+.jp-card--compact.jp-card--has-photo {
+    align-self: start;
+    width: 100%;
+    aspect-ratio: 3 / 4.35;
+    overflow: hidden;
+}
+
+.jp-card__photo {
+    position: absolute;
+    z-index: 1;
+    top: 0.42rem;
+    left: 0.42rem;
+    width: 44%;
+    height: calc(100% - 0.84rem);
+    border: 0;
+    border-radius: 0.85rem;
+    object-fit: cover;
+    object-position: center 18%;
+    background: #d9d0c4;
+    box-shadow: 0 12px 24px rgba(30, 18, 10, 0.16);
+}
+
+.jp-card--has-photo .jp-card__body,
+.jp-card--compact.jp-card--has-photo .jp-card__body,
+.jp-card--has-photo[style*="--jp-bg"] .jp-card__body,
+.jp-card--compact.jp-card--has-photo[style*="--jp-bg"] .jp-card__body {
+    position: relative;
+    z-index: 2;
+    gap: 0.16rem;
+    min-height: 24rem;
+    margin-left: 46%;
+    padding: 0.85rem 0.55rem 0.75rem 0.3rem;
+}
+
+.jp-card--compact.jp-card--has-photo .jp-card__body {
+    min-height: 100%;
+}
+
+.jp-card--has-photo .jp-card__kicker,
+.jp-card--compact.jp-card--has-photo .jp-card__kicker {
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 1.45rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: none;
+    text-shadow: none;
+}
+
+.jp-card--has-photo .jp-card__hosts,
+.jp-card--has-photo .jp-card__guest,
+.jp-card--has-photo .jp-card__details,
+.jp-card--compact.jp-card--has-photo .jp-card__hosts,
+.jp-card--compact.jp-card--has-photo .jp-card__guest,
+.jp-card--compact.jp-card--has-photo .jp-card__details {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+}
+
+.jp-card--has-photo .jp-card__guest::before,
+.jp-card--has-photo .jp-card__guest::after {
+    display: none;
+}
+
+.jp-card--has-photo .jp-card__guest::before,
+.jp-card--has-photo .jp-card__guest::after {
+    content: '';
+    display: block;
+    width: 72%;
+    margin: 0.18rem auto;
+    border-top: 1px dotted color-mix(in srgb, var(--jp-accent) 75%, transparent);
+}
+
+.jp-card--has-photo .jp-card__title,
+.jp-card--compact.jp-card--has-photo .jp-card__title,
+.jp-card--elegant.jp-card--has-photo .jp-card__title {
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 1.85rem;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.05;
+}
+
+.jp-card--has-photo .jp-card__title::after {
+    content: '';
+    display: block;
+    width: 2.4rem;
+    height: 1px;
+    margin: 0.28rem auto 0.05rem;
+    background: currentColor;
+    opacity: 0.7;
+}
+
+.jp-card--has-photo .jp-card__headline,
+.jp-card--compact.jp-card--has-photo .jp-card__headline {
+    margin-top: auto;
+    font-size: 1.2rem;
+    line-height: 1.05;
+    text-shadow: none;
+}
+
+.jp-card--compact.jp-card--has-photo .jp-card__kicker {
+    font-size: 1.2rem;
+}
+
+.jp-card--compact.jp-card--has-photo .jp-card__title {
+    font-size: 1.45rem;
+}
+
+.jp-card--compact.jp-card--has-photo .jp-card__headline {
+    font-size: 1.02rem;
+}
+
+.jp-card[style*="--jp-bg"].jp-card--elegant {
+    border: 0;
 }
 
 .jp-card--elegant {
-    border: 0.45rem solid var(--jp-accent);
+    border: 0.35rem solid color-mix(in srgb, var(--jp-accent) 82%, #1a120c);
 }
 
 .jp-card--elegant .jp-card__frame {
-    inset: 0.6rem;
+    inset: 0.55rem;
     border-width: 2px;
     border-style: double;
-    border-radius: 1rem;
-}
-
-.jp-card--elegant .jp-card__frame::before,
-.jp-card--elegant .jp-card__frame::after {
-    content: '';
-    position: absolute;
-    width: 3.5rem;
-    height: 3.5rem;
-    border: 2px solid var(--jp-accent);
-    border-radius: 50%;
-    opacity: 0.55;
-}
-
-.jp-card--elegant .jp-card__frame::before {
-    top: -1.75rem;
-    left: -1.75rem;
-}
-
-.jp-card--elegant .jp-card__frame::after {
-    right: -1.75rem;
-    bottom: -1.75rem;
 }
 
 .jp-card--elegant .jp-card__title {
-    font-size: clamp(2.1rem, 4.5vw, 2.9rem);
+    font-size: clamp(2.15rem, 4.6vw, 2.9rem);
 }
 
 .jp-card--modern .jp-card__frame {
     inset: 0 auto 0 0;
-    width: 0.6rem;
+    width: 0.55rem;
     border: 0;
     border-radius: 0;
     background: var(--jp-accent);
+    box-shadow: none;
+}
+
+.jp-card--modern .jp-card__bloom {
+    display: none;
 }
 
 .jp-card--modern .jp-card__body {
-    padding-left: 2.75rem;
+    min-height: 0;
+    padding-left: 2.4rem;
     text-align: left;
 }
 
 .jp-card--modern .jp-card__kicker {
     align-self: flex-start;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--jp-accent) 12%, transparent);
+    font-size: 1.8rem;
+}
+
+.jp-card--modern .jp-card__guest {
+    margin-left: 0;
 }
 
 .jp-card--modern .jp-card__details {
@@ -198,46 +392,457 @@
     align-items: flex-start;
 }
 
+.jp-card--minimal .jp-card__frame,
+.jp-card--minimal .jp-card__bloom {
+    display: none;
+}
+
 .jp-card--minimal {
     box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.3);
 }
 
-.jp-card--minimal .jp-card__frame {
-    display: none;
-}
-
 .jp-card--minimal .jp-card__body {
-    gap: 1.6rem;
-    padding: 3.5rem 2.5rem;
+    gap: 1rem;
+    min-height: 0;
+    padding: 2.6rem 2.1rem;
 }
 
 .jp-card--minimal .jp-card__title::after {
     content: '';
     display: block;
     width: 3rem;
-    height: 2px;
-    margin: 1rem auto 0;
+    height: 1px;
+    margin: 0.8rem auto 0;
     background: var(--jp-accent);
 }
 
 .jp-card--compact .jp-card__body {
-    gap: 0.6rem;
-    padding: 1.75rem 1.25rem;
+    gap: 0.4rem;
+    min-height: 0;
+    padding: 2.4rem 1rem 2rem;
+}
+
+.jp-card--compact .jp-card__bloom {
+    width: 4.2rem;
+    height: 4.2rem;
+}
+
+.jp-card--compact .jp-card__kicker {
+    font-size: 1.45rem;
 }
 
 .jp-card--compact .jp-card__title {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
 }
 
 .jp-card--compact .jp-card__headline {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
 }
 
 .jp-card--compact .jp-card__details,
-.jp-card--compact .jp-card__hosts {
-    font-size: 0.75rem;
+.jp-card--compact .jp-card__hosts,
+.jp-card--compact .jp-card__guest {
+    font-size: 0.78rem;
 }
 
 .jp-card--compact.jp-card--minimal .jp-card__body {
-    padding: 2rem 1.25rem;
+    padding: 1.6rem 1.1rem;
+}
+
+@media (max-width: 767.98px) {
+    .jp-card__frame {
+        inset: 0.45rem;
+    }
+
+    .jp-card__bloom {
+        width: 4.8rem;
+        height: 4.8rem;
+    }
+
+    .jp-card__body {
+        gap: 0.45rem;
+        min-height: 0;
+        padding: 2.6rem 1rem 2.2rem;
+    }
+
+    .jp-card[style*="--jp-bg"] .jp-card__body,
+    .jp-card--compact[style*="--jp-bg"] .jp-card__body {
+        padding: 5.4rem 1.15rem 2.8rem;
+    }
+
+    .jp-card--compact.jp-card--has-photo .jp-card__title {
+        font-size: 1.4rem;
+    }
+
+    .jp-card__kicker {
+        font-size: 1.55rem;
+    }
+
+    .jp-card__title,
+    .jp-card--elegant .jp-card__title,
+    .jp-card--compact .jp-card__title {
+        font-size: 1.35rem;
+    }
+
+    .jp-card__headline,
+    .jp-card--compact .jp-card__headline {
+        font-size: 1.2rem;
+    }
+
+    .jp-card__hosts,
+    .jp-card__guest,
+    .jp-card__details,
+    .jp-card__message,
+    .jp-card__serial,
+    .jp-card--compact .jp-card__details,
+    .jp-card--compact .jp-card__hosts {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .jp-card__qr {
+        width: 3.6rem;
+        height: 3.6rem;
+    }
+
+    .jp-card--minimal .jp-card__body {
+        gap: 0.55rem;
+        padding: 1.35rem 0.9rem;
+    }
+}
+
+.jp-card--scene {
+    --scene-pad: 14% 10% 12%;
+    aspect-ratio: 3 / 4.2;
+    container-type: inline-size;
+    background-color: var(--jp-paper);
+}
+
+.jp-card--compact.jp-card--scene {
+    align-self: start;
+    width: 100%;
+}
+
+.jp-card--scene[style*="--jp-bg"],
+.jp-card--scene.jp-card--has-photo[style*="--jp-bg"] {
+    background-image: var(--jp-bg);
+    background-position: center;
+    background-size: cover;
+}
+
+.jp-card--scene .jp-card__body,
+.jp-card--compact.jp-card--scene .jp-card__body,
+.jp-card--scene[style*="--jp-bg"] .jp-card__body,
+.jp-card--compact.jp-card--scene[style*="--jp-bg"] .jp-card__body,
+.jp-card--scene.jp-card--has-photo .jp-card__body,
+.jp-card--compact.jp-card--scene.jp-card--has-photo .jp-card__body,
+.jp-card--scene.jp-card--has-photo[style*="--jp-bg"] .jp-card__body,
+.jp-card--compact.jp-card--scene.jp-card--has-photo[style*="--jp-bg"] .jp-card__body {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    gap: 0.8cqi;
+    justify-content: center;
+    min-height: 0;
+    margin: 0;
+    padding: var(--scene-pad);
+    background: none;
+}
+
+.jp-card--scene .jp-card__photo {
+    z-index: 1;
+    top: var(--photo-top);
+    left: var(--photo-left);
+    width: var(--photo-width);
+    height: var(--photo-height);
+    border-radius: var(--photo-radius);
+    box-shadow: none;
+}
+
+.jp-card--scene .jp-card__kicker,
+.jp-card--compact.jp-card--scene .jp-card__kicker,
+.jp-card--has-photo.jp-card--scene .jp-card__kicker {
+    order: 1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.1cqi;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: none;
+}
+
+.jp-card--scene .jp-card__title,
+.jp-card--compact.jp-card--scene .jp-card__title,
+.jp-card--elegant.jp-card--scene .jp-card__title,
+.jp-card--has-photo.jp-card--scene .jp-card__title {
+    order: 2;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 10.5cqi;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 0.95;
+    text-shadow: none;
+}
+
+.jp-card--scene .jp-card__title::after {
+    width: 18%;
+    margin-top: 1.2cqi;
+}
+
+.jp-card--scene .jp-card__guest {
+    order: 3;
+}
+
+.jp-card--scene .jp-card__hosts {
+    order: 4;
+}
+
+.jp-card--scene .jp-card__details {
+    order: 5;
+}
+
+.jp-card--scene .jp-card__message {
+    order: 6;
+}
+
+.jp-card--scene .jp-card__headline,
+.jp-card--compact.jp-card--scene .jp-card__headline {
+    order: 7;
+    margin-top: 0.4cqi;
+    font-size: 6.2cqi;
+    text-shadow: none;
+}
+
+.jp-card--scene .jp-card__hosts,
+.jp-card--scene .jp-card__guest,
+.jp-card--scene .jp-card__details,
+.jp-card--compact.jp-card--scene .jp-card__hosts,
+.jp-card--compact.jp-card--scene .jp-card__guest,
+.jp-card--compact.jp-card--scene .jp-card__details {
+    font-size: 3.4cqi;
+    letter-spacing: 0.03em;
+}
+
+.jp-card--scene .jp-card__guest::before,
+.jp-card--scene .jp-card__guest::after {
+    display: none;
+}
+
+.jp-card--scene-silk { --scene-pad: 16% 11% 28%; }
+.jp-card--scene-balloons { --scene-pad: 12% 10% 34%; }
+.jp-card--scene-gala { --scene-pad: 18% 8% 16%; }
+.jp-card--scene-dust { --scene-pad: 18% 10% 14%; }
+.jp-card--scene-filigree,
+.jp-card--scene-nikah { --scene-pad: 16% 12% 18%; }
+.jp-card--scene-burgundy { --scene-pad: 16% 14% 14%; }
+.jp-card--scene-tulip { --scene-pad: 14% 14% 30%; }
+.jp-card--scene-medallion { --scene-pad: 58% 8% 18%; }
+.jp-card--scene-polka { --scene-pad: 40% 8% 8%; }
+.jp-card--scene-wash { --scene-pad: 44% 10% 10%; }
+.jp-card--scene-baby { --scene-pad: 40% 10% 16%; }
+.jp-card--scene-chalk { --scene-pad: 70% 8% 4%; }
+.jp-card--scene-torn { --scene-pad: 48% 8% 8%; }
+.jp-card--scene-peony { --scene-pad: 22% 12% 10%; }
+.jp-card--scene-wreath { --scene-pad: 20% 14% 12%; }
+.jp-card--scene-navy { --scene-pad: 16% 34% 12% 8%; }
+.jp-card--scene-bow { --scene-pad: 16% 8% 12% 36%; }
+.jp-card--scene-eucalyptus { --scene-pad: 20% 10% 22%; }
+.jp-card--scene-envelope { --scene-pad: 10% 16% 38%; }
+.jp-card--scene-palace { --scene-pad: 24% 12% 16%; }
+.jp-card--scene-stripes { --scene-pad: 12% 10% 30%; }
+.jp-card--scene-cake { --scene-pad: 14% 18% 26%; }
+.jp-card--scene-wavy { --scene-pad: 24% 14% 22%; }
+
+.jp-card--scene-navy .jp-card__body {
+    text-align: left;
+}
+
+.jp-card--scene-palace .jp-card__title,
+.jp-card--scene-palace .jp-card__hosts,
+.jp-card--scene-palace .jp-card__details,
+.jp-card--scene-palace .jp-card__kicker,
+.jp-card--scene-palace .jp-card__headline {
+    text-shadow: 0 1px 10px rgba(255, 248, 236, 0.9);
+}
+
+.jp-card--scene-gala .jp-card__title,
+.jp-card--compact.jp-card--scene-gala .jp-card__title,
+.jp-card--scene-polka .jp-card__title,
+.jp-card--compact.jp-card--scene-polka .jp-card__title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12cqi;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+.jp-card--scene-filigree .jp-card__title,
+.jp-card--compact.jp-card--scene-filigree .jp-card__title,
+.jp-card--scene-nikah .jp-card__title,
+.jp-card--compact.jp-card--scene-nikah .jp-card__title,
+.jp-card--scene-peony .jp-card__title,
+.jp-card--compact.jp-card--scene-peony .jp-card__title,
+.jp-card--scene-tulip .jp-card__title,
+.jp-card--compact.jp-card--scene-tulip .jp-card__title,
+.jp-card--scene-wreath .jp-card__title,
+.jp-card--compact.jp-card--scene-wreath .jp-card__title,
+.jp-card--scene-eucalyptus .jp-card__title,
+.jp-card--compact.jp-card--scene-eucalyptus .jp-card__title,
+.jp-card--scene-envelope .jp-card__title,
+.jp-card--compact.jp-card--scene-envelope .jp-card__title,
+.jp-card--scene-bow .jp-card__title,
+.jp-card--compact.jp-card--scene-bow .jp-card__title,
+.jp-card--scene-navy .jp-card__title,
+.jp-card--compact.jp-card--scene-navy .jp-card__title,
+.jp-card--scene-cake .jp-card__title,
+.jp-card--compact.jp-card--scene-cake .jp-card__title,
+.jp-card--scene-stripes .jp-card__title,
+.jp-card--compact.jp-card--scene-stripes .jp-card__title,
+.jp-card--scene-arch .jp-card__title,
+.jp-card--compact.jp-card--scene-arch .jp-card__title,
+.jp-card--scene-lace .jp-card__title,
+.jp-card--compact.jp-card--scene-lace .jp-card__title,
+.jp-card--scene-ribbon .jp-card__title,
+.jp-card--compact.jp-card--scene-ribbon .jp-card__title,
+.jp-card--scene-blush .jp-card__title,
+.jp-card--compact.jp-card--scene-blush .jp-card__title,
+.jp-card--scene-autumn .jp-card__title,
+.jp-card--compact.jp-card--scene-autumn .jp-card__title,
+.jp-card--scene-candy .jp-card__title,
+.jp-card--compact.jp-card--scene-candy .jp-card__title,
+.jp-card--scene-trees .jp-card__title,
+.jp-card--compact.jp-card--scene-trees .jp-card__title,
+.jp-card--scene-bauble .jp-card__title,
+.jp-card--compact.jp-card--scene-bauble .jp-card__title {
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 13cqi;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 0.9;
+    text-transform: none;
+}
+
+.jp-card--scene-arch { --scene-pad: 18% 16% 16%; }
+.jp-card--scene-rosette { --scene-pad: 16% 8% 14%; }
+.jp-card--scene-wine { --scene-pad: 8% 8% 8%; }
+.jp-card--scene-lace { --scene-pad: 24% 18% 18%; }
+.jp-card--scene-ribbon { --scene-pad: 14% 12% 30%; }
+.jp-card--scene-blush { --scene-pad: 16% 16% 18%; }
+.jp-card--scene-autumn { --scene-pad: 18% 12% 14%; }
+.jp-card--scene-citrusring { --scene-pad: 16% 14% 16%; }
+.jp-card--scene-meadowline { --scene-pad: 10% 10% 28%; }
+.jp-card--scene-column { --scene-pad: 12% 8% 10% 40%; }
+.jp-card--scene-split { --scene-pad: 12% 58% 10% 6%; }
+.jp-card--scene-manor { --scene-pad: 34% 10% 10%; }
+.jp-card--scene-gifts { --scene-pad: 46% 10% 20%; }
+.jp-card--scene-pitch { --scene-pad: 30% 8% 20%; }
+.jp-card--scene-mandap { --scene-pad: 64% 12% 8%; }
+.jp-card--scene-toile { --scene-pad: 16% 12% 14%; }
+.jp-card--scene-candy { --scene-pad: 20% 10% 24%; }
+.jp-card--scene-bauble { --scene-pad: 24% 10% 30%; }
+.jp-card--scene-trees { --scene-pad: 12% 12% 34%; }
+.jp-card--scene-fir { --scene-pad: 12% 10% 36%; }
+.jp-card--scene-shore { --scene-pad: 8% 8% 7%; }
+
+.jp-card--scene-column .jp-card__body,
+.jp-card--scene-split .jp-card__body {
+    text-align: left;
+}
+
+.jp-card--scene-wine .jp-card__details,
+.jp-card--scene-wine .jp-card__headline {
+    margin-top: auto;
+}
+
+.jp-card--scene-rosette .jp-card__title,
+.jp-card--compact.jp-card--scene-rosette .jp-card__title,
+.jp-card--scene-wine .jp-card__title,
+.jp-card--compact.jp-card--scene-wine .jp-card__title,
+.jp-card--scene-pitch .jp-card__title,
+.jp-card--compact.jp-card--scene-pitch .jp-card__title,
+.jp-card--scene-manor .jp-card__title,
+.jp-card--compact.jp-card--scene-manor .jp-card__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 16cqi;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 0.82;
+    text-transform: uppercase;
+}
+
+.jp-card--scene-shore .jp-card__body,
+.jp-card--compact.jp-card--scene-shore .jp-card__body,
+.jp-card--scene-shore.jp-card--has-photo .jp-card__body,
+.jp-card--compact.jp-card--scene-shore.jp-card--has-photo .jp-card__body,
+.jp-card--scene-shore.jp-card--has-photo[style*="--jp-bg"] .jp-card__body,
+.jp-card--compact.jp-card--scene-shore.jp-card--has-photo[style*="--jp-bg"] .jp-card__body {
+    justify-content: flex-end;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.28) 34%, transparent 58%);
+}
+
+.jp-card--scene-mosaic { --scene-pad: 16% 14% 14%; }
+.jp-card--scene-monogram { --scene-pad: 18% 14% 14%; }
+.jp-card--scene-lantern { --scene-pad: 24% 12% 12%; }
+.jp-card--scene-henna { --scene-pad: 16% 14% 14%; }
+.jp-card--scene-safari { --scene-pad: 14% 10% 30%; }
+.jp-card--scene-menu { --scene-pad: 12% 10% 30%; }
+.jp-card--scene-spark { --scene-pad: 20% 10% 16%; }
+.jp-card--scene-stars { --scene-pad: 16% 10% 18%; }
+.jp-card--scene-rings { --scene-pad: 24% 12% 12%; }
+.jp-card--scene-oliveoval { --scene-pad: 22% 16% 16%; }
+.jp-card--scene-stamp { --scene-pad: 16% 12% 16%; }
+.jp-card--scene-horizon { --scene-pad: 52% 10% 8%; }
+.jp-card--scene-clouds { --scene-pad: 18% 10% 14%; }
+.jp-card--scene-coupe { --scene-pad: 12% 10% 30%; }
+.jp-card--scene-seal { --scene-pad: 24% 12% 12%; }
+.jp-card--scene-drums { --scene-pad: 12% 10% 30%; }
+
+.jp-card--scene-henna .jp-card__title,
+.jp-card--compact.jp-card--scene-henna .jp-card__title,
+.jp-card--scene-lantern .jp-card__title,
+.jp-card--compact.jp-card--scene-lantern .jp-card__title,
+.jp-card--scene-rings .jp-card__title,
+.jp-card--compact.jp-card--scene-rings .jp-card__title,
+.jp-card--scene-oliveoval .jp-card__title,
+.jp-card--compact.jp-card--scene-oliveoval .jp-card__title,
+.jp-card--scene-clouds .jp-card__title,
+.jp-card--compact.jp-card--scene-clouds .jp-card__title,
+.jp-card--scene-seal .jp-card__title,
+.jp-card--compact.jp-card--scene-seal .jp-card__title,
+.jp-card--scene-safari .jp-card__title,
+.jp-card--compact.jp-card--scene-safari .jp-card__title {
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 13cqi;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.jp-card--scene-mosaic .jp-card__title,
+.jp-card--compact.jp-card--scene-mosaic .jp-card__title,
+.jp-card--scene-spark .jp-card__title,
+.jp-card--compact.jp-card--scene-spark .jp-card__title,
+.jp-card--scene-stars .jp-card__title,
+.jp-card--compact.jp-card--scene-stars .jp-card__title,
+.jp-card--scene-coupe .jp-card__title,
+.jp-card--compact.jp-card--scene-coupe .jp-card__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 12cqi;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.jp-card--scene-shore .jp-card__title,
+.jp-card--compact.jp-card--scene-shore .jp-card__title {
+    font-family: 'Great Vibes', 'Brush Script MT', cursive;
+    font-size: 14cqi;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }

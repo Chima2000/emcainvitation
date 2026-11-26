@@ -11,6 +11,12 @@
 @endsection
 
 @section('content')
+    @if (auth()->user()->isLead())
+        <div class="alert alert-warning d-flex flex-wrap gap-2 justify-content-between align-items-center" role="status">
+            <span>{{ __('A trial lets you prepare an event. Register to become a host before you send invitations, check guests in, or pay.') }}</span>
+            <a href="{{ route('become-host.create') }}" class="btn btn-sm btn-primary">{{ __('Become a host') }}</a>
+        </div>
+    @endif
     <div class="row">
         <div class="col-sm-6 col-xl-4">
             <x-dashboard-stat icon="fi-sr-calendar" :value="number_format($stats['events'])" :label="__('Events')" :trend="$trends['events']" />
@@ -39,10 +45,14 @@
                     </div>
                     <strong class="d-block emca-wallet-figure fw-bold mb-3">TZS {{ number_format(auth()->user()->wallet_balance) }}</strong>
                     <div class="d-flex flex-wrap gap-2 mt-auto">
-                        <a href="{{ route('wallet.index') }}#top-up" class="btn btn-sm btn-white">
-                            <i class="fi fi-rr-plus me-1"></i> {{ __('Top up') }}
-                        </a>
-                        <a href="{{ route('packages.index') }}" class="btn btn-sm btn-outline-white">{{ __('Packages') }}</a>
+                        @if (auth()->user()->isLead())
+                            <a href="{{ route('become-host.create') }}" class="btn btn-sm btn-white">{{ __('Become a host') }}</a>
+                        @else
+                            <a href="{{ route('wallet.index') }}#top-up" class="btn btn-sm btn-white">
+                                <i class="fi fi-rr-plus me-1"></i> {{ __('Top up') }}
+                            </a>
+                            <a href="{{ route('packages.index') }}" class="btn btn-sm btn-outline-white">{{ __('Packages') }}</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -137,7 +147,7 @@
             </div>
         </div>
 
-        <div class="col-xxl-8 col-lg-7">
+        <div class="col-12">
             <div class="card overflow-hidden">
                 <div class="card-header d-flex flex-wrap gap-3 align-items-center justify-content-between border-0 pb-0">
                     <h6 class="card-title mb-0">{{ __('Your events') }}</h6>

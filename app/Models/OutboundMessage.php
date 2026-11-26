@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['guest_id', 'channel', 'purpose', 'body', 'status', 'cost', 'covered_by_package', 'sent_at', 'failure_reason'])]
+#[Fillable(['guest_id', 'recipient_name', 'recipient_address', 'channel', 'purpose', 'body', 'status', 'cost', 'covered_by_package', 'sent_at', 'failure_reason'])]
 class OutboundMessage extends Model
 {
     /** @use HasFactory<OutboundMessageFactory> */

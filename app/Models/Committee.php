@@ -8,9 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'leader_guest_id'])]
+#[Fillable(['name', 'leader_guest_id', 'is_door', 'door_guest_id'])]
 class Committee extends Model
 {
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_door' => 'boolean',
+        ];
+    }
+
     /**
      * @return BelongsTo<Event, $this>
      */

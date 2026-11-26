@@ -207,6 +207,11 @@ test('updating and removing a committee retains its budget lines and clears thei
     ]);
 
     $this->actingAs($host)
+        ->get(route('events.show', $event))
+        ->assertOk()
+        ->assertSee('data-emca-confirm="'.e(__('Remove this committee? Its budget lines will stay in the event budget.')).'"', false);
+
+    $this->actingAs($host)
         ->delete(route('events.committees.destroy', [$event, $committee]))
         ->assertRedirect();
 
@@ -249,7 +254,7 @@ test('budget lines must use an event committee and name its sector', function ()
             'committee_id' => $otherCommittee->id,
             'sector' => 'Venue',
         ])
-        ->assertRedirect(route('events.show', $event))
+        ->assertRedirect(route('events.show', $event).'#budget')
         ->assertSessionHasErrors('committee_id');
 
     $this->actingAs($host)
@@ -260,7 +265,7 @@ test('budget lines must use an event committee and name its sector', function ()
             'amount' => 10000,
             'committee_id' => $committee->id,
         ])
-        ->assertRedirect(route('events.show', $event))
+        ->assertRedirect(route('events.show', $event).'#budget')
         ->assertSessionHasErrors('sector');
 
     $this->actingAs($host)
@@ -328,8 +333,157 @@ test('a host cannot edit a committee belonging to another host', function () {
         ])
         ->assertNotFound();
 
+    $this->actingAs($otherHost)
+        ->post(route('events.committees.guests.store', [$event, $committee]), [
+            'guest_ids' => [$guest->id],
+        ])
+        ->assertNotFound();
+
     $this->assertDatabaseHas('committees', [
         'id' => $committee->id,
         'name' => 'Food Committee',
     ]);
+});
+
+test('the guest CSV template matches the guest fields and an import keeps notes', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+
+    $download = $this->actingAs($host)->get(route('events.guests.template', $event));
+
+    $download->assertOk();
+    expect($download->streamedContent())->toContain('name,phone,email,gender,party_size,notes');
+
+    $this->post(route('events.guests.import', $event), [
+        'file' => UploadedFile::fake()->createWithContent(
+            'guests.csv',
+            "notes,name,phone,email,gender,party_size\nFamily,Asha Mushi,0712345678,asha@example.com,female,2\n",
+        ),
+    ])->assertRedirect(route('events.show', $event));
+
+    $this->assertDatabaseHas('guests', [
+        'event_id' => $event->id,
+        'name' => 'Asha Mushi',
+        'notes' => 'Family',
+        'gender' => GuestGender::Female->value,
+    ]);
+});
+
+test('the guest list shows email and gender in their own columns', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+    Guest::factory()->for($event)->create([
+        'name' => 'Asha Mushi',
+        'phone' => '0712345678',
+        'email' => 'asha.mushi@example.com',
+        'gender' => GuestGender::Female,
+    ]);
+
+    $this->actingAs($host)
+        ->get(route('events.show', $event))
+        ->assertOk()
+        ->assertSee('<th>'.e(__('Email')).'</th>', false)
+        ->assertSee('<th>'.e(__('Gender')).'</th>', false)
+        ->assertSee('<th class="text-center">'.e(__('Action')).'</th>', false)
+        ->assertSee('fi-rr-menu-dots', false)
+        ->assertSee('href="https://wa.me/', false)
+        ->assertSee('>SMS</a>', false)
+        ->assertSee('data-copy="', false)
+        ->assertSee('>'.e(__('Edit')).'</a>', false)
+        ->assertSee('class="dropdown-item text-danger"', false)
+        ->assertSee('asha.mushi@example.com')
+        ->assertSee(GuestGender::Female->label())
+        ->assertSee('0712345678');
+});
+
+test('a guest added later stays off an existing committee until the host adds them there', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+    $leader = Guest::factory()->for($event)->create(['name' => 'Asha Mushi']);
+    $newGuest = Guest::factory()->for($event)->create(['name' => 'Neema Lyimo']);
+    $otherEvent = Event::factory()->for($host)->create();
+    $otherGuest = Guest::factory()->for($otherEvent)->create();
+    $committee = $event->committees()->create([
+        'name' => 'Food Committee',
+        'leader_guest_id' => $leader->id,
+    ]);
+    $committee->guests()->sync([$leader->id]);
+
+    $page = $this->actingAs($host)->get(route('events.show', $event));
+
+    $page->assertOk()
+        ->assertSee('col-12 col-lg-6', false)
+        ->assertSee('emca-fit-name', false)
+        ->assertSeeInOrder([
+            'form="save-committee-'.$committee->id.'"',
+            'data-committee-add-toggle="add-committee-'.$committee->id.'"',
+        ], false)
+        ->assertSee(__('Add guests'))
+        ->assertSee(__('Edit committee'))
+        ->assertSee('data-committee-open-label="'.e(__('Close')).'"', false);
+    $members = str($page->getContent())->between(
+        'data-committee-members="'.$committee->id.'"',
+        'data-committee-add="'.$committee->id.'"',
+    );
+    expect($members->toString())->toContain('Asha Mushi')->not->toContain('Neema Lyimo');
+    expect($page->getContent())->toMatch('/id="add-committee-'.$committee->id.'" data-committee-add="'.$committee->id.'"\s+hidden/');
+    expect($page->getContent())->toContain('add-committee-'.$committee->id.'-participant-'.$newGuest->id);
+
+    $this->post(route('events.committees.guests.store', [$event, $committee]), [
+        'guest_ids' => [$newGuest->id],
+    ])->assertRedirect(route('events.show', $event).'#committees');
+
+    $this->assertDatabaseHas('committee_guest', [
+        'committee_id' => $committee->id,
+        'guest_id' => $leader->id,
+    ]);
+    $this->assertDatabaseHas('committee_guest', [
+        'committee_id' => $committee->id,
+        'guest_id' => $newGuest->id,
+    ]);
+
+    $this->from(route('events.show', $event))
+        ->post(route('events.committees.guests.store', [$event, $committee]), [
+            'guest_ids' => [$otherGuest->id],
+        ])
+        ->assertRedirect(route('events.show', $event))
+        ->assertSessionHasErrors('participant_ids.0');
+
+    $this->assertDatabaseMissing('committee_guest', [
+        'committee_id' => $committee->id,
+        'guest_id' => $otherGuest->id,
+    ]);
+});
+
+test('committee members and the leader are chosen with checkboxes', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+    Guest::factory()->for($event)->create(['name' => 'Asha Mushi']);
+
+    $this->actingAs($host)
+        ->get(route('events.show', $event))
+        ->assertOk()
+        ->assertSee(__('Committee and participants'))
+        ->assertSee('name="participant_ids[]"', false)
+        ->assertSee('name="leader_guest_id"', false)
+        ->assertSee('type="checkbox"', false);
+});
+
+test('saved event records start hidden behind a show button', function () {
+    $host = User::factory()->create();
+    $event = Event::factory()->for($host)->create();
+
+    $this->actingAs($host)
+        ->get(route('events.show', $event))
+        ->assertOk()
+        ->assertSee(__('Show committees'))
+        ->assertSee(__('Show pledges'))
+        ->assertSee(__('Show budget'))
+        ->assertSee(__('Show tasks'))
+        ->assertSee(__('Show vendors'))
+        ->assertSee('id="committee-list" hidden', false)
+        ->assertSee('id="pledge-list" hidden', false)
+        ->assertSee('id="budget-list" hidden', false)
+        ->assertSee('id="task-list" hidden', false)
+        ->assertSee('id="vendor-list" hidden', false);
 });

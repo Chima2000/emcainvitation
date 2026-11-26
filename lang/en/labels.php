@@ -55,15 +55,21 @@ return [
         'invitation' => 'Invitation',
         'reminder' => 'Reminder',
         'thanks' => 'Thank you',
+        'pledge' => 'Pledge note',
+        'trial' => 'Trial',
     ],
 
     'channels' => [
         'whatsapp' => 'WhatsApp',
         'sms' => 'SMS',
+        'email' => 'Email',
     ],
 
     'message_statuses' => [
         'sent' => 'Prepared',
+        'queued' => 'Queued',
+        'delivered' => 'Delivered',
+        'failed' => 'Not sent',
     ],
 
     'vendor_categories' => [

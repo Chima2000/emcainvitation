@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\EventCategoryGroup;
 use App\Support\EventCategoryRegistry;
 use Database\Factories\EventCategoryFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-#[Fillable(['slug', 'name', 'name_sw', 'icon', 'photo', 'photo_path', 'sort_order', 'is_active'])]
+#[Fillable(['slug', 'name', 'name_sw', 'menu_group', 'icon', 'photo', 'photo_path', 'sort_order', 'is_active'])]
 class EventCategory extends Model
 {
     /** @use HasFactory<EventCategoryFactory> */
@@ -27,6 +29,7 @@ class EventCategory extends Model
      */
     protected $attributes = [
         'photo' => self::DefaultPhoto,
+        'menu_group' => EventCategoryGroup::Gatherings->value,
         'sort_order' => 0,
         'is_active' => true,
     ];
@@ -37,6 +40,7 @@ class EventCategory extends Model
     protected function casts(): array
     {
         return [
+            'menu_group' => EventCategoryGroup::class,
             'sort_order' => 'integer',
             'is_active' => 'boolean',
         ];
@@ -90,6 +94,24 @@ class EventCategory extends Model
     }
 
     /**
+     * Categories in the order an admin chose, under the group names.
+     *
+     * @param  Collection<int, EventCategory>  $categories
+     * @return Collection<string, Collection<int, EventCategory>>
+     */
+    public static function grouped(Collection $categories): Collection
+    {
+        return collect(EventCategoryGroup::cases())
+            ->mapWithKeys(function (EventCategoryGroup $group) use ($categories): array {
+                $items = $categories
+                    ->filter(fn (self $category): bool => $category->menu_group === $group)
+                    ->values();
+
+                return $items->isEmpty() ? [] : [$group->label() => $items];
+            });
+    }
+
+    /**
      * Stand-in for a slug whose category row was removed, so old records still render.
      */
     public static function placeholder(string $slug): self
@@ -106,11 +128,54 @@ class EventCategory extends Model
     {
         return [
             'wedding.jpg' => __('Wedding'),
+            'muslim-wedding.jpg' => __('Muslim wedding'),
             'sendoff.jpg' => __('Sendoff'),
             'gathering.jpg' => __('Family gathering'),
             'birthday.jpg' => __('Birthday'),
             'corporate.jpg' => __('Corporate'),
             'celebration.jpg' => __('Celebration'),
+            'anniversary.jpg' => __('Anniversary'),
+            'gala-dinner.jpg' => __('Gala dinner'),
+            'save-the-date.jpg' => __('Save the date'),
+            'christmas.jpg' => __('Christmas'),
+            'holiday.jpg' => __('Holiday'),
+            'thanksgiving.jpg' => __('Thanksgiving'),
+            'easter.jpg' => __('Easter'),
+            'ramadan.jpg' => __('Ramadan'),
+            'eid.jpg' => __('Eid al-Fitr'),
+            'valentines.jpg' => __('Valentine\'s party'),
+            'halloween.jpg' => __('Halloween'),
+            'baby-shower.jpg' => __('Baby shower'),
+            'gender-reveal.jpg' => __('Gender reveal'),
+            'baptism.jpg' => __('Baptism'),
+            'first-communion.jpg' => __('First communion'),
+            'quinceanera.jpg' => __('Quinceañera'),
+            'sweet-sixteen.jpg' => __('Sweet 16'),
+            'groomsman.jpg' => __('Groomsman'),
+            'rehearsal-dinner.jpg' => __('Rehearsal dinner'),
+            'housewarming.jpg' => __('Housewarming'),
+            'open-house.jpg' => __('Open house'),
+            'picnic.jpg' => __('Picnic'),
+            'cookout.jpg' => __('Cookout'),
+            'brunch.jpg' => __('Brunch'),
+            'breakfast.jpg' => __('Breakfast'),
+            'luncheon.jpg' => __('Luncheon'),
+            'banquet.jpg' => __('Banquet'),
+            'church.jpg' => __('Church'),
+            'funeral.jpg' => __('Funeral'),
+            'celebration-of-life.jpg' => __('Celebration of life'),
+            'awards.jpg' => __('Awards night'),
+            'black-tie.jpg' => __('Black tie'),
+            'wine-tasting.jpg' => __('Wine tasting'),
+            'masquerade.jpg' => __('Masquerade'),
+            'sports.jpg' => __('Sports'),
+            'football.jpg' => __('Football'),
+            'movie-night.jpg' => __('Movie night'),
+            'sleepover.jpg' => __('Sleepover'),
+            'exhibition.jpg' => __('Exhibition'),
+            'safari.jpg' => __('Safari'),
+            'travel.jpg' => __('Travel'),
+            'get-together.jpg' => __('Get together'),
         ];
     }
 
@@ -145,12 +210,27 @@ class EventCategory extends Model
     }
 
     /**
+     * Other always stays at the bottom, even when a newer category has a higher order number.
+     *
+     * @param  Builder<EventCategory>  $query
+     * @return Builder<EventCategory>
+     */
+    #[Scope]
+    protected function ordered(Builder $query): Builder
+    {
+        return $query
+            ->orderByRaw("case when slug = 'other' then 1 else 0 end")
+            ->orderBy('sort_order')
+            ->orderBy('name');
+    }
+
+    /**
      * Wide pictures are used for page headers, regular ones for cards.
      */
     public function photoUrl(bool $wide = false): string
     {
         if (filled($this->photo_path)) {
-            return Storage::disk('public')->url($this->photo_path);
+            return '/storage/'.ltrim(str_replace('\\', '/', $this->photo_path), '/');
         }
 
         $photo = array_key_exists((string) $this->photo, self::stockPhotos()) ? $this->photo : self::DefaultPhoto;

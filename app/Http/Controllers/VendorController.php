@@ -18,7 +18,7 @@ class VendorController extends Controller
     {
         $event->vendors()->create($request->validated());
 
-        return back()->with('status', __('Vendor saved.'));
+        return $this->vendorBack(__('Vendor saved.'));
     }
 
     public function update(UpdateVendorRequest $request, Event $event, Vendor $vendor): RedirectResponse
@@ -27,7 +27,7 @@ class VendorController extends Controller
 
         $vendor->update($request->validated());
 
-        return back()->with('status', __('Vendor updated.'));
+        return $this->vendorBack(__('Vendor updated.'));
     }
 
     public function destroy(Request $request, Event $event, Vendor $vendor): RedirectResponse
@@ -37,6 +37,13 @@ class VendorController extends Controller
 
         $vendor->delete();
 
-        return back()->with('status', __('Vendor removed.'));
+        return $this->vendorBack(__('Vendor removed.'));
+    }
+
+    private function vendorBack(string $message): RedirectResponse
+    {
+        return back()
+            ->withFragment('vendors')
+            ->with('vendor_notice', $message);
     }
 }

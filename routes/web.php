@@ -18,16 +18,20 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\PhoneVerificationController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SessionController;
+use App\Http\Controllers\BecomeHostController;
 use App\Http\Controllers\BudgetItemController;
 use App\Http\Controllers\CheckInController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemoRequestController;
-use App\Http\Controllers\EventController;
+use App\Http\Controllers\DoorController;
 use App\Http\Controllers\EventCommitteeController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventDesignController;
 use App\Http\Controllers\EventPackageController;
 use App\Http\Controllers\EventTaskController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\GuestGroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\LocaleController;
@@ -39,11 +43,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TemplateLibraryController;
+use App\Http\Controllers\TrialController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])->name('locale.update');
+Route::redirect('/assets/{path}', '/admin/assets/{path}', 301)->where('path', '.*');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/features', [PageController::class, 'features'])->name('features');
@@ -52,7 +58,7 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/templates', [TemplateController::class, 'index'])->name('templates.index');
 Route::get('/upcoming', [EventController::class, 'upcoming'])->name('events.upcoming');
-Route::post('/demos', [DemoRequestController::class, 'store'])->name('demos.store');
+Route::post('/demos', [DemoRequestController::class, 'store'])->middleware('throttle:6,1')->name('demos.store');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -72,9 +78,22 @@ Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth'
 Route::middleware('auth')->group(function (): void {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::middleware('profile-complete')->group(function (): void {
+        Route::get('/become-a-host', [BecomeHostController::class, 'create'])->name('become-host.create');
+        Route::post('/become-a-host', [BecomeHostController::class, 'store'])->middleware('throttle:6,1')->name('become-host.store');
+        Route::get('/become-a-host/verify', [BecomeHostController::class, 'verify'])->name('become-host.verify');
+        Route::post('/become-a-host/verify', [BecomeHostController::class, 'confirm'])->middleware('throttle:10,1')->name('become-host.verify.store');
+        Route::post('/become-a-host/verify/resend', [BecomeHostController::class, 'resend'])->middleware('throttle:6,1')->name('become-host.verify.resend');
+    });
 });
 
+Route::get('/trial/{demoRequest}', [TrialController::class, 'show'])->middleware('signed')->name('trials.show');
+Route::post('/trial/{demoRequest}', [TrialController::class, 'store'])->middleware('signed')->name('trials.store');
+
 Route::get('/i/{token}', [InvitationController::class, 'show'])->name('invitations.show');
+Route::get('/door/{token}', [DoorController::class, 'show'])->name('doors.show');
+Route::post('/door/{token}', [DoorController::class, 'store'])->middleware('throttle:30,1')->name('doors.store');
 Route::post('/i/{token}', [InvitationController::class, 'rsvp'])->name('invitations.rsvp');
 
 Route::middleware('auth')->group(function (): void {
@@ -82,6 +101,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('search', AdminSearchController::class)->name('search');
 
+        Route::get('leads', [AdminUserController::class, 'index'])->name('leads.index');
         Route::get('users/create', static fn () => abort(404));
         Route::resource('users', AdminUserController::class)->except(['create']);
         Route::post('users/{user}/wallet', [AdminWalletAdjustmentController::class, 'store'])->name('users.wallet.store');
@@ -113,8 +133,20 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/demos', [DemoRequestController::class, 'index'])
         ->middleware('profile-complete')
         ->name('demos.index');
+    Route::post('/demos/{demoRequest}/trial', [DemoRequestController::class, 'grant'])
+        ->middleware('profile-complete')
+        ->name('demos.trial');
+    Route::post('/demos/{demoRequest}/trial/cancel', [DemoRequestController::class, 'cancel'])
+        ->middleware('profile-complete')
+        ->name('demos.trial.cancel');
+    Route::post('/demos/{demoRequest}/trial/whatsapp', [DemoRequestController::class, 'whatsapp'])
+        ->middleware('profile-complete')
+        ->name('demos.trial.whatsapp');
+    Route::delete('/demos/{demoRequest}', [DemoRequestController::class, 'destroy'])
+        ->middleware('profile-complete')
+        ->name('demos.destroy');
 
-    Route::middleware(['host', 'profile-complete'])->group(function (): void {
+    Route::middleware(['host', 'profile-complete', 'full-host'])->group(function (): void {
         Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
         Route::post('/subscription', [SubscriptionController::class, 'store'])->name('subscription.store');
         Route::post('/subscription/payment', [SubscriptionController::class, 'payment'])->name('subscription.payment');
@@ -123,24 +155,26 @@ Route::middleware('auth')->group(function (): void {
     Route::middleware(['host', 'profile-complete', 'subscribed'])->group(function (): void {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/templates', [TemplateLibraryController::class, 'index'])->name('template-library.index');
-        Route::get('/check-in/{token}', [CheckInController::class, 'scan'])->name('check-ins.scan');
-
-        Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
-        Route::post('/wallet/top-ups', [WalletController::class, 'store'])->name('wallet.top-ups.store');
-        Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
-
         Route::resource('events', EventController::class);
-        Route::post('events/{event}/package', [EventPackageController::class, 'store'])->name('events.package.store');
         Route::get('events/{event}/design', [EventDesignController::class, 'edit'])->name('events.design.edit');
         Route::put('events/{event}/design', [EventDesignController::class, 'update'])->name('events.design.update');
 
         Route::post('events/{event}/guests/import', [GuestController::class, 'import'])->name('events.guests.import');
+        Route::get('events/{event}/guests/import-template', [GuestController::class, 'template'])->name('events.guests.template');
         Route::get('events/{event}/guests/{guest}/edit', [GuestController::class, 'edit'])->name('events.guests.edit');
+        Route::get('contacts', [ContactController::class, 'index'])->name('contacts.index');
+        Route::post('contacts', [ContactController::class, 'store'])->name('contacts.store');
+        Route::delete('contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
+
+        Route::post('events/{event}/groups', [GuestGroupController::class, 'store'])->name('events.groups.store');
+        Route::delete('events/{event}/groups/{group}', [GuestGroupController::class, 'destroy'])->name('events.groups.destroy');
+
         Route::post('events/{event}/guests', [GuestController::class, 'store'])->name('events.guests.store');
         Route::put('events/{event}/guests/{guest}', [GuestController::class, 'update'])->name('events.guests.update');
         Route::delete('events/{event}/guests/{guest}', [GuestController::class, 'destroy'])->name('events.guests.destroy');
 
         Route::post('events/{event}/committees', [EventCommitteeController::class, 'store'])->name('events.committees.store');
+        Route::post('events/{event}/committees/{committee}/guests', [EventCommitteeController::class, 'addGuests'])->name('events.committees.guests.store');
         Route::put('events/{event}/committees/{committee}', [EventCommitteeController::class, 'update'])->name('events.committees.update');
         Route::delete('events/{event}/committees/{committee}', [EventCommitteeController::class, 'destroy'])->name('events.committees.destroy');
 
@@ -149,6 +183,7 @@ Route::middleware('auth')->group(function (): void {
         Route::delete('events/{event}/pledges/{pledge}', [PledgeController::class, 'destroy'])->name('events.pledges.destroy');
 
         Route::post('events/{event}/budget-items', [BudgetItemController::class, 'store'])->name('events.budget-items.store');
+        Route::put('events/{event}/budget-items/{budgetItem}', [BudgetItemController::class, 'update'])->name('events.budget-items.update');
         Route::delete('events/{event}/budget-items/{budgetItem}', [BudgetItemController::class, 'destroy'])->name('events.budget-items.destroy');
 
         Route::post('events/{event}/tasks', [EventTaskController::class, 'store'])->name('events.tasks.store');
@@ -159,9 +194,24 @@ Route::middleware('auth')->group(function (): void {
         Route::patch('events/{event}/vendors/{vendor}', [VendorController::class, 'update'])->name('events.vendors.update');
         Route::delete('events/{event}/vendors/{vendor}', [VendorController::class, 'destroy'])->name('events.vendors.destroy');
 
-        Route::post('events/{event}/invitations', [OutboundMessageController::class, 'invitations'])->name('events.invitations.send');
-        Route::post('events/{event}/reminders', [OutboundMessageController::class, 'reminders'])->name('events.reminders.send');
-        Route::post('events/{event}/thanks', [OutboundMessageController::class, 'thanks'])->name('events.thanks.send');
-        Route::post('events/{event}/check-ins', [CheckInController::class, 'store'])->name('events.check-ins.store');
+        Route::middleware('full-host')->group(function (): void {
+            Route::get('/check-in/{token}', [CheckInController::class, 'scan'])->name('check-ins.scan');
+
+            Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+            Route::post('/wallet/top-ups', [WalletController::class, 'store'])->name('wallet.top-ups.store');
+            Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
+
+            Route::post('events/{event}/package', [EventPackageController::class, 'store'])->name('events.package.store');
+            Route::get('events/{event}/messages/preview', [OutboundMessageController::class, 'preview'])->name('events.messages.preview');
+            Route::post('events/{event}/invitations', [OutboundMessageController::class, 'invitations'])->name('events.invitations.send');
+            Route::post('events/{event}/pledge-notes', [OutboundMessageController::class, 'pledges'])->name('events.pledges.notify');
+            Route::post('events/{event}/reminders', [OutboundMessageController::class, 'reminders'])->name('events.reminders.send');
+            Route::post('events/{event}/thanks', [OutboundMessageController::class, 'thanks'])->name('events.thanks.send');
+            Route::post('events/{event}/check-ins', [CheckInController::class, 'store'])->name('events.check-ins.store');
+            Route::put('events/{event}/reminder', [EventController::class, 'reminder'])->name('events.reminder.update');
+            Route::post('events/{event}/committees/{committee}/door', [EventCommitteeController::class, 'assignDoor'])->name('events.committees.door');
+            Route::delete('events/{event}/committees/{committee}/door', [EventCommitteeController::class, 'closeDoor'])->name('events.committees.door.close');
+            Route::delete('events/{event}/committees/{committee}/door-role', [EventCommitteeController::class, 'releaseDoor'])->name('events.committees.door.release');
+        });
     });
 });

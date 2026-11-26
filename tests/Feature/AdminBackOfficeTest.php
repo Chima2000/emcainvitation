@@ -1,5 +1,6 @@
 <?php
 
+use App\EventCategoryGroup;
 use App\Models\Event;
 use App\Models\Guest;
 use App\Models\InvitationTemplate;
@@ -9,6 +10,8 @@ use App\Models\TopUpRequest;
 use App\Models\User;
 use App\ServiceItem;
 use App\WalletEntryType;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 dataset('admin pages', [
     'top-ups' => ['admin.top-ups.index'],
@@ -25,6 +28,12 @@ dataset('admin pages', [
     'search' => ['admin.search'],
     'demo requests' => ['demos.index'],
 ]);
+
+test('legacy admin asset paths redirect to the admin asset directory', function () {
+    $this->get('/assets/libs/fontawesome/css/all.min.css')
+        ->assertStatus(301)
+        ->assertRedirect('/admin/assets/libs/fontawesome/css/all.min.css');
+});
 
 test('a super admin opens every back-office page in the admin layout', function (string $routeName) {
     $admin = User::factory()->superAdmin()->create();
@@ -342,4 +351,40 @@ test('the admin dashboard shows money figures from the ledger', function () {
             && $stats['wallet_float'] === 20000
             && $stats['pending_top_ups'] === 1
             && $stats['pending_top_up_amount'] === 15000);
+});
+
+test('an external card is saved in the category the admin chooses', function () {
+    Storage::fake('public');
+    $admin = User::factory()->superAdmin()->create();
+
+    $this->actingAs($admin)
+        ->post(route('admin.templates.store'), [
+            'name' => 'Palm card',
+            'category' => 'wedding',
+            'price' => 0,
+            'paper' => '#FAF7F7',
+            'ink' => '#16171A',
+            'accent' => '#940000',
+            'motif' => 'Palm leaves',
+            'description' => 'An external wedding card.',
+            'background' => UploadedFile::fake()->image('palm-card.jpg', 800, 1000),
+        ])
+        ->assertRedirect(route('admin.templates.index'))
+        ->assertSessionHasNoErrors();
+
+    $picture = InvitationTemplate::query()->where('name', 'Palm card')->sole();
+
+    expect($picture->category?->slug)->toBe('wedding')
+        ->and($picture->category?->menu_group)->toBe(EventCategoryGroup::Weddings)
+        ->and($picture->background_path)->not->toBeNull();
+
+    Storage::disk('public')->assertExists($picture->background_path);
+
+    $this->actingAs($admin)
+        ->get(route('admin.templates.index'))
+        ->assertOk()
+        ->assertSee(__('Open Canva'), false)
+        ->assertSee(__('You will be able to design this card in Canva and bring it back here. That connection is not open yet.'), false)
+        ->assertDontSee('name="canva_url"', false)
+        ->assertSee('optgroup', false);
 });

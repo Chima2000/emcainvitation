@@ -46,9 +46,10 @@
         <div class="mb-4">
             <label class="form-label" for="password">{{ __('Password') }}</label>
             <x-password-input id="password" name="password" placeholder="********" autocomplete="new-password" required />
-            @error('password')
+            <p class="form-text mb-0">{{ __('Use more than 8 characters, with an uppercase letter, a number, and a symbol.') }}</p>
+            @foreach ($errors->get('password') as $message)
                 <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
+            @endforeach
         </div>
         <div class="mb-4">
             <label class="form-label" for="password_confirmation">{{ __('Repeat password') }}</label>
@@ -58,6 +59,6 @@
         <div class="mb-3">
             <button type="submit" class="btn btn-primary waves-effect waves-light w-100">{{ __('Create account') }}</button>
         </div>
-        <p class="mb-0 text-center">{{ __('Already have an account?') }} <a href="{{ route('login') }}">{{ __('Sign in') }}</a></p>
+        <p class="mb-0 text-center">{{ __('Already have an account?') }} <a href="{{ route('login', array_filter(['template' => session(\App\Support\ChosenInvitationTemplate::SessionKey)])) }}">{{ __('Sign in') }}</a></p>
     </form>
 @endsection

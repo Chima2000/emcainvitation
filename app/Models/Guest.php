@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'phone', 'email', 'gender', 'party_size', 'rsvp_status', 'notes'])]
+#[Fillable(['name', 'phone', 'email', 'gender', 'party_size', 'table_name', 'rsvp_status', 'notes'])]
 class Guest extends Model
 {
     /** @use HasFactory<GuestFactory> */
@@ -28,6 +28,7 @@ class Guest extends Model
             'gender' => GuestGender::class,
             'rsvp_status' => RsvpStatus::class,
             'sent_at' => 'datetime',
+            'opened_at' => 'datetime',
             'checked_in_at' => 'datetime',
         ];
     }
@@ -69,9 +70,9 @@ class Guest extends Model
         return $this->checked_in_at !== null;
     }
 
-    public function internationalPhone(): ?string
+    public static function phoneKey(?string $phone): ?string
     {
-        $digits = preg_replace('/\D+/', '', (string) $this->phone) ?? '';
+        $digits = preg_replace('/\D+/', '', (string) $phone) ?? '';
 
         if ($digits === '') {
             return null;
@@ -82,6 +83,11 @@ class Guest extends Model
         }
 
         return $digits;
+    }
+
+    public function internationalPhone(): ?string
+    {
+        return self::phoneKey($this->phone);
     }
 
     public function invitationMessage(): string

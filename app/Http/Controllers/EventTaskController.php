@@ -22,7 +22,7 @@ class EventTaskController extends Controller
             'status' => $request->enum('status', TaskStatus::class) ?? TaskStatus::Open,
         ]);
 
-        return back()->with('status', __('Task added.'));
+        return $this->taskBack(__('Task added.'));
     }
 
     public function update(UpdateEventTaskRequest $request, Event $event, EventTask $task): RedirectResponse
@@ -31,7 +31,7 @@ class EventTaskController extends Controller
 
         $task->update($request->validated());
 
-        return back()->with('status', __('Task updated.'));
+        return $this->taskBack(__('Task updated.'));
     }
 
     public function destroy(Request $request, Event $event, EventTask $task): RedirectResponse
@@ -41,6 +41,13 @@ class EventTaskController extends Controller
 
         $task->delete();
 
-        return back()->with('status', __('Task removed.'));
+        return $this->taskBack(__('Task removed.'));
+    }
+
+    private function taskBack(string $message): RedirectResponse
+    {
+        return back()
+            ->withFragment('tasks')
+            ->with('task_notice', $message);
     }
 }

@@ -19,10 +19,13 @@ class UserController extends Controller
     {
         Gate::authorize('viewAny', User::class);
 
+        $forLeads = $request->routeIs('admin.leads.index');
         $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->string('q')->trim()->toString());
-        $role = UserRole::tryFrom((string) $request->query('role', ''));
+        $role = $forLeads ? UserRole::Lead : UserRole::tryFrom((string) $request->query('role', ''));
+        $countedRole = $forLeads ? UserRole::Lead : UserRole::Host;
 
         return view('admin.users.index', [
+            'forLeads' => $forLeads,
             'users' => User::query()
                 ->withCount('events')
                 ->when($role, fn ($query) => $query->where('role', $role))
@@ -38,10 +41,10 @@ class UserController extends Controller
                 ->paginate(20)
                 ->withQueryString(),
             'totals' => [
-                'hosts' => User::query()->where('role', UserRole::Host)->count(),
-                'with_balance' => User::query()->where('role', UserRole::Host)->where('wallet_balance', '>', 0)->count(),
-                'pending_profiles' => User::query()->where('role', UserRole::Host)->whereNull('profile_completed_at')->count(),
-                'wallet_float' => (int) User::query()->where('role', UserRole::Host)->sum('wallet_balance'),
+                'hosts' => User::query()->where('role', $countedRole)->count(),
+                'with_balance' => User::query()->where('role', $countedRole)->where('wallet_balance', '>', 0)->count(),
+                'pending_profiles' => User::query()->where('role', $countedRole)->whereNull('profile_completed_at')->count(),
+                'wallet_float' => (int) User::query()->where('role', $countedRole)->sum('wallet_balance'),
             ],
             'role' => $role,
         ]);
@@ -128,18 +131,20 @@ class UserController extends Controller
         $user->update($attributes);
 
         return redirect()
-            ->route('admin.users.index')
-            ->with('status', __('Host updated.'));
+            ->route($user->isLead() ? 'admin.leads.index' : 'admin.users.index')
+            ->with('status', $user->isLead() ? __('Lead updated.') : __('Host updated.'));
     }
 
     public function destroy(User $user): RedirectResponse
     {
         Gate::authorize('delete', $user);
 
+        $forLeads = $user->isLead();
+
         $user->delete();
 
         return redirect()
-            ->route('admin.users.index')
-            ->with('status', __('Host removed.'));
+            ->route($forLeads ? 'admin.leads.index' : 'admin.users.index')
+            ->with('status', $forLeads ? __('Lead removed.') : __('Host removed.'));
     }
 }

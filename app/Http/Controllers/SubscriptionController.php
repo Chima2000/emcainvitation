@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\ContinueHostRegistration;
 use App\Actions\PurchaseSubscription;
 use App\Http\Requests\StoreSubscriptionPaymentRequest;
 use App\Http\Requests\StoreSubscriptionRequest;
 use App\Models\SubscriptionPlan;
 use App\PaymentMethod;
 use App\SubscriptionPeriod;
+use App\Support\ChosenInvitationTemplate;
 use App\TopUpStatus;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -34,18 +36,25 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    public function store(StoreSubscriptionRequest $request, PurchaseSubscription $purchaseSubscription): RedirectResponse
+    public function store(StoreSubscriptionRequest $request, PurchaseSubscription $purchaseSubscription, ContinueHostRegistration $continueHostRegistration, ChosenInvitationTemplate $chosenInvitationTemplate): RedirectResponse
     {
         $subscription = $purchaseSubscription->handle($request->user(), $request->enum('period', SubscriptionPeriod::class));
+        $date = $subscription->ends_at->timezone(config('app.timezone'))->translatedFormat('j F Y');
+
+        if ($request->session()->get(ContinueHostRegistration::PendingSignIn)) {
+            return $continueHostRegistration->signIn($request, __('Thank you! Your subscription is active until :date. Sign in with the phone number and password you just chose.', [
+                'date' => $date,
+            ]));
+        }
 
         return redirect()
-            ->route('dashboard')
+            ->to($chosenInvitationTemplate->eventUrl($request) ?? route('dashboard'))
             ->with('status', __('Thank you! Your subscription is active until :date.', [
-                'date' => $subscription->ends_at->timezone(config('app.timezone'))->translatedFormat('j F Y'),
+                'date' => $date,
             ]));
     }
 
-    public function payment(StoreSubscriptionPaymentRequest $request): RedirectResponse
+    public function payment(StoreSubscriptionPaymentRequest $request, ContinueHostRegistration $continueHostRegistration): RedirectResponse
     {
         $plan = $request->plan();
 
@@ -55,6 +64,10 @@ class SubscriptionController extends Controller
             'subscription_period' => $plan->period,
             'note' => __('Subscription for :period', ['period' => mb_strtolower($plan->period->label())]),
         ]);
+
+        if ($request->session()->get(ContinueHostRegistration::PendingSignIn)) {
+            return $continueHostRegistration->signIn($request, __('Thanks! We received your payment details. Sign in with the phone number and password you just chose.'));
+        }
 
         return redirect()
             ->route('subscription.index')

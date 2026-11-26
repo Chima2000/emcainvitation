@@ -9,6 +9,8 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+Schedule::command('backup:database')->dailyAt('02:00')->onOneServer()->withoutOverlapping(120);
+Schedule::command('reminders:send')->dailyAt('08:00')->onOneServer()->withoutOverlapping(30);
 Schedule::command('queue:prune-failed --hours=336')->daily()->onOneServer();
 Schedule::command('queue:prune-batches --hours=48 --unfinished=72')->daily()->onOneServer();
 

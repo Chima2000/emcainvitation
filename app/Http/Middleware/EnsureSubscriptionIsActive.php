@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Actions\ContinueHostRegistration;
 use App\Models\User;
 use App\Support\SystemSettings;
 use Closure;
@@ -18,9 +19,25 @@ class EnsureSubscriptionIsActive
         if (
             $user instanceof User
             && ! $user->isSuperAdmin()
+            && ! $user->isLead()
+            && $request->session()->get(ContinueHostRegistration::PendingSignIn)
+            && SystemSettings::subscriptionRequired()
+        ) {
+            return redirect()->route('subscription.index');
+        }
+
+        if (
+            $user instanceof User
+            && ! $user->isSuperAdmin()
             && ! $user->hasActiveSubscription()
             && SystemSettings::subscriptionRequired()
         ) {
+            if ($user->isLead()) {
+                return redirect()
+                    ->route('become-host.create')
+                    ->with('status', __('Your trial has ended. Register as a host, then choose a subscription.'));
+            }
+
             return redirect()
                 ->route('subscription.index')
                 ->with('status', __('Your account is inactive. Choose a subscription to keep using your dashboard.'));

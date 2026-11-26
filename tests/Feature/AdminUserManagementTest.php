@@ -257,6 +257,49 @@ test('a super admin cannot remove their own account', function () {
     $this->assertModelExists($admin);
 });
 
+test('editing a host shows an eye on the password fields', function () {
+    $admin = User::factory()->superAdmin()->create();
+    $host = User::factory()->create();
+
+    $this->actingAs($admin)
+        ->get(route('admin.users.edit', $host))
+        ->assertOk()
+        ->assertSeeInOrder([
+            'name="password"',
+            'data-password-toggle',
+            'name="password_confirmation"',
+            'data-password-toggle',
+        ], false)
+        ->assertSee('fi-rr-eye', false)
+        ->assertSee(__('Show password'), false);
+});
+
+test('the lead list is the host list with only leads', function () {
+    $admin = User::factory()->superAdmin()->create();
+    User::factory()->create(['name' => 'Host Person']);
+    $lead = User::factory()->create(['name' => 'Lead Person', 'role' => UserRole::Lead]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.leads.index'))
+        ->assertOk()
+        ->assertSee(__('Lead accounts'), false)
+        ->assertSee('Lead Person', false)
+        ->assertDontSee('Host Person', false)
+        ->assertSee(route('demos.index'), false)
+        ->assertSee(__('Leads'), false);
+
+    $this->actingAs($admin)
+        ->get(route('admin.users.edit', $lead))
+        ->assertOk()
+        ->assertSee(__('Edit lead'), false)
+        ->assertSee(__('Save lead'), false)
+        ->assertSee('data-password-toggle', false);
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('admin.leads.index'))
+        ->assertForbidden();
+});
+
 test('a super admin removes a host account', function () {
     $admin = User::factory()->superAdmin()->create();
     $host = User::factory()->create();

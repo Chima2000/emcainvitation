@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-12">
             @if ($isActive)
-                <div class="alert alert-success d-flex gap-3 align-items-center" role="status">
+                <div class="alert alert-success d-flex gap-3 align-items-center" role="status" data-emca-persist>
                     <i class="fi fi-rr-badge-check fs-4"></i>
                     <div>
                         <strong class="d-block">{{ __('Your subscription is active') }}</strong>

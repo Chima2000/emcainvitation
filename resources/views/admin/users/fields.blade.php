@@ -16,12 +16,13 @@
 </x-field>
 
 <x-field name="password" label="{{ $user ? __('New password') : __('Password') }}">
-    <x-input name="password" type="password" autocomplete="new-password" :required="! $user" />
+    <x-password-input name="password" autocomplete="new-password" :required="! $user" />
+    <p class="form-text mb-0">{{ __('Use more than 8 characters, with an uppercase letter, a number, and a symbol.') }}</p>
     @if ($user)
         <p class="form-text mb-0">{{ __('Leave the password blank to keep the current one.') }}</p>
     @endif
 </x-field>
 
 <x-field name="password_confirmation" label="{{ __('Repeat password') }}">
-    <x-input name="password_confirmation" type="password" autocomplete="new-password" :required="! $user" />
+    <x-password-input name="password_confirmation" autocomplete="new-password" :required="! $user" />
 </x-field>

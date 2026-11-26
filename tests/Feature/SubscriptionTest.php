@@ -7,6 +7,7 @@ use App\Models\User;
 use App\PaymentMethod;
 use App\SubscriptionPeriod;
 use App\Support\SystemSettings;
+use App\UserRole;
 use App\WalletEntryType;
 
 test('a host without a subscription can only reach the subscription page', function () {
@@ -70,6 +71,21 @@ test('a host pays a month from the wallet and the dashboard opens', function () 
         ->and($entry->amount)->toBe(-15000);
 
     $this->actingAs($host)->get(route('dashboard'))->assertOk();
+});
+
+test('a lead cannot pay their way into a host account', function () {
+    $lead = User::factory()->create([
+        'wallet_balance' => 20000,
+        'role' => UserRole::Lead,
+    ]);
+
+    $this->actingAs($lead)
+        ->post(route('subscription.store'), ['period' => SubscriptionPeriod::Month->value])
+        ->assertRedirect(route('become-host.create'));
+
+    expect($lead->refresh()->role)->toBe(UserRole::Lead)
+        ->and($lead->wallet_balance)->toBe(20000)
+        ->and(Subscription::query()->count())->toBe(0);
 });
 
 test('paying during an active subscription adds the time after the current end', function () {

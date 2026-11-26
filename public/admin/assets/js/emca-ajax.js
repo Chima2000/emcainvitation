@@ -157,7 +157,22 @@
         item.querySelector('.emca-toast-close').addEventListener('click', dismiss);
         stack.appendChild(item);
         window.requestAnimationFrame(() => item.classList.add('is-visible'));
-        window.setTimeout(dismiss, 6500);
+        window.setTimeout(dismiss, 3000);
+    };
+
+    const dismissFlashes = () => {
+        document.querySelectorAll('[data-emca-dismiss]').forEach((message) => {
+            if (message.dataset.emcaDismissReady === '1') {
+                return;
+            }
+
+            message.dataset.emcaDismissReady = '1';
+            window.setTimeout(() => {
+                message.style.transition = 'opacity 0.2s ease';
+                message.style.setProperty('opacity', '0', 'important');
+                window.setTimeout(() => message.remove(), 200);
+            }, 3000);
+        });
     };
 
     const closeOpenModals = () => {
@@ -384,6 +399,7 @@
         await runScripts(regions.flatMap((region) => [...region.querySelectorAll('script')]));
 
         document.dispatchEvent(new CustomEvent('emca:page-load', { detail: { url: finalUrl } }));
+        dismissFlashes();
         window.ScrollTrigger?.refresh?.();
         scrollToFeedback(regions, pathChanged);
 
@@ -592,5 +608,7 @@
         }
     });
 
-    window.emcaAjax = { toast, progress, setLoading };
+    dismissFlashes();
+
+    window.emcaAjax = { toast, progress, setLoading, dismissFlashes };
 })();

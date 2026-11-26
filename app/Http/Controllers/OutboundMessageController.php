@@ -7,6 +7,7 @@ use App\Http\Controllers\Concerns\ManagesOwnedEvent;
 use App\MessageChannel;
 use App\MessagePurpose;
 use App\Models\Event;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,35 @@ class OutboundMessageController extends Controller
         return $this->dispatch($request, $event, $dispatchGuestMessages, MessagePurpose::Thanks);
     }
 
+    public function pledges(Request $request, Event $event, DispatchGuestMessages $dispatchGuestMessages): RedirectResponse
+    {
+        return $this->dispatch($request, $event, $dispatchGuestMessages, MessagePurpose::Pledge);
+    }
+
+    public function preview(Request $request, Event $event, DispatchGuestMessages $dispatchGuestMessages): View
+    {
+        $this->ownedEvent($request, $event);
+        $purpose = MessagePurpose::tryFrom((string) $request->input('purpose')) ?? MessagePurpose::Invitation;
+
+        abort_if($purpose === MessagePurpose::Trial, 404);
+
+        $channel = MessageChannel::tryFrom((string) $request->input('channel')) ?? MessageChannel::Whatsapp;
+        abort_unless($channel->isEventChannel(), 404);
+
+        [$audience, $groupId] = $this->audience($request);
+        $quote = $dispatchGuestMessages->quote($event, $purpose, $channel, $audience, $groupId);
+
+        return view('events.messages.preview', [
+            'event' => $event,
+            'purpose' => $purpose,
+            'channel' => $channel,
+            'audience' => $audience,
+            'groupId' => $groupId,
+            'group' => $groupId ? $event->guestGroups()->find($groupId) : null,
+            'quote' => $quote,
+        ]);
+    }
+
     private function dispatch(
         Request $request,
         Event $event,
@@ -38,7 +68,29 @@ class OutboundMessageController extends Controller
         $this->ownedEvent($request, $event);
 
         $channel = MessageChannel::tryFrom((string) $request->input('channel')) ?? MessageChannel::Whatsapp;
-        $result = $dispatchGuestMessages->handle($event, $purpose, $channel);
+        abort_unless($channel->isEventChannel(), 404);
+
+        [$audience, $groupId] = $this->audience($request);
+
+        if ($request->boolean('reviewed')) {
+            $quote = $dispatchGuestMessages->quote($event, $purpose, $channel, $audience, $groupId);
+
+            if ($quote['shortfall'] > 0) {
+                return redirect()
+                    ->route('events.messages.preview', [
+                        'event' => $event,
+                        'purpose' => $purpose->value,
+                        'channel' => $channel->value,
+                        'audience' => $audience,
+                        'group_id' => $groupId,
+                    ])
+                    ->with('error', __('This batch needs TZS :amount more in the wallet before it can start.', [
+                        'amount' => number_format($quote['shortfall']),
+                    ]));
+            }
+        }
+
+        $result = $dispatchGuestMessages->handle($event, $purpose, $channel, $audience, $groupId);
 
         $redirect = redirect()
             ->route('events.show', $event)
@@ -86,5 +138,21 @@ class OutboundMessageController extends Controller
         }
 
         return $redirect->with('status', $summary);
+    }
+
+    /**
+     * @return array{0: string, 1: ?int}
+     */
+    private function audience(Request $request): array
+    {
+        $audience = (string) $request->input('audience', 'waiting');
+
+        if (! in_array($audience, ['waiting', 'unreplied', 'group'], true)) {
+            $audience = 'waiting';
+        }
+
+        $groupId = $request->filled('group_id') ? $request->integer('group_id') : null;
+
+        return [$audience, $audience === 'group' ? $groupId : null];
     }
 }

@@ -5,9 +5,11 @@ namespace App\Http\Requests;
 use App\CardFont;
 use App\CardLayout;
 use App\Http\Requests\Concerns\AuthorizesOwnedEvent;
+use App\Models\InvitationTemplate;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class UpdateEventDesignRequest extends FormRequest
 {
@@ -28,6 +30,15 @@ class UpdateEventDesignRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->user()?->isLead()) {
+            return [
+                'invitation_template_id' => ['nullable', 'integer', Rule::exists('invitation_templates', 'id')],
+                'headline' => ['nullable', 'string', 'max:160'],
+                'message' => ['nullable', 'string', 'max:2000'],
+                'dress_code' => ['nullable', 'string', 'max:120'],
+            ];
+        }
+
         $color = ['required', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'];
 
         return [
@@ -43,6 +54,8 @@ class UpdateEventDesignRequest extends FormRequest
             'background' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'remove_background' => ['sometimes', 'boolean'],
             'hide_template_background' => ['sometimes', 'boolean'],
+            'portrait' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'remove_portrait' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -56,6 +69,30 @@ class UpdateEventDesignRequest extends FormRequest
             'ink' => __('Text colour'),
             'accent' => __('Accent colour'),
             'background' => __('Background picture'),
+            'portrait' => __('Your photo'),
+        ];
+    }
+
+    /**
+     * @return array<int, callable(Validator): void>
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                if (! $this->user()?->isLead() || $validator->errors()->isNotEmpty()) {
+                    return;
+                }
+
+                $templateId = $this->input('invitation_template_id');
+
+                if ($templateId && InvitationTemplate::query()->whereKey($templateId)->where('host_only', true)->exists()) {
+                    $validator->errors()->add(
+                        'invitation_template_id',
+                        __('This template is for hosts. Choose another, or become a host.'),
+                    );
+                }
+            },
         ];
     }
 }

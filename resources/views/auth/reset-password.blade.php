@@ -18,9 +18,10 @@
         <div class="mb-4">
             <label class="form-label" for="password">{{ __('New password') }}</label>
             <x-password-input id="password" name="password" placeholder="********" autocomplete="new-password" required />
-            @error('password')
+            <p class="form-text mb-0">{{ __('Use more than 8 characters, with an uppercase letter, a number, and a symbol.') }}</p>
+            @foreach ($errors->get('password') as $message)
                 <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
+            @endforeach
         </div>
         <div class="mb-4">
             <label class="form-label" for="password_confirmation">{{ __('Repeat password') }}</label>

@@ -13,6 +13,7 @@ test('the dashboard shell uses the Jumuika Pass logo instead of the template log
         ->get(route('dashboard'))
         ->assertOk()
         ->assertSee('logo/jumuika-pass.png', false)
+        ->assertSee(__('Invite better. Manage better. Spend less.'), false)
         ->assertDontSee('admin/assets/images/emca-logo.svg', false)
         ->assertDontSee('admin/assets/images/logo-text.svg', false);
 });
@@ -52,7 +53,10 @@ test('a host browses templates inside the panel and can filter them by category'
         ->assertSee('class="app-menubar"', false)
         ->assertSee('Harusi Gold')
         ->assertSee('Birthday Confetti')
-        ->assertSee(__('Use this card'));
+        ->assertSee(__('Design in Canva'))
+        ->assertSee(__('Open Canva'))
+        ->assertSee(__('Use this card'))
+        ->assertDontSee(__('View more'));
 
     $this->actingAs($host)
         ->get(route('template-library.index', ['category' => 'wedding']))
@@ -61,8 +65,35 @@ test('a host browses templates inside the panel and can filter them by category'
         ->assertViewHas('templates', fn ($templates): bool => $templates->pluck('name')->all() === ['Harusi Gold']);
 });
 
+test('a host can search the template library by name', function () {
+    InvitationTemplate::factory()->create(['name' => 'Harusi Gold', 'category' => 'wedding']);
+    InvitationTemplate::factory()->create(['name' => 'Birthday Confetti', 'category' => 'birthday']);
+
+    $host = User::factory()->create();
+
+    $this->actingAs($host)
+        ->get(route('template-library.index', ['q' => 'Harusi']))
+        ->assertOk()
+        ->assertSee('Harusi Gold')
+        ->assertDontSee(__('Design in Canva'))
+        ->assertViewHas('templates', fn ($templates): bool => $templates->pluck('name')->all() === ['Harusi Gold']);
+});
+
 test('guests must sign in to browse the panel template library', function () {
     $this->get(route('template-library.index'))->assertRedirect(route('login'));
+});
+
+test('the dashboard shows the two newest events with the latest first', function () {
+    $host = User::factory()->create();
+    Event::factory()->for($host)->create(['title' => 'First gathering']);
+    Event::factory()->for($host)->create(['title' => 'Second gathering']);
+    Event::factory()->for($host)->create(['title' => 'Third gathering']);
+
+    $this->actingAs($host)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSeeInOrder(['Third gathering', 'Second gathering'])
+        ->assertDontSee('First gathering');
 });
 
 test('a host without events sees empty charts and an invitation to create one', function () {
@@ -106,4 +137,16 @@ test('a host sees charts built from their own guests and replies', function () {
             && $chart['activity']['series'][2]['data']->last() === 1
             && $chart['replies']['data']->all() === [3, 1, 1]
             && $chart['checkIn']['percent'] === 20);
+});
+
+test('the template library shows six cards and keeps the rest behind view more', function () {
+    foreach (range(1, 8) as $number) {
+        InvitationTemplate::factory()->create(['name' => 'Card 0'.$number]);
+    }
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('template-library.index'))
+        ->assertOk()
+        ->assertSee(__('View more'))
+        ->assertSeeInOrder(['Card 06', 'data-fold-item hidden', 'Card 07'], false);
 });

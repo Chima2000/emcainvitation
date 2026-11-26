@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\EventCategoryGroup;
 use App\Models\EventCategory;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,6 +35,7 @@ class EventCategoryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:60', Rule::unique('event_categories', 'name')->ignore($category)],
             'name_sw' => ['nullable', 'string', 'max:60'],
+            'menu_group' => ['required', Rule::enum(EventCategoryGroup::class)],
             'icon' => ['nullable', Rule::in(EventCategory::iconChoices())],
             'photo' => ['required', Rule::in(array_keys(EventCategory::stockPhotos()))],
             'photo_upload' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
@@ -44,13 +46,14 @@ class EventCategoryRequest extends FormRequest
     }
 
     /**
-     * @return array{name: string, name_sw: ?string, icon: ?string, photo: string, sort_order: int, is_active: bool}
+     * @return array{name: string, name_sw: ?string, menu_group: string, icon: ?string, photo: string, sort_order: int, is_active: bool}
      */
     public function categoryAttributes(): array
     {
         return [
             'name' => $this->string('name')->trim()->toString(),
             'name_sw' => $this->filled('name_sw') ? $this->string('name_sw')->trim()->toString() : null,
+            'menu_group' => $this->validated('menu_group'),
             'icon' => $this->validated('icon'),
             'photo' => $this->validated('photo'),
             'sort_order' => $this->integer('sort_order'),

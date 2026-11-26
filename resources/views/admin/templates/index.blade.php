@@ -14,7 +14,7 @@
     </a>
     <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#templateModal"
         data-emca-action="{{ route('admin.templates.store') }}"
-        data-emca-fill="{{ json_encode(['_method' => 'POST', 'modal_title' => __('New card template'), 'name' => '', 'category' => $defaultCategory, 'price' => 0, 'paper' => '#faf7f7', 'ink' => '#16171a', 'accent' => '#940000', 'font' => 'playfair', 'layout' => 'classic', 'default_headline' => '', 'default_message' => '', 'remove_background' => false, 'motif' => '', 'description' => '']) }}">
+        data-emca-fill="{{ json_encode(['_method' => 'POST', 'modal_title' => __('New card template'), 'name' => '', 'category' => $defaultCategory, 'price' => 0, 'host_only' => false, 'paper' => '#faf7f7', 'ink' => '#16171a', 'accent' => '#940000', 'font' => 'playfair', 'layout' => 'classic', 'default_headline' => '', 'default_message' => '', 'remove_background' => false, 'motif' => '', 'description' => '']) }}">
         <i class="fi fi-rr-plus me-1"></i> {{ __('New template') }}
     </button>
 @endsection
@@ -22,19 +22,38 @@
 @section('content')
     <div class="card">
         <div class="card-header">
+            @php
+                $activeSlug = $category instanceof \App\Models\EventCategory ? $category->slug : $category;
+                $categoryGroups = \App\Models\EventCategory::grouped($filterCategories);
+            @endphp
             <div class="emca-filter-pills">
-                <a href="{{ route('admin.templates.index') }}" @class(['active' => ! $category])>{{ __('All') }} <span class="emca-pill-count">{{ $totalTemplates }}</span></a>
-                @foreach ($filterCategories as $categoryOption)
-                    <a href="{{ route('admin.templates.index', ['category' => $categoryOption->slug]) }}" @class(['active' => $category?->slug === $categoryOption->slug, 'is-muted' => ! $categoryOption->is_active]) @if (! $categoryOption->is_active) title="{{ __('Switched off for hosts') }}" @endif>
-                        <i class="fa-solid {{ $categoryOption->iconClass() }} me-1"></i>{{ $categoryOption->label() }}
-                        <span class="emca-pill-count">{{ $templateCounts->get($categoryOption->slug, 0) }}</span>
-                    </a>
+                <a href="{{ route('admin.templates.index') }}#template-cards" @class(['active' => $activeSlug === null])>
+                    {{ __('All') }}
+                    <span class="emca-pill-count">{{ $totalTemplates }}</span>
+                </a>
+                <details id="template-categories" @if ($activeSlug !== null) open @endif>
+                    <summary>
+                        <i class="fi fi-rr-apps" aria-hidden="true"></i>
+                        <span class="emca-categories-show">{{ __('Categories') }}</span>
+                        <span class="emca-categories-hide">{{ __('Hide categories') }}</span>
+                    </summary>
+                    <div class="emca-filter-pills">
+                @foreach ($categoryGroups as $groupLabel => $group)
+                    <span class="emca-category-group__label">{{ $groupLabel }}</span>
+                    @foreach ($group as $categoryOption)
+                        <a href="{{ route('admin.templates.index', ['category' => $categoryOption->slug]) }}#template-cards" @class(['active' => $activeSlug === $categoryOption->slug, 'is-muted' => ! $categoryOption->is_active]) @if (! $categoryOption->is_active) title="{{ __('Switched off for hosts') }}" @endif>
+                            <i class="fa-solid {{ $categoryOption->iconClass() }}" aria-hidden="true"></i>{{ $categoryOption->label() }}@unless ($categoryOption->is_active) · {{ __('switched off') }}@endunless
+                            <span class="emca-pill-count">{{ $templateCounts->get($categoryOption->slug, 0) }}</span>
+                        </a>
+                    @endforeach
                 @endforeach
+                    </div>
+                </details>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" id="template-cards">
         @forelse ($templates as $template)
             <div class="col-xxl-3 col-lg-4 col-sm-6">
                 <div class="card h-100">
@@ -42,10 +61,10 @@
                         <x-invitation-card
                             compact
                             :design="$template->design()"
-                            :kicker="$template->category?->label()"
+                            :kicker="trim(collect([$template->category?->menu_group->label(), $template->category?->label()])->filter()->implode(' · '))"
                             :title="$template->name"
                             :hosts="__('Host names')"
-                            :headline="$template->default_headline"
+                            :headline="$template->shownHeadline()"
                             :when="__('Saturday, 12 December')"
                             :venue="$template->motif"
                         />
@@ -58,7 +77,9 @@
                                     @endforeach
                                     <small class="text-body ms-1">{{ $template->font->label() }} · {{ $template->layout->label() }}</small>
                                 </div>
-                            <strong>{{ $template->price > 0 ? 'TZS '.number_format($template->price) : __('Free') }}</strong>
+                            @if ($template->host_only)
+                                <span class="badge bg-light text-dark">{{ __('For hosts') }}</span>
+                            @endif
                         </div>
                         <p class="text-body text-sm mb-3">{{ \Illuminate\Support\Str::limit($template->description, 110) }}</p>
                         <div class="mt-auto">
@@ -66,7 +87,7 @@
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-sm btn-light flex-fill" data-bs-toggle="modal" data-bs-target="#templateModal"
                                     data-emca-action="{{ route('admin.templates.update', $template) }}"
-                                    data-emca-fill="{{ json_encode(['_method' => 'PUT', 'modal_title' => __('Edit :name', ['name' => $template->name]), 'name' => $template->name, 'category' => $template->category?->slug, 'price' => $template->price, 'paper' => $template->paper, 'ink' => $template->ink, 'accent' => $template->accent, 'font' => $template->font->value, 'layout' => $template->layout->value, 'default_headline' => $template->default_headline, 'default_message' => $template->default_message, 'remove_background' => false, 'motif' => $template->motif, 'description' => $template->description]) }}">
+                                    data-emca-fill="{{ json_encode(['_method' => 'PUT', 'modal_title' => __('Edit :name', ['name' => $template->name]), 'name' => $template->name, 'category' => $template->category?->slug, 'price' => $template->price, 'host_only' => $template->host_only, 'paper' => $template->paper, 'ink' => $template->ink, 'accent' => $template->accent, 'font' => $template->font->value, 'layout' => $template->layout->value, 'default_headline' => $template->default_headline, 'default_message' => $template->default_message, 'remove_background' => false, 'motif' => $template->motif, 'description' => $template->description]) }}">
                                     <i class="fi fi-rr-edit me-1"></i> {{ __('Edit') }}
                                 </button>
                                 <form method="POST" action="{{ route('admin.templates.destroy', $template) }}" data-emca-confirm="{{ __('Delete :name? Events that use it switch to the default design.', ['name' => $template->name]) }}">
@@ -96,17 +117,36 @@
     <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel" aria-hidden="true" data-emca-open="{{ $templateErrors->any() ? '1' : '0' }}">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
-                <form method="POST" action="{{ $templateAction }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="_method" value="{{ old('_method', 'POST') }}">
-                    <input type="hidden" name="_form_action" value="{{ $templateAction }}">
-                    <input type="hidden" name="modal_title" value="{{ old('modal_title', __('New card template')) }}">
-                    <div class="modal-header">
-                        <h2 class="modal-title h5" id="templateModalLabel" data-emca-text="modal_title">{{ old('modal_title', __('New card template')) }}</h2>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
-                    </div>
-                    <div class="modal-body">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="templateModalLabel" data-emca-text="modal_title">{{ old('modal_title', __('New card template')) }}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ $templateAction }}" enctype="multipart/form-data" data-emca-main>
+                        @csrf
+                        <input type="hidden" name="_method" value="{{ old('_method', 'POST') }}">
+                        <input type="hidden" name="_form_action" value="{{ $templateAction }}">
+                        <input type="hidden" name="modal_title" value="{{ old('modal_title', __('New card template')) }}">
+                        <div class="border rounded p-3 mb-4">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                <div>
+                                    <h3 class="h6 mb-1">{{ __('Design in Canva') }}</h3>
+                                    <small class="text-body">{{ __('You will be able to design this card in Canva and bring it back here. That connection is not open yet.') }}</small>
+                                </div>
+                                <button type="button" class="btn btn-light" disabled>{{ __('Open Canva') }}</button>
+                            </div>
+                        </div>
                         <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" for="template-background">{{ __('External card picture') }}</label>
+                                <input type="file" class="form-control @if ($templateErrors->has('background')) is-invalid @endif" id="template-background" name="background" accept="image/jpeg,image/png,image/webp">
+                                @if ($templateErrors->has('background'))<div class="invalid-feedback">{{ $templateErrors->first('background') }}</div>@endif
+                                <small class="text-body">{{ __('Bring in a finished card as a JPG, PNG, or WEBP. Choose its event type in the list below, then save. You can edit this card again afterwards.') }}</small>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="template-remove-background" name="remove_background" value="1">
+                                    <label class="form-check-label" for="template-remove-background">{{ __('Remove the current picture') }}</label>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="template-name">{{ __('Name') }}</label>
                                 <input type="text" class="form-control @if ($templateErrors->has('name')) is-invalid @endif" id="template-name" name="name" value="{{ old('name') }}" maxlength="80" required>
@@ -115,10 +155,15 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="template-category">{{ __('Event type') }}</label>
                                 <select class="form-select @if ($templateErrors->has('category')) is-invalid @endif" id="template-category" name="category">
-                                    @foreach ($categories as $categoryOption)
-                                        <option value="{{ $categoryOption->slug }}" @selected(old('category', $defaultCategory) === $categoryOption->slug)>{{ $categoryOption->label() }}@if (! $categoryOption->is_active) · {{ __('switched off') }}@endif</option>
+                                    @foreach (\App\Models\EventCategory::grouped($categories) as $groupLabel => $group)
+                                        <optgroup label="{{ $groupLabel }}">
+                                            @foreach ($group as $categoryOption)
+                                                <option value="{{ $categoryOption->slug }}" @selected(old('category', $defaultCategory) === $categoryOption->slug)>{{ $categoryOption->label() }}@if (! $categoryOption->is_active) · {{ __('switched off') }}@endif</option>
+                                            @endforeach
+                                        </optgroup>
                                     @endforeach
                                 </select>
+                                <small class="text-body">{{ __('The group is the group of this category. A template does not pick a group of its own.') }}</small>
                                 @if ($templateErrors->has('category'))<div class="invalid-feedback">{{ $templateErrors->first('category') }}</div>@endif
                             </div>
                             <div class="col-md-6">
@@ -130,6 +175,10 @@
                                 <label class="form-label" for="template-price">{{ __('Price (TZS)') }}</label>
                                 <input type="text" inputmode="numeric" autocomplete="off" data-emca-money class="form-control @if ($templateErrors->has('price')) is-invalid @endif" id="template-price" name="price" value="{{ old('price', 0) }}" required>
                                 @if ($templateErrors->has('price'))<div class="invalid-feedback">{{ $templateErrors->first('price') }}</div>@endif
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="template-host-only" name="host_only" value="1" @checked(old('host_only'))>
+                                    <label class="form-check-label" for="template-host-only">{{ __('Hosts only') }}</label>
+                                </div>
                             </div>
                             @foreach (['paper' => [__('Paper colour'), '#faf7f7'], 'ink' => [__('Text colour'), '#16171a'], 'accent' => [__('Accent colour'), '#940000']] as $colorField => [$colorLabel, $colorDefault])
                                 <div class="col-md-4">
@@ -157,15 +206,6 @@
                                 @if ($templateErrors->has('layout'))<div class="invalid-feedback">{{ $templateErrors->first('layout') }}</div>@endif
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="template-background">{{ __('Background picture (optional)') }}</label>
-                                <input type="file" class="form-control @if ($templateErrors->has('background')) is-invalid @endif" id="template-background" name="background" accept="image/jpeg,image/png,image/webp">
-                                @if ($templateErrors->has('background'))<div class="invalid-feedback">{{ $templateErrors->first('background') }}</div>@endif
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" id="template-remove-background" name="remove_background" value="1">
-                                    <label class="form-check-label" for="template-remove-background">{{ __('Remove the current picture') }}</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
                                 <label class="form-label" for="template-default-headline">{{ __('Default headline') }}</label>
                                 <input type="text" class="form-control @if ($templateErrors->has('default_headline')) is-invalid @endif" id="template-default-headline" name="default_headline" value="{{ old('default_headline') }}" maxlength="160" placeholder="{{ __('You are invited') }}">
                                 @if ($templateErrors->has('default_headline'))<div class="invalid-feedback">{{ $templateErrors->first('default_headline') }}</div>@endif
@@ -182,12 +222,12 @@
                                 @if ($templateErrors->has('description'))<div class="invalid-feedback">{{ $templateErrors->first('description') }}</div>@endif
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <x-button>{{ __('Save template') }}</x-button>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                            <x-button>{{ __('Save template') }}</x-button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

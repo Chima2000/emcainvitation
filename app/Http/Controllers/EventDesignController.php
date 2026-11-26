@@ -27,7 +27,7 @@ class EventDesignController extends Controller
             'event' => $event,
             'design' => $event->cardDesign(),
             'custom' => $event->card_design ?? [],
-            'templates' => InvitationTemplate::query()->orderBy('name')->get(),
+            'templates' => InvitationTemplate::query()->orderedForGallery()->get(),
             'fonts' => CardFont::cases(),
             'layouts' => CardLayout::cases(),
             'defaultDesign' => InvitationTemplate::defaultDesign(),
@@ -37,6 +37,20 @@ class EventDesignController extends Controller
     public function update(UpdateEventDesignRequest $request, Event $event): RedirectResponse
     {
         $template = InvitationTemplate::query()->find($request->validated('invitation_template_id'));
+
+        if ($request->user()->isLead()) {
+            $event->update([
+                'invitation_template_id' => $template instanceof InvitationTemplate && ! $template->host_only ? $template->id : null,
+                'headline' => $request->validated('headline'),
+                'message' => $request->validated('message'),
+                'dress_code' => $request->validated('dress_code'),
+            ]);
+
+            return redirect()
+                ->route('events.design.edit', $event)
+                ->with('status', __('Card wording saved. Custom colours, fonts and your own picture open after you become a host.'));
+        }
+
         $base = $template?->design() ?? InvitationTemplate::defaultDesign();
         $previous = $event->card_design ?? [];
 
@@ -74,6 +88,22 @@ class EventDesignController extends Controller
 
         if ($request->boolean('hide_template_background')) {
             $custom['hide_background'] = true;
+        }
+
+        $portraitPath = $previous['portrait_path'] ?? null;
+
+        if ($request->hasFile('portrait') || $request->boolean('remove_portrait')) {
+            if (is_string($portraitPath) && $portraitPath !== '') {
+                Storage::disk('public')->delete($portraitPath);
+            }
+
+            $portraitPath = $request->hasFile('portrait')
+                ? $request->file('portrait')->store('card-portraits/events', 'public')
+                : null;
+        }
+
+        if ($portraitPath) {
+            $custom['portrait_path'] = $portraitPath;
         }
 
         $event->update([

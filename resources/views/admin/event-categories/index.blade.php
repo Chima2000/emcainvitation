@@ -14,7 +14,7 @@
     </a>
     <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#categoryModal"
         data-emca-action="{{ route('admin.event-categories.store') }}"
-        data-emca-fill="{{ json_encode(['_method' => 'POST', 'modal_title' => __('New event category'), 'name' => '', 'name_sw' => '', 'icon' => \App\Models\EventCategory::DefaultIcon, 'photo' => \App\Models\EventCategory::DefaultPhoto, 'photo_upload' => '', 'remove_photo' => false, 'sort_order' => ($categories->max('sort_order') ?? 0) + 10, 'is_active' => true]) }}">
+        data-emca-fill="{{ json_encode(['_method' => 'POST', 'modal_title' => __('New event category'), 'name' => '', 'name_sw' => '', 'menu_group' => \App\EventCategoryGroup::Gatherings->value, 'icon' => \App\Models\EventCategory::DefaultIcon, 'photo' => \App\Models\EventCategory::DefaultPhoto, 'photo_upload' => '', 'remove_photo' => false, 'sort_order' => ($categories->max('sort_order') ?? 0) + 10, 'is_active' => true]) }}">
         <i class="fi fi-rr-plus me-1"></i> {{ __('New category') }}
     </button>
 @endsection
@@ -35,6 +35,7 @@
                 <thead>
                     <tr>
                         <th scope="col">{{ __('Category') }}</th>
+                        <th scope="col">{{ __('Group') }}</th>
                         <th scope="col">{{ __('Picture') }}</th>
                         <th scope="col" class="text-center">{{ __('Templates') }}</th>
                         <th scope="col" class="text-center">{{ __('Events') }}</th>
@@ -56,6 +57,7 @@
                                     </div>
                                 </div>
                             </td>
+                            <td>{{ $category->menu_group->label() }}</td>
                             <td>
                                 <img src="{{ $category->photoUrl() }}" alt="" class="emca-category-thumb">
                             </td>
@@ -75,7 +77,7 @@
                                 <div class="d-inline-flex gap-2">
                                     <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#categoryModal"
                                         data-emca-action="{{ route('admin.event-categories.update', $category) }}"
-                                        data-emca-fill="{{ json_encode(['_method' => 'PUT', 'modal_title' => __('Edit :name', ['name' => $category->name]), 'name' => $category->name, 'name_sw' => $category->name_sw, 'icon' => $category->iconClass(), 'photo' => $category->photo, 'photo_upload' => '', 'remove_photo' => false, 'sort_order' => $category->sort_order, 'is_active' => $category->is_active]) }}">
+                                        data-emca-fill="{{ json_encode(['_method' => 'PUT', 'modal_title' => __('Edit :name', ['name' => $category->name]), 'name' => $category->name, 'name_sw' => $category->name_sw, 'menu_group' => $category->menu_group->value, 'icon' => $category->iconClass(), 'photo' => $category->photo, 'photo_upload' => '', 'remove_photo' => false, 'sort_order' => $category->sort_order, 'is_active' => $category->is_active]) }}">
                                         <i class="fi fi-rr-edit me-1"></i> {{ __('Edit') }}
                                     </button>
                                     <form method="POST" action="{{ route('admin.event-categories.destroy', $category) }}" data-emca-confirm="{{ $category->events_count > 0 || $category->templates_count > 0 ? __(':name is already in use. It will be switched off for hosts instead of deleted. Continue?', ['name' => $category->name]) : __('Delete :name?', ['name' => $category->name]) }}">
@@ -88,7 +90,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7"><div class="emca-empty">{{ __('No event categories yet. Create the first one.') }}</div></td>
+                            <td colspan="8"><div class="emca-empty">{{ __('No event categories yet. Create the first one.') }}</div></td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -130,6 +132,16 @@
                                 <label class="form-label" for="category-sort">{{ __('Order') }}</label>
                                 <input type="number" class="form-control @if ($categoryErrors->has('sort_order')) is-invalid @endif" id="category-sort" name="sort_order" value="{{ old('sort_order', 0) }}" min="0" max="999">
                                 @if ($categoryErrors->has('sort_order'))<div class="invalid-feedback">{{ $categoryErrors->first('sort_order') }}</div>@endif
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="category-group">{{ __('Group') }}</label>
+                                <select class="form-select @if ($categoryErrors->has('menu_group')) is-invalid @endif" id="category-group" name="menu_group" required>
+                                    @foreach ($groups as $group)
+                                        <option value="{{ $group->value }}" @selected(old('menu_group', \App\EventCategoryGroup::Gatherings->value) === $group->value)>{{ $group->label() }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="text-body">{{ __('This is where the category sits in the card template menu.') }}</small>
+                                @if ($categoryErrors->has('menu_group'))<div class="invalid-feedback">{{ $categoryErrors->first('menu_group') }}</div>@endif
                             </div>
                             <div class="col-12">
                                 <span class="form-label d-block">{{ __('Icon') }}</span>

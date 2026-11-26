@@ -9,13 +9,14 @@
             <section class="jumuika-flip-face jumuika-flip-face--front" data-auth-face="login" aria-hidden="{{ $startOnReset ? 'true' : 'false' }}" @if ($startOnReset) inert @endif>
                 <a href="{{ route('home') }}" aria-label="Jumuika Pass">
                     <span class="jumuika-auth-logo-frame">
-                        <img class="jumuika-auth-logo" src="{{ asset('logo/Jumuika-logo.png') }}" alt="Jumuika Pass">
+                        <img class="jumuika-auth-logo" src="{{ asset('logo/jumuika-pass.png') }}" alt="Jumuika Pass" width="757" height="389">
                     </span>
                 </a>
+                <p class="jumuika-auth-mark">{{ __('Invite better. Manage better. Spend less.') }}</p>
                 <h1>{{ __('Sign in') }}</h1>
                 <p class="jumuika-auth-lead">{{ __('Sign in with the phone number that starts with 0.') }}</p>
                 @if (session('status'))
-                    <div class="alert alert-success py-2 small" role="status">{{ session('status') }}</div>
+                    <div class="alert alert-success py-2 small" role="status" data-emca-dismiss>{{ session('status') }}</div>
                 @endif
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
@@ -33,9 +34,10 @@
                             <button type="button" class="jumuika-flip-toggle" data-auth-flip-to="reset">{{ __('Reset password') }}</button>
                         </div>
                         <x-password-input id="password" name="password" placeholder="********" autocomplete="current-password" required />
-                        @error('password')
+                        <p class="form-text mb-0">{{ __('Use more than 8 characters, with an uppercase letter, a number, and a symbol.') }}</p>
+                        @foreach ($errors->get('password') as $message)
                             <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
+                        @endforeach
                     </div>
                     <div class="mb-4">
                         <div class="form-check mb-0">
@@ -46,15 +48,16 @@
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary waves-effect waves-light w-100">{{ __('Sign in') }}</button>
                     </div>
-                    <p class="mb-0 text-center">{{ __('New here?') }} <a href="{{ route('register') }}">{{ __('Create an account') }}</a></p>
+                    <p class="mb-0 text-center">{{ __('New here?') }} <a href="{{ route('register', array_filter(['template' => session(\App\Support\ChosenInvitationTemplate::SessionKey)])) }}">{{ __('Create an account') }}</a></p>
                 </form>
             </section>
             <section class="jumuika-flip-face jumuika-flip-face--back" data-auth-face="reset" aria-hidden="{{ $startOnReset ? 'false' : 'true' }}" @unless ($startOnReset) inert @endunless>
                 <a href="{{ route('home') }}" aria-label="Jumuika Pass" tabindex="-1">
                     <span class="jumuika-auth-logo-frame">
-                        <img class="jumuika-auth-logo" src="{{ asset('logo/Jumuika-logo.png') }}" alt="">
+                        <img class="jumuika-auth-logo" src="{{ asset('logo/jumuika-pass.png') }}" alt="" width="757" height="389">
                     </span>
                 </a>
+                <p class="jumuika-auth-mark">{{ __('Invite better. Manage better. Spend less.') }}</p>
                 <h1>{{ __('Reset password') }}</h1>
                 <p class="jumuika-auth-lead">{{ __('We will send a 6-digit code by SMS to the number you registered with.') }}</p>
                 <form method="POST" action="{{ route('password.sms') }}">

@@ -5,8 +5,10 @@ namespace App\Http\Requests;
 use App\Http\Requests\Concerns\AuthorizesOwnedEvent;
 use App\PledgeStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StorePledgeRequest extends FormRequest
 {
@@ -40,5 +42,14 @@ class StorePledgeRequest extends FormRequest
                 Rule::exists('guests', 'id')->where('event_id', $event?->id),
             ],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $redirect = $this->getRedirectUrl();
+
+        throw (new ValidationException($validator))
+            ->errorBag($this->errorBag)
+            ->redirectTo(str_contains($redirect, '#') ? $redirect : $redirect.'#pledges');
     }
 }

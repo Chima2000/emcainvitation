@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\EventCategoryGroup;
 use App\Models\EventCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ class EventCategoryFactory extends Factory
             'slug' => Str::slug($name, '_'),
             'name' => $name,
             'name_sw' => null,
+            'menu_group' => EventCategoryGroup::Gatherings,
             'icon' => fake()->randomElement(EventCategory::iconChoices()),
             'photo' => fake()->randomElement(array_keys(EventCategory::stockPhotos())),
             'sort_order' => fake()->numberBetween(200, 900),

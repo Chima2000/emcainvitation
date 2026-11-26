@@ -5,8 +5,10 @@ namespace App\Http\Requests;
 use App\Http\Requests\Concerns\AuthorizesOwnedEvent;
 use App\VendorStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StoreVendorRequest extends FormRequest
 {
@@ -34,6 +36,15 @@ class StoreVendorRequest extends FormRequest
             'status' => ['required', Rule::enum(VendorStatus::class)],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $redirect = $this->getRedirectUrl();
+
+        throw (new ValidationException($validator))
+            ->errorBag($this->errorBag)
+            ->redirectTo(str_contains($redirect, '#') ? $redirect : $redirect.'#vendors');
     }
 
     /**

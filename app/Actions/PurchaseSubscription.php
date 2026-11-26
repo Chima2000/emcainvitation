@@ -39,7 +39,9 @@ class PurchaseSubscription
             $startsAt = $lockedUser->hasActiveSubscription() ? $lockedUser->subscription_ends_at : now();
             $endsAt = $period->endsAfter($startsAt);
 
-            $lockedUser->forceFill(['subscription_ends_at' => $endsAt])->save();
+            $lockedUser->forceFill([
+                'subscription_ends_at' => $endsAt,
+            ])->save();
             $user->setAttribute('subscription_ends_at', $endsAt);
 
             return $lockedUser->subscriptions()->create([

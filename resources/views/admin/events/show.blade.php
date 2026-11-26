@@ -89,6 +89,7 @@
                         </div>
                         <ul class="list-unstyled d-grid gap-1 mb-0 text-sm">
                             @foreach (\App\MessagePurpose::cases() as $purposeCase)
+                                @continue(! $purposeCase->isEventMessage())
                                 <li class="d-flex justify-content-between"><span>{{ $purposeCase->label() }}</span><span class="text-body">{{ __(':count left', ['count' => number_format($event->packageAllowanceLeft($purposeCase))]) }}</span></li>
                             @endforeach
                         </ul>
@@ -118,6 +119,8 @@
                         <thead>
                             <tr>
                                 <th>{{ __('Guest') }}</th>
+                                <th>{{ __('Email') }}</th>
+                                <th>{{ __('Gender') }}</th>
                                 <th>{{ __('Pass') }}</th>
                                 <th class="text-center">{{ __('Party') }}</th>
                                 <th>{{ __('Reply') }}</th>
@@ -129,15 +132,19 @@
                                 <tr>
                                     <td>
                                         <span class="fw-semibold">{{ $guest->name }}</span>
-                                        <small class="d-block text-body">{{ $guest->phone }}</small>
+                                        @if ($guest->phone)
+                                            <small class="d-block text-body">{{ $guest->phone }}</small>
+                                        @endif
                                     </td>
+                                    <td>{{ $guest->email ?: '—' }}</td>
+                                    <td>{{ $guest->gender?->label() ?? '—' }}</td>
                                     <td><code class="text-dark">{{ $guest->serial }}</code></td>
                                     <td class="text-center">{{ $guest->party_size }}</td>
                                     <td><span class="badge bg-light text-dark">{{ $guest->rsvp_status->label() }}</span></td>
                                     <td class="text-nowrap">{{ $guest->checked_in_at?->translatedFormat('d M, H:i') ?? '—' }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5"><div class="emca-empty">{{ __('No guests added yet.') }}</div></td></tr>
+                                <tr><td colspan="7"><div class="emca-empty">{{ __('No guests added yet.') }}</div></td></tr>
                             @endforelse
                         </tbody>
                     </table>

@@ -6,8 +6,10 @@ use App\BudgetKind;
 use App\Http\Requests\Concerns\AuthorizesOwnedEvent;
 use App\Models\Event;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class StoreBudgetItemRequest extends FormRequest
 {
@@ -39,5 +41,14 @@ class StoreBudgetItemRequest extends FormRequest
             ],
             'sector' => ['nullable', 'required_with:committee_id', 'string', 'max:120'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $redirect = $this->getRedirectUrl();
+
+        throw (new ValidationException($validator))
+            ->errorBag($this->errorBag)
+            ->redirectTo(str_contains($redirect, '#') ? $redirect : $redirect.'#budget');
     }
 }
